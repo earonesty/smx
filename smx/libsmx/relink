@@ -1,0 +1,3 @@
+#!/bin/sh
+\ls | grep \.cpp$ | xargs -n 1 ./lnh2ttp
+\ls | grep \.h$ | xargs -n 1 ./lnh2ttp
