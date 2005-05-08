@@ -514,11 +514,11 @@ s,@am__quote@,,;t t
 s,@AMDEP_TRUE@,,;t t
 s,@AMDEP_FALSE@,#,;t t
 s,@AMDEPBACKSLASH@,\,;t t
-s,@CXXDEPMODE@,depmode=gcc3,;t t
+s,@CXXDEPMODE@,depmode=none,;t t
 s,@CC@,gcc,;t t
 s,@CFLAGS@,-g -O2,;t t
 s,@ac_ct_CC@,gcc,;t t
-s,@CCDEPMODE@,depmode=gcc3,;t t
+s,@CCDEPMODE@,depmode=none,;t t
 s,@CPP@,gcc -E,;t t
 s,@LN_S@,ln -s,;t t
 s,@build@,i686-pc-linux-gnu,;t t
