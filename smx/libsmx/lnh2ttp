@@ -1,0 +1,9 @@
+#!/bin/sh
+if [ -e /misc/h2ttp/dev/qscript/$1 ]; then
+	diff -b $1 /misc/h2ttp/dev/qscript/ && ln -fs /misc/h2ttp/dev/qscript/$1
+elif [ -e /misc/h2ttp/dev/qlib/$1 ]; then
+	diff -b $1 /misc/h2ttp/dev/qlib/ && ln -fs /misc/h2ttp/dev/qlib/$1
+elif [ -e /misc/h2ttp/dev/putil/$1 ]; then
+	diff -b $1 /misc/h2ttp/dev/putil/ && ln -fs /misc/h2ttp/dev/putil/$1
+fi
+

@@ -1,0 +1,5 @@
+.deps
+Makefile
+*.lo
+.libs
+libsmx.la
