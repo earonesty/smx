@@ -274,7 +274,6 @@ installdirs:
 
 install: install-am
 install-exec: install-exec-am
-install-data: install-data-am
 uninstall: uninstall-am
 
 install-am: all-am
@@ -347,6 +346,9 @@ uninstall-am: uninstall-info-am uninstall-libLTLIBRARIES
 	mostlyclean-generic mostlyclean-libtool tags uninstall \
 	uninstall-am uninstall-info-am uninstall-libLTLIBRARIES
 
+
+install-data:
+	@APXS@ -i -n 'mod_smx' -a libmodsmx.la
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:

@@ -12,8 +12,6 @@ THIS SOFTWARE IS PROVIDED 'AS IS' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDI
 */
 
 
-#if defined(HAVE_LIBODBC) || defined(WIN32)
-
 #include "stdafx.h"
 #undef UCHAR
 #include <sql.h>
@@ -1268,5 +1266,3 @@ CDbConn CDbPool::Connect(char *dsn)
 	}
 	return conn;
 }
-
-#endif // HAVE_ODBC/WIN32
