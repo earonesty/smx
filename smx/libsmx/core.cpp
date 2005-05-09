@@ -849,6 +849,7 @@ CStr SmxQuote(CStr in) {
 				} else if (*p == '%') {
 					r << '%';
 					r << '%';
+					++p;
 				} else { 
 					r << *p++;
 				}
