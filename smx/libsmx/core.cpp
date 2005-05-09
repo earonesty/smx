@@ -839,7 +839,7 @@ CStr SmxQuote(CStr in) {
 	bool quot = false;
 
 	while (p < e) {
-		if (*p == '\'' || *p == '\"' || *p == ',' || *p == '\\' || *p ==')' || *p == '(' || *p == 0 || *p == EOF || isspace(*p)) {
+		if (*p == '\'' || *p == '%' || *p == '\"' || *p == ',' || *p == '\\' || *p ==')' || *p == '(' || *p == 0 || *p == EOF || isspace(*p)) {
 			quot = true;
 			r = "\"" << CStr(b,p-b);
 			while (p < e) {
