@@ -1,5 +1,6 @@
-2005-05-09 : Use a better string library plus judy trees for hash
-2005-05-09 : Delete all unused files
-2005-05-09 : Add a 'session class', and put all safe mode and module-load code in there (qCtxSession?) .. all contexts have a session pointer, sessions are the 'context-top' for gset, etc.
-2005-05-09 : Maybe get rid of qctxthread and other confusing stuff that probably will never work and nobody needs
+2005-05-09 : EA : add all those old smx tests to a directory and build a test target
+2005-05-09 : EA : Use a better string library plus judy trees for hash
+2005-05-09 : EA : Delete all unused files
+2005-05-09 : EA : Add a 'session class', and put all safe mode and module-load code in there (qCtxSession?) .. all contexts have a session pointer, sessions are the 'context-top' for gset, etc.
+2005-05-09 : EA : Maybe get rid of qctxthread and other confusing stuff that probably will never work and nobody needs
 
