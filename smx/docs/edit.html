@@ -16,14 +16,16 @@
 %if(%form(save)
 	,
         %if(%form(func)
-		,%create-file(%fqppath(funcs/%replace(%form(func),:,_C_)),
-			%%set(name,%form(func))
-			%%set(description,%macro-quote(%form(description)))
-			%%set(syntax,%macro-quote(%form(syntax)))
-			%%set(example,%macro-quote(%form(example)))
-			%%set(seealso,%macro-quote(%form(seealso)))
-			%%set(authorip,%client-ip%)
-                 )
+		,%create-file(%fqppath(funcs/%replace(%form(func),:,_C_)),%replace(
+%%set(name,%form(func))
+%%set(description,%macro-quote(%form(description)))
+%%set(syntax,%macro-quote(%form(syntax)))
+%%set(example,%macro-quote(%form(example)))
+%%set(seealso,%macro-quote(%form(seealso)))
+%%set(authorip,%client-ip%)
+%%set(authorlogin,%client-authname%)
+%%set(author,%trim(%include(%fqppath(/docs/inc/passwds/%client-authname%.name))))
+                 ,%crlf%,%lf%))
 		 saved <a href="index.html?func=%form(func)">%form(func)</a>
 		 %fset(func,)
 	)

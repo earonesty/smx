@@ -1,5 +1,5 @@
 %set(name,sql)
-			%set(description,"Query an ODBC datasource with the given SQL statement, optionally formatting the result.
+%set(description,"Query an ODBC datasource with the given SQL statement, optionally formatting the result.
 
 %%dsn is the name of the datasource. If a username and password are needed to access the data source, they should be appended to dsn, separated by semicolons:
 
@@ -24,7 +24,9 @@
      To improve performance, smx caches ODBC connections. Some ODBC drivers have known memory leaks, so it may be advantageous to close a connection occasionally. %%sql-flushconnection%% performs this function. 
 
      If expanded in a try block, it will throw an exception instead of displaying error text. The exception can be handled in the catch block.")
-			%set(syntax,"%%sql\(dsn,qry[,'rowpattern[,'header[,'footer]]\)")
-			%set(example,)
-			%set(seealso,)
-			%set(authorip,209.21.110.205)
+%set(syntax,"%%sql\(dsn,qry[,'rowpattern[,'header[,'footer]]\)")
+%set(example,)
+%set(seealso,)
+%set(authorip,209.21.110.205)
+%set(authorlogin,erik)
+%set(author,Erik Aronesty <erik@q32.com>)
