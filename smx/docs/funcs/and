@@ -1,14 +1,14 @@
-%set(name,\{add
-)%set(syntax,\{%%add([a[\,b[\,...]]])
-%%iadd([a[\,b[\,...]]])
-%%+([a[\,b[\,...]]])
-)%set(description,\{Returns the sum of zero or more integer or floating-point integers.
-Invalid arguments default to zero.
-Integer arguments to %%add() are promoted to floating point.
-Floating point arguments to %%iadd() are truncated before adding.
-)%set(author,\{
-)%set(example,\{
-)%set(seealso,\{
+%set(name,and
+)%set(syntax,%%and('exp1[\,'exp2[\,...]])
+)%set(description,Expands to %%null%% if any of the given expressions expand to %%null%%. 
+Otherwise\, T is returned.
+
+Typically\, the exp (expression) parameters should be quoted. This allows %%and()
+to use short-circuit semantics; that is\, evaluation will stop after the first
+null exp is encountered\, since it takes only one null exp to return %%null%%.
+)%set(author,
+)%set(example,
+)%set(seealso,
 )
-	 add  
+	 and  
  

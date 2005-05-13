@@ -1,13 +1,13 @@
-%set(name,\{toupper
-)%set(syntax,\{%%toupper(str)
-)%set(description,\{Transform str to uppercase\, %%toupper()\, or all lowercase\, %%tolower().
+%set(name,tolower
+)%set(syntax,%%tolower(str)
+)%set(description,Transform str to uppercase\, %%toupper()\, or all lowercase\, %%tolower().
 
 Only alphabetic characters are affected by this macro. The current language 
 defined by the operating system is used to transform extended characters (such 
 as ones with accents).
-)%set(author,\{
-)%set(example,\{
-)%set(seealso,\{
+)%set(author,
+)%set(example,
+)%set(seealso,
 )
-	 toupper  
+	 tolower  
  
