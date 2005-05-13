@@ -3,7 +3,7 @@
 	<input type=hidden name=group value="%form(group)">
 		<ul id="navlist">
 				<li><a href="/index.html">Home</a></li>
-				<li><a href="edit.html">Edit</a></li>
+				<li><a href="edit.html?func=%form(func)">Edit</a></li>
 				<li><a href="#">Function: <input size=10 name=func></a></li>
 		</ul>
 	</form>

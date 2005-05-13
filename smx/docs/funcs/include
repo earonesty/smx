@@ -1,27 +1,13 @@
 %set(name,include)
-%set(syntax,syntax 1: %%include(filename)
-syntax 2: %%include(http://url [options]))
-%set(description,Syntax 1 "includes" a file name.  It is reccomended that you included a full path or use the %%fqppath() function.  If you want the filename to be parsed\, you should use %%expand(%%include(filename)).<br>
+			%set(description,"Syntax 1 \"includes\" a file name.  It is reccomended that you included a full path or use the %%fqppath\(\) function.  If you want the filename to be parsed, you should use %%expand\(%%include\(filename\)\).<br>
 
-Syntax 2 evaluates to the contents of a http[s] url.  For those of you who are familiar with our tools\, it has the same syntax as "qweb" (www.q32.com/qweb.htm).  
+Syntax 2 retrieves the contents of an http[s] url.  
 
-The short list of options are as follows:
+The Windows version supports the same options as \"qweb\" \(http://www.q32.com/qweb.htm\), since it shares the same source base.  So you can specify a username, password, certificate file, and much more.
 
-    /user=<user name>
-    /pass=<password>
-    /head               -> causes only headers to be returned
-    /nofollow           -> redirects are counted as "not found"
-    /proxy=<proxy address>
-    /puser=<proxy username>
-    /ppass=<proxy password>
-    /refer=<referral url>
-    /agent=<user agent> -> default is Qweb/2.1
-    /other=header:value -> send the specified http header 
-                           can be used more than once
-
-You can really hack with this\, pretending your site can do 
-things that it's actually grabbing from other sites.   
-Be careful you don't upset anyone.)
-%set(author,)
-%set(example,)
-%set(seealso,)
+On Linux, for now, just use %%exec\(wget -O -...\) or %%exec\(lynx -source ...\).")
+			%set(syntax,"syntax 1: %%include\(filename\)
+syntax 2: %%include\(http://url\)")
+			%set(example,)
+			%set(seealso,)
+			%set(authorip,209.21.110.205)
