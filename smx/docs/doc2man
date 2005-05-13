@@ -3,7 +3,7 @@
 
 
 %define(cleanup,%nil(
-	%set(text,%replace(%rxsplit(%html-clean(%text%),[%cr%]?[%lf%],%token%<br>),<br><br><br><br>,<p>,<br><br><br>,<p>,<br><br>,<p>,<p><br>,<p>))
+	%set(text,%replace(%rxsplit(%replace(%text%,<br>,%lf%),[%cr%]?[%lf%],%token%<br>),<br><br><br><br>,<p>,<br><br><br>,<p>,<br><br>,<p>,<p><br>,<p>))
 	%set(text,%replace(%text%,<p>,%lf%.PP%lf%,<br>,%lf%.br%lf%))
 
 	%out(%text%)

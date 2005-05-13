@@ -50,8 +50,14 @@
 
 %if(%description%
 ,
+%set(prevdl,)
 <p class="subHeader">Description</p>
-<TT>%replace(%rxsplit(%html-clean(%description%),[%cr%]?[%lf%],%token%<br>)
+<TT>%replace(%rxsplit(%html-quote(%replace(%description%,<br>,%lf%)),[%cr%]?[%lf%]
+			,%if(%equal(%left(%token%,2),"  ")
+				 ,&nbsp;&nbsp;&nbsp;%token%<br>
+			 	 ,%token%<br>
+			 )
+	             )
 	,<br><br>,<p>,<br><br>,<p>,<br><br>,<p>,<p><br>,<p>
     )</TT>
 )
