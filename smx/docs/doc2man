@@ -1,0 +1,57 @@
+#!/usr/local/bin/smx
+%nil(
+
+
+%define(cleanup,%nil(
+	%set(text,%replace(%rxsplit(%html-clean(%text%),[%cr%]?[%lf%],%token%<br>),<br><br><br><br>,<p>,<br><br><br>,<p>,<br><br>,<p>,<p><br>,<p>))
+	%set(text,%replace(%text%,<p>,%lf%.PP%lf%,<br>,%lf%.br%lf%))
+
+	%out(%text%)
+),text)
+
+%define(cleanup-example,%nil(
+        %set(text,%replace(%rxsplit(%text%,[%cr%]?[%lf%],%token%<br>),<br><br><br><br>,<p>,<br><br><br>,<p>,<br><br>,<p>,<p><br>,<p>))
+        %set(text,%replace(%text%,<p>,%lf%.PP%lf%,<br>,%lf%.br%lf%))
+        %out(%text%)
+),text)
+
+
+%define(manify
+	,%expand(%include(funcs/%func%))
+	 %create-file(/usr/local/share/man/man3/%%%func%.3,
+.TH %%%name% 3 "%time(yyyy-mm-dd)" "smx v%script-version%" "SMX Programmers Reference Guide"
+.SH NAME
+%%%name% \- SMX builtin function
+.SH SYNOPSIS
+.B %syntax%
+.SH DESCRIPTION
+%cleanup(%description%)
+%if(%example%,
+.SH EXAMPLES
+%cleanup-example(%example%)
+)
+.SH AUTHOR
+This documentation written by Erik Aronesty <erik@q32.com>
+.SH COPYRIGHT
+Copyright \\\(co 1998-%time(yyyy) Erik Aronesty%null(\))
+.br
+This is free software; see the source for copying conditions. There is NO
+warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+%if(%seealso%,
+.SH "SEE ALSO%
+.BR %enumtoken(%seealso%, %%%token% "(3) ,")
+)
+)
+,func)
+
+%dir(funcs/*
+	,%if(%wcmatch(%fname%,* *)
+		,%out(todo: support manifying syntax/usage for smx itself%lf%)
+		,%if(%not(%isdir%)
+		 	,%out(manifying %isdir% %fname%%lf%)
+			 %manify(%fname%)
+		 )
+	 )
+)
+
+)
