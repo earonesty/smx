@@ -1,0 +1,6 @@
+%set(name,fset)
+%set(syntax,%%fset(variable\,value))
+%set(description,Sets a form variable)
+%set(author,)
+%set(example,)
+%set(seealso,)

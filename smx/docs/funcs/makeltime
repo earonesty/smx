@@ -1,0 +1,9 @@
+%set(name,\{sleep
+)%set(syntax,\{%%sleep(delay)
+)%set(description,\{Causes the interpreter to pause for delay milliseconds.
+)%set(author,\{
+)%set(example,\{
+)%set(seealso,\{
+)
+	 sleep  
+ 

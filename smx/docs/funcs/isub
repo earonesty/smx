@@ -1,0 +1,10 @@
+%set(name,\{makeltime
+)%set(syntax,\{%%makeltime(year\,month\,day\,hour24\,minute\,seconds)
+)%set(description,\{Constructs the time as "seconds since 1/1/70"\, given the year\, month\, etc. 
+%%makeltime() is for local time\, %%makegtime() is for GMT.
+)%set(author,\{
+)%set(example,\{
+)%set(seealso,\{
+)
+	 makeltime  
+ 

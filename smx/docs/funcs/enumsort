@@ -1,0 +1,17 @@
+%set(name,enumsort)
+%set(syntax,%%enumsort(string\,separators\,'body\,'comparisonfunction))
+%set(description,Same as %%enumtoken\, but it sorts the tokens before expanding 'body. Sort order is alphabetic by default\, but a 'comparisonfunction argument is offered to allow for a different comparison algorithm. 'comparisonfunction should be psx code that returns a negative number if %%a%% is less than %%b%%\, 0 if they are equal\, and a positive number if %%a%% is greater than %%b%%.)
+%set(author,)
+%set(example,Sort alphabetically: (comparisonfunction may be omitted)
+
+%%enumsort(31|4|124\,|\,%%token%%%%crlf%%)
+124
+31
+4
+
+Sort numerically:
+%%enumsort(31|4|124\,|\,%%token%%%%crlf%%\,%%isub(%%a%%\,%%b%%))
+4
+31
+124)
+%set(seealso,)

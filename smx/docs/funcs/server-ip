@@ -1,0 +1,6 @@
+%set(name,server-ip)
+%set(syntax,%%server-ip%%)
+%set(description,Returns the server's IP address)
+%set(author,)
+%set(example,)
+%set(seealso,)

@@ -1,0 +1,14 @@
+%set(name,iabs)
+%set(syntax,%%iabs(a))
+%set(description,%%abs%% returns the absolute value of a floating-point number a.
+<BR>
+%%iabs%% returns the absolute value of integer a. 
+<BR>
+Integer arguments to %%abs() are promoted to floating point. 
+<BR>
+Floating point arguments to %%iabs() are truncated. 
+<BR>
+If an argument is not a valid number\, it will be treated as if it were 0.)
+%set(author,)
+%set(example,)
+%set(seealso,)

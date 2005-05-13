@@ -1,0 +1,7 @@
+%set(name,create-file)
+%set(syntax,%%create-file(filename\,text))
+%set(description,WARNING! Will overwrite file.
+Use %%text-append(filename\,text) to append)
+%set(author,)
+%set(example,)
+%set(seealso,)

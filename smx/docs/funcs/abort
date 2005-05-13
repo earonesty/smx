@@ -1,0 +1,8 @@
+%set(name,abort)
+%set(syntax,%%abort%%)
+%set(description,This macro immediately stops the processing of a page.  It is far more useful inside of a batch program than in a web page - since you should be using %%redirect instead of %%abort for flow-control.
+
+This can be useful in the case of a serious exception - and you and you want to be sure that your processing is halted immediately.)
+%set(author,)
+%set(example,This text is cut off %%abort%% in the middle.)
+%set(seealso,)

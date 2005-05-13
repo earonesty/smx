@@ -1,0 +1,9 @@
+%set(name,url-encode)
+%set(syntax,%%url-encode(string))
+%set(description,Encodes string for use in a URL.)
+%set(author,)
+%set(example,http://www.redirect.com/?redirect=%%url-encode(http://www.google.com/)
+
+returns:
+http://www.redirect.com/?redirect=http%%3A%%2F%%2Fwww.google.com%%2F)
+%set(seealso,)

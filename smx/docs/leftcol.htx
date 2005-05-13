@@ -1,0 +1,43 @@
+	<div id="navcontainer">
+	<form action="%client-url%">
+	<input type=hidden name=group value="%form(group)">
+		<ul id="navlist">
+				<li><a href="/index.html">Home</a></li>
+				%if(%auth-ip%
+					,<li><a href="edit.html">Edit</a></li>
+				)
+				<li><a href="#">Function: <input size=10 name=func></a></li>
+		</ul>
+	</form>
+	</div>
+	<div id="navcontainer">
+		<ul id="navlist">
+
+%set(dirs,%dir(%fqppath(groups)/*,|%replace(%fname%,_S_,/)))
+
+%enumsort(%dirs%,|,
+			%set(gname,%token%)
+			<li %if(%equal(%form(group),%gname%),id="active")>
+				<a href="%client-url%?group=%url-encode(%gname%)&func=%url-encode(%form(func))" %if(%equal(%form(group),%gname%),id="active")>
+				%gname%
+				</a>
+				%if(%equal(%form(group),%gname%),
+					<div id="subcontainer">
+					<ul id="sublist">
+						%set(funcs,%include(%fqppath(groups/%replace(%form(group),/,_S_))))
+						%enumsort(%funcs%,|,
+						%set(fname,%replace(%token%,_C_,:))
+						<li %if(%equal(%form(func),%fname%),id="active")>
+							<a href="%client-url%?group=%url-encode(%form(group))&func=%url-encode(%fname%)" %if(%equal(%form(func),%fname%),id="active")>
+							%fname%
+							</a>
+						</li>
+						)
+					</ul>
+					</div>
+					
+				)
+			</li>
+)
+		</ul>
+	</div> 

@@ -1,0 +1,11 @@
+%set(name,replace)
+%set(syntax,%%replace(string\, from[\, to[\, from\, to\, ...]))
+%set(description,Replaces all occurances of the "from" argument to the "to" argument in the string "string".  If "to" is left out\, the "from" argument is stripped out. This effect can be achieved with %%enumtoken\, or %%rxsplit\, but replace is more efficient.)
+%set(author,)
+%set(example,%%replace(Hello<br>my name is<br>Jim.\,<br>\,%%crlf%%\,Jim\,Fred)
+
+--- results ---
+Hello
+my name is
+Fred.)
+%set(seealso,)

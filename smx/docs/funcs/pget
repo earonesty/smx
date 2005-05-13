@@ -1,0 +1,6 @@
+%set(name,pget)
+%set(syntax,%%pget(name))
+%set(description,Returns a string associated with name using %%pset(name\,string))
+%set(author,)
+%set(example,)
+%set(seealso,)

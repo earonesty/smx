@@ -1,0 +1,6 @@
+%set(name,fmtltime)
+%set(syntax,%%fmtltime(time\,format))
+%set(description,Format a time value using the local time zone.)
+%set(author,)
+%set(example,)
+%set(seealso,)

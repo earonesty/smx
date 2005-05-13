@@ -1,0 +1,6 @@
+%set(name,expires:)
+%set(syntax,%%expires:(time))
+%set(description,%%expires:() controls the Expires: and Pragma: no-cache headers returned for documents.)
+%set(author,)
+%set(example,)
+%set(seealso,)

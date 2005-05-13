@@ -1,0 +1,6 @@
+%set(name,rename)
+%set(syntax,%%rename(source\,destination))
+%set(description,Renames a file named "source" to "destination".)
+%set(author,)
+%set(example,)
+%set(seealso,)

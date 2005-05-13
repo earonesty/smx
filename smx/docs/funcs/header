@@ -1,0 +1,6 @@
+%set(name,header)
+%set(syntax,%%header(name\,[instance]))
+%set(description,Returns the value of an HTTP header.)
+%set(author,)
+%set(example,)
+%set(seealso,)

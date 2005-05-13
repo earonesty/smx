@@ -1,0 +1,6 @@
+%set(name,exists)
+%set(syntax,%%exists(filename))
+%set(description,Expands to non-null if a file exists and %%null%% if it doesn't)
+%set(author,)
+%set(example,)
+%set(seealso,)

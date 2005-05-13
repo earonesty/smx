@@ -1,0 +1,6 @@
+%set(name,append-header)
+%set(syntax,%%append-header(name\,value))
+%set(description,Appends the given HTTP header to the return HTTP request.)
+%set(author,)
+%set(example,)
+%set(seealso,)

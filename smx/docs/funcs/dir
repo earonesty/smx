@@ -1,0 +1,32 @@
+%set(name,dir)
+%set(syntax,%%dir(dirspec\,'body[\,filter])
+%set(description,%%dir(...) lists all of the files matching the 'dirspec'.  'dirspec' must contain wildcard characters if you want to list more than one file in a directory.  The body of dir is expanded for each file.  Inside the body the following macros are defined:<br>
+
+%%fname%%  - file name
+%%fpath%%  - file path
+%%fattr%%  - attributes
+%%fext%%   - extension
+%%fsize%%  - size
+%%fmtime%% - last modification time
+%%isdir%%  - T if it is a directory %%null%% otherwise)
+%set(author,)
+%set(example,%%dir(c:/*.*\,%%fname%%%%crlf%%)
+
+Results:
+
+WINNT
+Program Files
+TEMP
+RECYCLED
+GameSpy
+drivers
+tools
+MSDOS.SYS
+IO.SYS
+MDAC
+viso-stuff
+NTDETECT.COM
+boot.ini
+NTBOOTDD.SYS
+system)
+%set(seealso,)

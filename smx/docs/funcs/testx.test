@@ -1,0 +1,6 @@
+%set(name,testx)
+			%set(description,boo)
+			%set(syntax,boo)
+			%set(example,boo)
+			%set(seealso,iadd)
+			%set(authorip,209.21.110.205)

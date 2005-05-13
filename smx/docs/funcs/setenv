@@ -1,0 +1,10 @@
+%set(name,setenv)
+%set(syntax,%%setenv(name=value))
+%set(description,%%setenv *sets* an environment string (just like putenv() in C/C++). This can be used to change things for child processes\, etc. This is the sort of functions that you shouldn't ever need to use. Also\, bear in mind that environment settings are global (for the whole server) and not local (for the current page).)
+%set(author,)
+%set(example,Server OS was %%getenv(OS) - but now it's %%setenv(OS=Linux) %%getenv(OS).
+
+Returns:
+
+Server OS was Windows_NT - but now it's  Linux.)
+%set(seealso,)

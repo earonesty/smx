@@ -1,0 +1,15 @@
+%set(name,if)
+%set(syntax,%%if(cond\,'truecase[\,'falsecase]))
+%set(description,If cond is not null\, expands to truecase\, otherwise\, expands to falsecase (or
+%%null%% if falsecase isn't specified). 
+truecase and falsecase are automatically quoted so that only one or the other 
+are evaluated depending on cond
+
+In the following code\, a reference is made to an undefined form variable called 
+Name; %%form(Name) returns %%null%%. 
+%%if(%%equal(%%form(Name)\,'Joe)\, 
+   'Hello Joe!\, 
+   'I don't know you!))
+%set(author,)
+%set(example,)
+%set(seealso,)

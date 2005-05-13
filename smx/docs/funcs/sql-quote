@@ -1,0 +1,6 @@
+%set(name,sql-quote)
+%set(syntax,%%sql-quote(string))
+%set(description,Adds ' quotes around argument.  This properly quotes arguments that may contain quotes.)
+%set(author,)
+%set(example,%%sql-quote(berry) ---> 'berry')
+%set(seealso,)

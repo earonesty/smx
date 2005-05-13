@@ -1,0 +1,15 @@
+%set(name,enumform)
+%set(syntax,%%enumform('body))
+%set(description,Expands body for each form variable\, setting %%name%% to the variable's name and %%
+value%% to its value.)
+%set(author,)
+%set(example,The following duplicates the %%form%% macro's function: 
+%%enumform('%%gset(%%name%%\,%%value%%))
+returns:      
+%%null%%
+
+The following enumerates all the fields in the referring form: 
+%%enumform('%%name%%=%%value%%)
+returns:      
+_Action_=Compile)
+%set(seealso,)

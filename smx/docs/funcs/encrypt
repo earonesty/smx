@@ -1,0 +1,29 @@
+%set(name,encrypt)
+%set(syntax,%%encrypt(string\,password[\,algorithm]))
+%set(description,This macro encrypts the string with the password given using the standard named algorithm.  Valid algorithms are "des\, des3\, idea\, cast and bf".  The resulting string is\, by default\, a binary value.  Binary values can be difficult to work with so\, its reccomended that you %%encode() the result before using them.<br>
+
+The encryption routines are standard and assembly-optimized\, so you should feel free to use them in demanding environments.<br>
+
+The defult algorithm is DES\, the most popular algorithm for encryption.)
+%set(author,)
+%set(example,This:    %%encode(%%encrypt(hello\,world))
+Returns: N1UvWE9kNGZpaWs9
+
+If you try and decode it with the right password you get:
+
+This:    %%decrypt(%%decode(N1UvWE9kNGZpaWs9)\,world)
+Returns: hello
+
+Try and decode it with the wrong password you get:
+
+This:    %%decrypt(%%decode(N1UvWE9kNGZpaWs9)\,world)
+Returns: %%null%%
+
+This sets up standard encryption and decryption for the site as a 
+base 64 encoding of the blowfish algorithm:
+
+%%define(enc\,%%encode(%%encrypt(%%arg(0)\,%%arg(1)\,bf)\,b64))
+%%define(dec\,%%decrypt(%%decode(%%arg(0)\,b64)\,%%arg(1)\,bf))
+
+So you don't have to worry about default encoding/decoding on the site.)
+%set(seealso,)

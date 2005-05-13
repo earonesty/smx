@@ -1,0 +1,8 @@
+%set(name,pcase)
+%set(syntax,%%pcase(string))
+%set(description,capitalizes the first letter of each word\, lower cases the other letters
+ignores numbers\, counts . as spaces so U.S. is still U.S.)
+%set(author,)
+%set(example,%%pcase(US DOLLAR) ==> Us Dollar
+%%pcase(U.S. dollar) ==>U.S. Dollar)
+%set(seealso,)

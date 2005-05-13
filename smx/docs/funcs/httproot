@@ -1,0 +1,6 @@
+%set(name,httproot)
+%set(syntax,%%httproot%%)
+%set(description,Return the HTTP root for the server processing the document.)
+%set(author,)
+%set(example,)
+%set(seealso,)

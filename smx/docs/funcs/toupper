@@ -1,0 +1,16 @@
+%set(name,\{equal
+)%set(syntax,\{%%equal(string1\,string2)
+)%set(description,\{Compare strings for equality. %%equal() ignores the case of characters 
+(case-insensitive); %%xequal() is case-sensitive. T is returned if the strings 
+are equal and %%null%% is returned if they differ. 
+
+- To be equal\, the two strings must be the same length and contain the same 
+characters. 
+- You can't see %%null%% when it prints.
+)%set(author,\{
+)%set(example,\{%%equal('abcde\,'ABCDE) => T 
+%%if(%%equal('abcde\,'ABCDE)\,'Yes\,'No) => Yes
+)%set(seealso,\{
+)
+	 equal  
+ 

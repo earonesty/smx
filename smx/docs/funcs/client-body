@@ -1,0 +1,6 @@
+%set(name,client-body)
+%set(syntax,%%client-body%%)
+%set(description,Provides access to the raw\, undecoded query string posted to the server)
+%set(author,)
+%set(example,)
+%set(seealso,)

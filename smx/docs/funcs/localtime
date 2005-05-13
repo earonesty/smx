@@ -1,0 +1,6 @@
+%set(name,localtime)
+%set(syntax,%%localtime%%)
+%set(description,Returns the time\, optionally formatting it using local time.)
+%set(author,)
+%set(example,)
+%set(seealso,)

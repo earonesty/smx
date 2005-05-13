@@ -1,0 +1,29 @@
+%set(name,set)
+%set(syntax,%%set(name\,string)
+
+OR
+
+%%gset(name\,string))
+%set(description,Creates a simple macro called name which expands to string.
+%%set() defines the macro in the current dynamic scope\, while %%gset() defines 
+the macro in the document's global scope. Macros with dynamic scope are: 
+define\, dir\, enumtoken\, gdefine\, gmacro\, macro\, sql\, and try.
+
+Note that when name is expanded\, string will not be recursively expanded. 
+%%set() can be used in a one-parameter format to delete a macro; that is\, 
+%%defined(MacroName) will be %%null%% after %%set(MacroName). %%set(MacroName\, %%null%%) is different; the macro is defined as %%null%%.<br>
+
+See the example below. Note how the first value for %%name%% is set to 
+"Basil%%bop%%" not "Basilfoobar" - because %%bop%% is evaluated before being passed to %%set - and isn't ready yet.<br>
+
+Another way of looking at this is that %%set is for creating 'variables' and %%define is for creating 'functions'.)
+%set(author,)
+%set(example,%%set(name1\,Basil%%bop%%)
+%%define(name2\,'Basil%%bop%%)
+%%set(bop\,foobar)
+
+Results:
+
+set: Basil%%bop%%
+define: Basilfoobar)
+%set(seealso,)

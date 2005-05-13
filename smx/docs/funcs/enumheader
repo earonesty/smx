@@ -1,0 +1,6 @@
+%set(name,enumheader)
+%set(syntax,%%enumheader('body))
+%set(description,Enumerates through all headers\, defining %%header%% and %%value%% for each header:value pair in the HTTP request.)
+%set(author,)
+%set(example,)
+%set(seealso,)

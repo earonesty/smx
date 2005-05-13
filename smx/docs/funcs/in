@@ -1,0 +1,13 @@
+%set(name,in)
+%set(syntax,%%in(string[\,str1[\,str2[\,...]]]))
+%set(description,Determines if string is equal to any of the other string parameters str1\, 
+str2\,.... Returns T if it is\, and %%null%% otherwise. %%in() performs case-
+insensitive comparisons; %%xin() performs case-sensitive comparisons. 
+
+- Parameter expansion will stop at the first parameter that matches string. 
+
+- This preserves short-circuit evaluation semantics.)
+%set(author,)
+%set(example,%%in('ca\,'AZ\,'AK\,'AL\,'CO\,'CA) => T 
+%%if(%%in('ca\,'AZ\,'AK\,'AL\,'CO\,'CA)\,'Yes\,'No))
+%set(seealso,)

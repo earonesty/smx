@@ -1,0 +1,13 @@
+%set(name,equ)
+%set(syntax,%%equ(a\,b[\,delta])
+%%=(a\,b[\,delta]))
+%set(description,Compares numbers a and b and returns T if a = b. Otherwise\, %%null%% is returned. 
+
+Often\, floating-point calculations will introduce rounding errors. The delta 
+parameter provides a means of how close the numbers' values must be so that 
+they are considered equal. If delta is specified\, the comparison will be 
+|b - a| < delta. If an argument is not a valid number\, it will be treated as if 
+it were 0.)
+%set(author,)
+%set(example,)
+%set(seealso,)

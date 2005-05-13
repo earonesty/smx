@@ -1,0 +1,6 @@
+%set(name,pset)
+%set(syntax,%%pset(name\,string))
+%set(description,Associates string with name\, string is retrievable using %%pget(name) to return it.  This information is persistant through reboots and is stored in a Berkely DB file.  Storing too much information here is a bad idea.)
+%set(author,)
+%set(example,)
+%set(seealso,)

@@ -1,0 +1,26 @@
+%set(name,\{case
+)%set(syntax,\{%%case('cond0\,'case0[\,'cond1\,'case1[\,...][\,'defcase])
+)%set(description,\{Test one or more conditions and expand the matching case. If no matches are found\, expand the optional default case. 
+Notes
+The conditions are tested in order. 
+The conditions and case expressions will typically be quoted so that only one is expanded. 
+Unlike %%switch()\, this macro is auto-quoted.
+)%set(author,\{
+)%set(example,\{In the following code\, a reference is made to an undefined form variable called Name; form returns %%null%%. 
+
+%%case(
+   '%%equal(%%form(Name)\,Joe)\,
+   'Hello Joe!\,
+   '%%equal(%%form(Name)\,Fred)\,
+   'Hey Freddie!\,
+   '%%equal(%%form(Name)\,Sue)\,
+   'Yo Suzie!\,
+   'I don't know you!)
+
+returns:      
+
+I don't know you!
+)%set(seealso,\{
+)
+	 case  
+ 

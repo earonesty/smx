@@ -1,0 +1,6 @@
+%set(name,fmtgtime)
+%set(syntax,%%fmtgtime(time\,format))
+%set(description,Format a time value using GMT time zone.)
+%set(author,)
+%set(example,)
+%set(seealso,)

@@ -1,0 +1,15 @@
+%set(name,\{isub
+)%set(syntax,\{%%isub(a\,b)
+)%set(description,\{Returns the difference of two floating-point numbers.
+Notes
+If an argument is not a valid number\, it will be treated as if it were 0. 
+Integer arguments to %%sub() are promoted to floating point. 
+Floating point arguments to %%sub() are truncated to the nearest integer before subtracting. 
+Only two arguments are examined. 
+%%null%% is returned if only one argument is supplied.
+)%set(author,\{
+)%set(example,\{<NULL>
+)%set(seealso,\{
+)
+	 isub  
+ 

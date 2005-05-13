@@ -1,0 +1,6 @@
+%set(name,port)
+%set(syntax,%%port%%)
+%set(description,Expands to the port of the server processing the document.)
+%set(author,)
+%set(example,)
+%set(seealso,)

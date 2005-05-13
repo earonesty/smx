@@ -1,0 +1,18 @@
+%set(name,enumcolumn)
+%set(syntax,%%enumcolumn('body))
+%set(description,For each column\, this expands body and defines: 
+%%num%% the column's number 
+%%name%% the column's name 
+%%width%% the column's width 
+%%type%% the column's type 
+
+- Values for %%type%% are documented under the sql SMX macro 
+
+- The body argument is auto-quoted)
+%set(author,)
+%set(example,%%sql(dsn\,"SELECT * FROM foobar WHERE id = %%nnn%%"\,
+         '%%enumcolumn('%%gset(%%name%%\,%%column(%%name%%))))
+This example would automatically define SMX variables for all the columns for 
+the given record. Also note that gset was used to set the value of the 
+variables\, otherwise the variables would be local to %%sql().)
+%set(seealso,)
