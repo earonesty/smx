@@ -1268,13 +1268,15 @@ void qObjCGI::EvalHtmlClean(qCtx *ctx, qStr *out, qArgAry *args)
 				if (cl = ((*p) == '/'))
 					while (isspace(*++p)) {}
 
-				n = p;
+				n = p+1;
 				while (!isspace(*p) && *p != '>')
 					++p;
 
 				tmp = CStr(n, p - n);
-				if (!myTags.Find(n, st) && !tags.Find(n, st)) {
+				if (!myTags.Find(tmp, st) && !tags.Find(tmp, st)) {
 					while (*p && *p != '>')
+						++p;
+					if (*p == '>') 
 						++p;
 				} else {
 					while (b < p)
@@ -1282,7 +1284,7 @@ void qObjCGI::EvalHtmlClean(qCtx *ctx, qStr *out, qArgAry *args)
 					while (*p && *p != '>')
 						out->PutC(*p++);
 					if (*p)
-						out->PutC(*p);
+						out->PutC(*p++);
 					if (st) {
 						if (cl)
 							--((int &)state.Add(tmp));
@@ -1298,7 +1300,7 @@ void qObjCGI::EvalHtmlClean(qCtx *ctx, qStr *out, qArgAry *args)
 		MAPPOS pos;
 		int left;
 		for (pos = state.First(); state.Next(&pos, &tmp, &left);) {
-			while (left > 0) {
+			while (left-- > 0) {
 				out->PutC('<');
 				out->PutC('/');
 				out->PutS(tmp);
