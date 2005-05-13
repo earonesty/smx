@@ -79,6 +79,14 @@ int main(int argc, char* argv[], char* envp[])
 
 			FILE *fp = fopen(file, "r");
 			if (fp) {
+				char c = fgetc(fp);
+				if (c == '#') {
+					do {
+					    c = fgetc(fp);
+					} while (c != '\n');
+				} else {
+					ungetc(c, fp);	
+				}
 				qEnvCGI env(fp, stdout, 1024);
 				
 				ctx.SetEnv(&env);
@@ -88,6 +96,7 @@ int main(int argc, char* argv[], char* envp[])
 				while ((p_opt =  getopt("m*odule"))) {
 					ctx.Eval("module", p_opt);
 				}
+
 
 				if (cgi) {
 					ctx.ParseTry(&env, env.GetBuf());
