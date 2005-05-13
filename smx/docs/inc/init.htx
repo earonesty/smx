@@ -1,14 +1,11 @@
 %null(
 
-** list of ips that see the edit button (in addition to authentication - below)
-
-%set(auth-ip,%in(%client-ip%,24.215.213.71,209.21.110.205,64.81.133.205,64.81.133.193))
-
 ** quote and unquote files
 
 %defined(fquot,%replace(%f%,:,_C_,/,_S_,*,_W_))
-
 %defined(funquot,%replace(%f%,_C_,:,_S_,/,_W_,*))
+
+** inline-authenticate user
 
 %define(authenticate,
   %set(auth,%decode(%gettoken(%header(Authorization)," ",1)))

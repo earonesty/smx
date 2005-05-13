@@ -1,8 +1,8 @@
 %expand%%null(
 
-%expand(%include(%fqppath(/inc/init.htx)))
+%expand(%include(%fqppath(/docs/inc/init.htx)))
 
-%if(%invoke(auth-ip),,%redirect(index.html))
+%authenticate%
 
 %gset(save-func,%form(func))
 %fset(func,)
