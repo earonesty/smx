@@ -1,0 +1,17 @@
+%set(name,html-clean)
+%set(description,"Macro removes unknown htmltags, and automatically closes html tags thatare left open.  Suitable for allowing users to upload or edit HTML that is to be included into a web page.
+
+Allows these tags \"as is\": br,dd,dt,hr,img,li,p,input
+
+Automatcially closes these tags: a,address,b,blink,center,code,dl,em,font,form,h1,h2,h3,h4,h5,h6,i,ol,pre,select,strong,textarea,tt,u,ul
+")
+%set(syntax,"%%html-clean\(text to clean\)")
+%set(example,"%%html-clean\(<pre>hello <b>this is bold<b>ed,,b\)
+
+should produce
+
+<pre>hello <b>this is bold<b>ed</b></b></pre>")
+%set(seealso,)
+%set(authorip,64.81.133.205)
+%set(authorlogin,erik)
+%set(author,Erik Aronesty <erik@q32.com>)
