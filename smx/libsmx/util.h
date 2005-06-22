@@ -70,5 +70,9 @@ bool safe_dcheck(qCtx *ctx, const char *path);
 // check a file for faux-ownersip
 bool safe_fcheck(qCtx *ctx, const char *path);
 
+#ifdef WIN32
+int setenv(const char *name, const char *value, int overwrite);
+#endif
+
 #endif // #ifndef _UTIL_H
 

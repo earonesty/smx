@@ -407,3 +407,13 @@ void exvsprintf(char **out_p, const char *msg_p, va_list vargs)
         free(tmp);
 }
 
+#ifdef WIN32
+int setenv(const char *name, const char *value, int overwrite)
+{
+	if (!overwrite &&  getenv(name)) return 0;
+	char *buf=(char *) malloc(strlen(name)+strlen(value)+2);
+	sprintf(buf, %s=%s, name, value);
+	putenv(buf);
+	free(buf);
+}
+#endif
