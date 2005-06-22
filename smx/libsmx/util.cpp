@@ -412,8 +412,10 @@ int setenv(const char *name, const char *value, int overwrite)
 {
 	if (!overwrite &&  getenv(name)) return 0;
 	char *buf=(char *) malloc(strlen(name)+strlen(value)+2);
-	sprintf(buf, %s=%s, name, value);
-	putenv(buf);
+	if (!buf) return errno;
+	sprintf(buf, "%s=%s", name, value);
+	int r = putenv(buf);
 	free(buf);
+	return r;
 }
 #endif
