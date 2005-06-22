@@ -22,25 +22,34 @@ THIS SOFTWARE IS PROVIDED 'AS IS' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDI
 	#include "str.h"
 #endif
 
-class HashCaseCharPtr {
-	public:
-		unsigned int operator()(char const *str) const {
-			std::string s = str;
-			strlwr(&(s[0]));
-			return STD::hash<char const *>()(s.c_str());
-		}
-};
+hash_val_t HashCaseCharPtr(const void *key)  {
+    static unsigned long randbox[] = {
+	0x49848f1bU, 0xe6255dbaU, 0x36da5bdcU, 0x47bf94e9U,
+	0x8cbcce22U, 0x559fc06aU, 0xd268f536U, 0xe10af79aU,
+	0xc1af4d69U, 0x1d2917b5U, 0xec4c304dU, 0x9ee5016cU,
+	0x69232f74U, 0xfead7bb3U, 0xe9089ab6U, 0xf012f6aeU,
+    };
 
-class EqualCaseCharPtr {
-	public:
-		bool operator()(char const *x, char const *y) const {
-		return !stricmp(x, y);
-		}
-};
+    const unsigned char *str = (const unsigned char *) key;
+    hash_val_t acc = 0;
 
+    while (*str) {
+	acc ^= randbox[(tolower(*str) + acc) & 0xf];
+	acc = (acc << 1) | (acc >> 31);
+	acc &= 0xffffffffU;
+	acc ^= randbox[((tolower(*str++) >> 4) + acc) & 0xf];
+	acc = (acc << 2) | (acc >> 30);
+	acc &= 0xffffffffU;
+    }
+    return acc;
+}
+
+int EqualCaseCharPtr (const void *x, const void *y) {
+	return !stricmp((const char *)x, (const char *)y);
+};
 
 // simple mapping class
-template<class DATA> class CMapStr : public CMap<CStr, const char *, DATA, HashCaseCharPtr, EqualCaseCharPtr>
+template<class DATA> class CMapStr : public CMap<CStr, const char *, DATA, &HashCaseCharPtr, &EqualCaseCharPtr>
 {
 };
 

@@ -20,72 +20,91 @@ THIS SOFTWARE IS PROVIDED 'AS IS' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDI
 #endif
 
 #ifndef _INC_STRING
-	#include <string.h>
-	#define _INC_STRING
+#include <string.h>
+#define _INC_STRING
 #endif
 
 #ifndef _INC_ASSERT
-	#include <assert.h>
-	#define _INC_ASSERT
+#include <assert.h>
+#define _INC_ASSERT
 #endif
 
-// simple mapping class
-
-#ifndef MAP_GROW
-	#define MAP_GROW 8
-#endif
+#include "hash.h"
 
 typedef void * MAPPOS;
 
-#ifdef __GNUC__
-#define STD __gnu_cxx
-#else
-#define STD std
-#endif
-
-template<class KEY, class ARG_KEY, class DATA, class HASH = STD::hash<KEY>, class COMP = STD::equal_to<KEY> > class CMap 
-	: public STD::hash_map<KEY, DATA, HASH, COMP>
+template<class KEY, class ARG_KEY, class DATA, hash_fun_t hashfun = NULL, hash_comp_t compfun = NULL> class CMap 
 {
+	hash_t * myH;
+
+	static hnode_t *MapAlloc(void *context)
+	{
+	    hnode_t *node = new(hnode_t);
+	    node->hash_data=NULL;
+	    node->hash_key=NULL;
+	    return node;
+	}
+
+	static void MapFree(hnode_t *node, void *context)
+	{
+	    if (node->hash_data) delete (DATA *) node->hash_data;
+	    if (node->hash_key) delete (KEY *) node->hash_key;
+	    delete node;
+	}
 
 public:
 // initialization
-	~CMap() {clear();};
-	CMap()  {}
+	~CMap() {
+		hash_destroy(myH);
+	};
+	CMap()  {
+		myH = hash_create(HASHCOUNT_T_MAX, 0, 0);
+		hash_set_allocator(myH, &MapAlloc, &MapFree, this);
+	}
 
 // maintenance
-	void  Clear() {clear();}
+	void  Clear() {
+		hash_free_nodes(myH);
+	}
 
 // enumeration
-	typedef typename CMap<KEY, ARG_KEY, DATA, HASH, COMP>::iterator MYITER;
-
-	MAPPOS First() {MYITER *iter = new MYITER; *iter = begin(); return (MAPPOS) iter;}
+	MAPPOS First() {
+		hscan_t *iter = new hscan_t; 
+		hash_scan_begin(iter, myH);
+		return (MAPPOS) iter;
+	}
 
 	bool   Next(MAPPOS *pos, KEY *key, DATA *data) {
-		DATA *tmp; 
-		return Next(pos, key, &tmp) ? (*data = *tmp, true) : false;
-	}
-	bool   Next(MAPPOS *pos, KEY *key, DATA **data) {
-		MYITER *iter = * (MYITER **) pos;
-		if (*iter != end()) {
-			*key = (*iter)->first;
-			*data = &(*iter)->second;
-			++(*iter);
-			*pos = (MAPPOS) iter;
+		hnode_t *node = hash_scan_next(*(hscan_t **)pos);
+		if (node) {
+			key = (KEY *) hnode_getkey(node);
+			data = (DATA *) hnode_get(node);
 			return true;
 		} else {
-			delete iter;
+			return false;
+		}
+	}
+	bool   Next(MAPPOS *pos, KEY *key, DATA **data) {
+		hnode_t *node = hash_scan_next(*(hscan_t **)pos);
+		if (node) {
+			key = hnode_getkey(node);
+			data = &((DATA *)node->data);
+			return true;
+		} else {
 			return false;
 		}
 	}
 	void   Enum(bool (*MapEnumProc) (void *other, KEY &key, DATA &data), void *other=NULL) {
-		MYITER iter;
-		for( iter = begin(); iter != end(); ++iter  ) { 
-			MapEnumProc(other, iter->first, iter->second);
+		hscan_t hs;
+		hnode_t *node;
+		hash_scan_begin(&hs, myH);
+		while ((node = hash_scan_next(&hs))) {
+			MapEnumProc(other, * (KEY *) node->key, * (DATA *) node->data);
 		}
 	}
 
 	int  Count() {
-		return size();
+		return hash_count(myH);
 	}
 
 	const DATA *Nf() {
@@ -94,29 +113,27 @@ public:
 
 // hash
 	DATA *Find(ARG_KEY k) {
-		MYITER iter = find(k);
-		return (iter != end()) ? (&iter->second) : ((DATA *) Nf());
+		hnode_t *node = hash_lookup(myH, k);
+		return node ? ((DATA *)hnode_get(node)) : ((DATA *) Nf());
 	}
 
 	bool Find(ARG_KEY k, DATA &d) {
-		DATA *pd; return Find(k, &pd) ? ((d = *pd), true) : false;
+		hnode_t *node = hash_lookup(myH, k);
+		if (node) d = *((DATA *)hnode_get(node));
+		return node ? true : false;
 	}
 
 	bool Find(ARG_KEY k, DATA **d) {
-                MYITER iter = find(k);
-                if (iter != end()) {
-			*d = &iter->second;
-			return true;
-		} else {
-			return false;
-		}
+		hnode_t *node = hash_lookup(myH, k);
+		if (node) d = (DATA **) &(node->hash_data);
+		return node ? true : false;
 	}
 
 	bool  Del(ARG_KEY k, DATA &d) {
-                MYITER iter = find(k);
-		if (iter != end()) {
-			d = iter->second;
-			erase(iter);
+		hnode_t *node = hash_lookup(myH, k);
+		if (node) {
+			d = *(DATA *)hnode_get(node);
+			hash_delete(myH, node);
 			return true;
 		} else {
 			return false;
@@ -124,33 +141,47 @@ public:
 	}
 
 	const DATA &Set(ARG_KEY k, const DATA &d) {
-                MYITER iter = find(k);
-                if (iter != end()) {
-                        return iter->second = d;
-                } else {
-                        return Add(k) = d;
-                }
+		hnode_t *node = hash_lookup(myH, k);
+		if (node) {
+			return (* (DATA *) hnode_get(node)) = d;
+		} else {
+			return Add(k) = d;
+		}
 	}
 
 	DATA &Set(ARG_KEY k, const DATA &d, DATA *old) {
-		MYITER iter = find(k);
-                if (iter != end()) {
-			*old = iter->second;
-                        return iter->second = d;
-                } else {
-                        return (*this)[k]=d;
-                }
+		hnode_t *node = hash_lookup(myH, k);
+		if (node) {
+			*old = (* (DATA *) hnode_get(node));
+			return (* (DATA *) hnode_get(node)) = d;
+		} else {
+			return Add(k) = d;
+		}
 	}
 
 	bool  Del(ARG_KEY k, DATA *d = 0) {
-                MYITER iter = find(k);
-                if (iter != end()) {
-                        if (d) *d = iter->second;
-                        erase(iter);
-                        return true;
-                } else {
-                        return false;
-                }
+		hnode_t *node = hash_lookup(myH, k);
+		if (node) {
+			if (d) *d = * (DATA *) hnode_get(node);
+			hash_delete(myH, node);
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	DATA &operator [](ARG_KEY k) {
+		hnode_t *node = hash_lookup(myH, k);
+		if (node) {
+			return * (DATA *) hnode_get(node);
+		} else {
+		    KEY *key = new KEY;
+		    *key = k;
+		    hnode_t *node = myH->hash_allocnode(myH->hash_context);
+		    hnode_init(node, new DATA);
+		    hash_insert(myH, node, key);
+		    return * (DATA *) hnode_get(node);
+		}
 	}
 
 	DATA &Add(ARG_KEY k) {
@@ -160,10 +191,10 @@ public:
 		return Add(k,&old);
 	}
 	DATA &Add(ARG_KEY k, DATA *old) {
-                MYITER iter = find(k);
-                if (iter != end()) {
-                        *old = iter->second;
-                        return iter->second;
+                hnode_t *node = hash_lookup(myH, k);
+                if (node) {
+                        *old = *(DATA *) hnode_get(node);
+                        return (DATA *) hnode_get(node);
                 } else {
                         return Add(k);
                 }

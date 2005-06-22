@@ -145,19 +145,8 @@ static int  smtp_resp(qMailState *pstate, char *line); // multiline response
 
 // xx end proto xx //
 
-#ifndef NONAG
-	static char *nStr = "";
-	static int  qnState = 0;
-#endif
-
 int qsmtp(qMailOpts *popts)
 {
-
-#ifndef NONAG
-	// evalueate nag
-		if ((qnState = qNag(Q_NAGKEY,10, false)) == qnNeedNag)
-			nStr = "(unregistered)";
-#endif
 
 	Sock *pSock = NULL;
 	int rval = 0;
@@ -327,9 +316,6 @@ char *smtp_data_next(qMailState *state, int first, int &len)
 	if (first) {
 		if (state->opts->subj) {
 			buf  = "Subject: "; buf += state->opts->subj; 
-#ifndef NONAG
-			buf += nStr; 
-#endif
 			buf += "\r\n";
 		}
 

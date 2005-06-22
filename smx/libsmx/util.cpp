@@ -20,6 +20,8 @@ THIS SOFTWARE IS PROVIDED 'AS IS' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDI
 #include "util.h"
 #include "crit.h"
 
+#include <errno.h>
+
 static void _log_debug(const char *msg);
 static char *stristr(char *a, int la, const char *b, int lb);
 
@@ -216,6 +218,10 @@ void smx_log_v(int level, const char *msg, va_list vargs) {
         gDebugLogFunc(tmp);
         free(tmp);
 }
+
+#ifdef WIN32
+#define snprintf _snprintf
+#endif
 
 void smx_log_pf(int level, int err_id, const char *s1, const char *s2, const char *s3) {
         if (level > smx_log_level)
