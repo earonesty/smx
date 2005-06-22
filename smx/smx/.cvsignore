@@ -5,3 +5,4 @@ Makefile
 *.lo
 .libs
 libmodsmx.la
+*.log
