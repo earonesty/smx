@@ -18,7 +18,11 @@ THIS SOFTWARE IS PROVIDED 'AS IS' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDI
 #include "util.h"
 
 #ifdef WIN32
-	#include <atlconv.h>
+	// don't ask me why... we're getting rid of stl soon anyway
+	// so this will be a moot point
+	#ifdef _DEBUG
+		#include <atlconv.h>
+	#endif
 	#include "qwebm.h"
 #endif
 
