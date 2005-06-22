@@ -87,8 +87,8 @@ public:
 	bool   Next(MAPPOS *pos, KEY *key, DATA **data) {
 		hnode_t *node = hash_scan_next(*(hscan_t **)pos);
 		if (node) {
-			key = hnode_getkey(node);
-			data = &((DATA *)node->data);
+			key = (KEY *) hnode_getkey(node);
+			data = (DATA **)&(node->hash_data);
 			return true;
 		} else {
 			return false;

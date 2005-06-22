@@ -12,13 +12,13 @@ THIS SOFTWARE IS PROVIDED 'AS IS' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDI
 */
 
 #include "stdafx.h"
-#define __ATLCONV_H__
 
 #include "qctx.h"
 
 #include "util.h"
 
 #ifdef WIN32
+	#include <atlconv.h>
 	#include "qwebm.h"
 #endif
 
