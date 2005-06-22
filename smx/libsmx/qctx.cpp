@@ -41,7 +41,7 @@ qCtx::~qCtx()
 void qCtx::Clear(bool force) 
 {
 	MAPPOS pos;
-	const char * key;
+	const char * key=NULL;
 	qObj **obj;
   try {
   	for (pos = myMap.First(); myMap.Next(&pos, &key, &obj); ) {

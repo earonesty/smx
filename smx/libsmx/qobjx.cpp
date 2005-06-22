@@ -39,7 +39,7 @@ void qStrNLTrim::PutS(const char *s)
 void qStrNLTrim::PutS(const char *s, int n)
 {
 	char *p;
-	char *e = s + n;
+	const char *e = s + n;
 	while (p = (char *) memchr(s, '\n', n)) {
 		if (myNL)
 			myStr->PutS(s, p - s);

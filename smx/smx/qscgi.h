@@ -27,7 +27,7 @@ class qEnvCGI : public qEnvHttp
 	int  myReplyCode;
 	
 	CLst<HEADER_ENT> *myHeaders;
-	CMap<const char *, const char *, CStr *> myHeaderMap;
+	CMap<const char *, CStr *>myHeaderMap;
 
 	qStrBuf myOutBuf;
 
