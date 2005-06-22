@@ -14,7 +14,7 @@
  * into proprietary software; there is no requirement for such software to
  * contain a copyright notice related to this source.
  *
- * $Id: hash.h,v 1.1 2005-06-21 01:13:49 simul Exp $
+ * $Id: hash.h,v 1.2 2005-06-22 20:11:46 simul Exp $
  * $Name: not supported by cvs2svn $
  */
 
@@ -218,6 +218,9 @@ extern int hash_verify(hash_t *);
 extern hnode_t *hnode_create(void *);
 extern hnode_t *hnode_init(hnode_t *, void *);
 extern void hnode_destroy(hnode_t *);
+
+extern hash_val_t hash_fun_default(const void *key);
+extern int hash_comp_default(const void *key1, const void *key2);
 
 #if defined(HASH_IMPLEMENTATION) || !defined(KAZLIB_OPAQUE_DEBUG)
 #ifdef KAZLIB_SIDEEFFECT_DEBUG

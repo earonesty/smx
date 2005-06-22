@@ -14,7 +14,7 @@
  * into proprietary software; there is no requirement for such software to
  * contain a copyright notice related to this source.
  *
- * $Id: hash.c,v 1.1 2005-06-21 01:13:49 simul Exp $
+ * $Id: hash.c,v 1.2 2005-06-22 20:11:45 simul Exp $
  * $Name: not supported by cvs2svn $
  */
 
@@ -25,8 +25,9 @@
 #define HASH_IMPLEMENTATION
 #include "hash.h"
 
+#include <stdio.h>
 #ifdef KAZLIB_RCSID
-static const char rcsid[] = "$Id: hash.c,v 1.1 2005-06-21 01:13:49 simul Exp $";
+static const char rcsid[] = "$Id: hash.c,v 1.2 2005-06-22 20:11:45 simul Exp $";
 #endif
 
 #define INIT_BITS	6
@@ -57,8 +58,6 @@ static const char rcsid[] = "$Id: hash.c,v 1.1 2005-06-21 01:13:49 simul Exp $";
 
 static hnode_t *hnode_alloc(void *context);
 static void hnode_free(hnode_t *node, void *context);
-static hash_val_t hash_fun_default(const void *key);
-static int hash_comp_default(const void *key1, const void *key2);
 
 int hash_val_t_bit;
 
@@ -159,7 +158,7 @@ static void grow_table(hash_t *hash)
 
     assert (2 * hash->nchains > hash->nchains);	/* 1 */
 
-    newtable = realloc(hash->table,
+    newtable = (hnode_t**) realloc(hash->table,
 	    sizeof *newtable * hash->nchains * 2);	/* 4 */
 
     if (newtable) {	/* 5 */
@@ -247,7 +246,7 @@ static void shrink_table(hash_t *hash)
 	else
 	    assert (hash->table[chain] == NULL);	/* 6 */
     }
-    newtable = realloc(hash->table,
+    newtable = (hnode_t**) realloc(hash->table,
 	    sizeof *newtable * nchains);		/* 7 */
     if (newtable)					/* 8 */
 	hash->table = newtable;
@@ -296,10 +295,10 @@ hash_t *hash_create(hashcount_t maxcount, hash_comp_t compfun,
     if (hash_val_t_bit == 0)	/* 1 */
 	compute_bits();
 
-    hash = malloc(sizeof *hash);	/* 2 */
+    hash = (hash_t *) malloc(sizeof *hash);	/* 2 */
 
     if (hash) {		/* 3 */
-	hash->table = malloc(sizeof *hash->table * INIT_SIZE);	/* 4 */
+	hash->table = (hnode_t**) malloc(sizeof *hash->table * INIT_SIZE);	/* 4 */
 	if (hash->table) {	/* 5 */
 	    hash->nchains = INIT_SIZE;		/* 6 */
 	    hash->highmark = INIT_SIZE * 2;
@@ -514,6 +513,7 @@ hnode_t *hash_scan_next(hscan_t *scan)
  * 4. We take the bottom N bits of the hash value to derive the chain index,
  *    where N is the base 2 logarithm of the size of the hash table. 
  */
+
 
 void hash_insert(hash_t *hash, hnode_t *node, const void *key)
 {
@@ -741,7 +741,7 @@ int hash_isempty(hash_t *hash)
 
 static hnode_t *hnode_alloc(void *context)
 {
-    return malloc(sizeof *hnode_alloc(NULL));
+    return (hnode_t *) malloc(sizeof *hnode_alloc(NULL));
 }
 
 static void hnode_free(hnode_t *node, void *context)
@@ -756,7 +756,7 @@ static void hnode_free(hnode_t *node, void *context)
 
 hnode_t *hnode_create(void *data)
 {
-    hnode_t *node = malloc(sizeof *node);
+    hnode_t *node = (hnode_t *)malloc(sizeof *node);
     if (node) {
 	node->data = data;
 	node->next = NULL;
@@ -814,7 +814,8 @@ hashcount_t hash_size(hash_t *hash)
     return hash->nchains;
 }
 
-static hash_val_t hash_fun_default(const void *key)
+#undef hash_fun_default
+hash_val_t hash_fun_default(const void *key)
 {
     static unsigned long randbox[] = {
 	0x49848f1bU, 0xe6255dbaU, 0x36da5bdcU, 0x47bf94e9U,
@@ -823,7 +824,7 @@ static hash_val_t hash_fun_default(const void *key)
 	0x69232f74U, 0xfead7bb3U, 0xe9089ab6U, 0xf012f6aeU,
     };
 
-    const unsigned char *str = key;
+    const unsigned char *str = (const unsigned char *)key;
     hash_val_t acc = 0;
 
     while (*str) {
@@ -837,9 +838,10 @@ static hash_val_t hash_fun_default(const void *key)
     return acc;
 }
 
-static int hash_comp_default(const void *key1, const void *key2)
+#undef hash_comp_default
+int hash_comp_default(const void *key1, const void *key2)
 {
-    return strcmp(key1, key2);
+    return strcmp((const char *)key1, (const char *)key2);
 }
 
 #ifdef KAZLIB_TEST_MAIN

@@ -72,7 +72,7 @@ public:
 		return false; 
 	}
 	~CMapStrLst() {
-		MAPPOS pos; CStr key; CStrLst *data; 
+		MAPPOS pos; const char *key; CStrLst *data; 
 		for (pos=First(); Next(&pos, &key, &data); ) 
 			delete data;
 	}
@@ -230,9 +230,9 @@ qObjCGI *qObjCGI::DoFormParse(qCtx *ctx, qStr *out, qArgAry *args)
 
 		if (myFormAutoVar) {
 			MAPPOS pos;
-			CStr key; CStrLst *val;
+			const char * key; CStrLst *val;
 			for (pos = cgi_f->GetFormMap()->First(); cgi_f->GetFormMap()->Next(&pos, &key, &val);) {
-				if (!key.IsEmpty()) {
+				if (key && *key) {
 					qObj *nil;
 					if (!env->GetSessionCtx()->Find(&nil, key)) {
 						env->GetSessionCtx()->MapObj(val->Data(), key);
@@ -279,7 +279,7 @@ void qObjCGI::EvalFormEnumPCollated(qCtx *ctx, qStr *out, qArgAry *args)
 
 	int  i, index = 0;
 	CStr body = args->GetAt(0);
-	CStr name;
+	const char *name;
 	CStr value;
 
 	tmpCtx.MapObj(&name,  "name");
@@ -311,7 +311,7 @@ void qObjCGI::EvalFormEnumPFast(qCtx *ctx, qStr *out, qArgAry *args)
 	qCtxTmp tmpCtx(ctx);
 
 	CStr body = args->GetAt(0);
-	CStr name;
+	const char * name;
 	CStr value;
 
 	tmpCtx.MapObj(&name,  "name");
@@ -879,7 +879,8 @@ void qObjCGI::EvalClientStateP(qCtx *ctx, qStr *out, qArgAry *args)
 	if (env) {
 		MAPPOS pos;
 		CStrLst *list;
-		CStr name, value;
+		const char *name;
+		CStr value;
 		bool first = true;
 		for (pos = myFormMap.First(); myFormMap.Next(&pos, &name, &list); ) {
 			while (list) {
@@ -1299,11 +1300,12 @@ void qObjCGI::EvalHtmlClean(qCtx *ctx, qStr *out, qArgAry *args)
 
 		MAPPOS pos;
 		int left;
-		for (pos = state.First(); state.Next(&pos, &tmp, &left);) {
+		const char *tc;
+		for (pos = state.First(); state.Next(&pos, &tc, &left);) {
 			while (left-- > 0) {
 				out->PutC('<');
 				out->PutC('/');
-				out->PutS(tmp);
+				out->PutS(tc);
 				out->PutC('>');
 			}
 		}

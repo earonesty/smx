@@ -289,7 +289,7 @@ public:
 
 	virtual bool STDCALL Next(PSXENUMPOS *ppos, const char **name) {
 		qObj *obj;
-		CStr key;
+		const char *key;
 		if (myCtx->GetMap()->Next(((MAPPOS *)ppos), &key, &obj)) {
 			*name = key;
 			return true;

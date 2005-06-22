@@ -33,8 +33,9 @@ THIS SOFTWARE IS PROVIDED 'AS IS' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDI
 
 typedef void * MAPPOS;
 
-template<class KEY, class ARG_KEY, class DATA, hash_fun_t hashfun = NULL, hash_comp_t compfun = NULL> class CMap 
+template<class KEY, class DATA> class CMap 
 {
+protected:
 	hash_t * myH;
 
 	static hnode_t *MapAlloc(void *context)
@@ -55,11 +56,11 @@ template<class KEY, class ARG_KEY, class DATA, hash_fun_t hashfun = NULL, hash_c
 public:
 // initialization
 	~CMap() {
-		hash_destroy(myH);
+		hash_free(myH);
 	};
-	CMap()  {
-		myH = hash_create(HASHCOUNT_T_MAX, 0, 0);
-		hash_set_allocator(myH, &MapAlloc, &MapFree, this);
+	CMap(hash_fun_t hashfun=NULL, hash_comp_t compfun=NULL)  {
+		myH = hash_create(HASHCOUNT_T_MAX, compfun, hashfun);
+		hash_set_allocator(myH, MapAlloc, MapFree, this);
 	}
 
 // maintenance
@@ -77,20 +78,22 @@ public:
 	bool   Next(MAPPOS *pos, KEY *key, DATA *data) {
 		hnode_t *node = hash_scan_next(*(hscan_t **)pos);
 		if (node) {
-			key = (KEY *) hnode_getkey(node);
-			data = (DATA *) hnode_get(node);
+			*key = *(KEY *) hnode_getkey(node);
+			*data = *(DATA *) hnode_get(node);
 			return true;
 		} else {
+			delete *(hscan_t **)pos;
 			return false;
 		}
 	}
 	bool   Next(MAPPOS *pos, KEY *key, DATA **data) {
 		hnode_t *node = hash_scan_next(*(hscan_t **)pos);
 		if (node) {
-			key = (KEY *) hnode_getkey(node);
-			data = (DATA **)&(node->hash_data);
+			*key = *(KEY *) hnode_getkey(node);
+			*data = *(DATA **)&(node->hash_data);
 			return true;
 		} else {
+			delete *(hscan_t **)pos;
 			return false;
 		}
 	}
@@ -112,24 +115,24 @@ public:
 	}
 
 // hash
-	DATA *Find(ARG_KEY k) {
+	DATA *Find(KEY k) {
 		hnode_t *node = hash_lookup(myH, k);
 		return node ? ((DATA *)hnode_get(node)) : ((DATA *) Nf());
 	}
 
-	bool Find(ARG_KEY k, DATA &d) {
+	bool Find(KEY k, DATA &d) {
 		hnode_t *node = hash_lookup(myH, k);
 		if (node) d = *((DATA *)hnode_get(node));
 		return node ? true : false;
 	}
 
-	bool Find(ARG_KEY k, DATA **d) {
+	bool Find(KEY k, DATA **d) {
 		hnode_t *node = hash_lookup(myH, k);
 		if (node) d = (DATA **) &(node->hash_data);
 		return node ? true : false;
 	}
 
-	bool  Del(ARG_KEY k, DATA &d) {
+	bool  Del(KEY k, DATA &d) {
 		hnode_t *node = hash_lookup(myH, k);
 		if (node) {
 			d = *(DATA *)hnode_get(node);
@@ -140,7 +143,7 @@ public:
 		}
 	}
 
-	const DATA &Set(ARG_KEY k, const DATA &d) {
+	const DATA &Set(KEY k, const DATA &d) {
 		hnode_t *node = hash_lookup(myH, k);
 		if (node) {
 			return (* (DATA *) hnode_get(node)) = d;
@@ -149,7 +152,7 @@ public:
 		}
 	}
 
-	DATA &Set(ARG_KEY k, const DATA &d, DATA *old) {
+	DATA &Set(KEY k, const DATA &d, DATA *old) {
 		hnode_t *node = hash_lookup(myH, k);
 		if (node) {
 			*old = (* (DATA *) hnode_get(node));
@@ -159,7 +162,7 @@ public:
 		}
 	}
 
-	bool  Del(ARG_KEY k, DATA *d = 0) {
+	bool  Del(KEY k, DATA *d = 0) {
 		hnode_t *node = hash_lookup(myH, k);
 		if (node) {
 			if (d) *d = * (DATA *) hnode_get(node);
@@ -170,27 +173,33 @@ public:
 		}
 	}
 
-	DATA &operator [](ARG_KEY k) {
+	// override this if the hash is responsible for key storage
+	// char * KEY's are a good example
+	virtual void *CopyKey(KEY k) {
+		KEY *key = new KEY;
+		*key = k;
+		return key;
+	}
+
+	DATA &operator [](KEY k) {
 		hnode_t *node = hash_lookup(myH, k);
 		if (node) {
 			return * (DATA *) hnode_get(node);
 		} else {
-		    KEY *key = new KEY;
-		    *key = k;
 		    hnode_t *node = myH->hash_allocnode(myH->hash_context);
 		    hnode_init(node, new DATA);
-		    hash_insert(myH, node, key);
+		    hash_insert(myH, node, CopyKey(k));
 		    return * (DATA *) hnode_get(node);
 		}
 	}
 
-	DATA &Add(ARG_KEY k) {
+	DATA &Add(KEY k) {
 		return (*this)[k];
 	}
-	DATA &Add(ARG_KEY k, DATA &old) {
+	DATA &Add(KEY k, DATA &old) {
 		return Add(k,&old);
 	}
-	DATA &Add(ARG_KEY k, DATA *old) {
+	DATA &Add(KEY k, DATA *old) {
                 hnode_t *node = hash_lookup(myH, k);
                 if (node) {
                         *old = *(DATA *) hnode_get(node);

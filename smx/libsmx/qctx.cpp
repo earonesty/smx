@@ -41,7 +41,7 @@ qCtx::~qCtx()
 void qCtx::Clear(bool force) 
 {
 	MAPPOS pos;
-	CStr key;
+	const char * key;
 	qObj **obj;
   try {
   	for (pos = myMap.First(); myMap.Next(&pos, &key, &obj); ) {
@@ -593,7 +593,7 @@ char ParseArgsLPar(qStr *in, CStr &out, bool quoted)
 void qCtx::Dump(qStr *out)
 {
 	MAPPOS pos;
-	CStr key;
+	const char * key;
 	qObj *obj;
 	for (pos = myMap.First(); myMap.Next(&pos, &key, &obj); ) {
 		out->PutS(key);

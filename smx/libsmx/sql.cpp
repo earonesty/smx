@@ -321,7 +321,7 @@ public:
 
 	void EndTrans(short completionType) {
 		if (myConnMap.Count()) {
-			MAPPOS pos; CDbConn conn; CStr dsn;
+			MAPPOS pos; CDbConn conn; const char *dsn;
 			for ( pos = myConnMap.First(); myConnMap.Next(&pos, &dsn, &conn); ) {
 				conn.EndTrans(completionType);
 			}

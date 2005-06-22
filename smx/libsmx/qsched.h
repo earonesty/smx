@@ -326,7 +326,7 @@ class qSchedPool : public qObjTS
 		qCtxTmp sub(ctx);
 
 		int  next;
-		CStr name;
+		const char *name;
 		CStr sched;
 		CStr interval;
 		CStr body;
