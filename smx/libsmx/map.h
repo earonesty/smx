@@ -49,7 +49,6 @@ protected:
 	static void MapFree(hnode_t *node, void *context)
 	{
 	    if (node->hash_data) delete (DATA *) node->hash_data;
-	    if (node->hash_key) delete (KEY *) node->hash_key;
 	    delete node;
 	}
 
@@ -78,7 +77,7 @@ public:
 	bool   Next(MAPPOS *pos, KEY *key, DATA *data) {
 		hnode_t *node = hash_scan_next(*(hscan_t **)pos);
 		if (node) {
-			*key = *(KEY *) hnode_getkey(node);
+			*key = (KEY) hnode_getkey(node);
 			*data = *(DATA *) hnode_get(node);
 			return true;
 		} else {
@@ -89,7 +88,7 @@ public:
 	bool   Next(MAPPOS *pos, KEY *key, DATA **data) {
 		hnode_t *node = hash_scan_next(*(hscan_t **)pos);
 		if (node) {
-			*key = *(KEY *) hnode_getkey(node);
+			*key = (KEY) hnode_getkey(node);
 			*data = *(DATA **)&(node->hash_data);
 			return true;
 		} else {
@@ -102,7 +101,7 @@ public:
 		hnode_t *node;
 		hash_scan_begin(&hs, myH);
 		while ((node = hash_scan_next(&hs))) {
-			MapEnumProc(other, * (KEY *) node->key, * (DATA *) node->data);
+			MapEnumProc(other, (KEY) node->key, * (DATA *) node->data);
 		}
 	}
 
@@ -176,9 +175,7 @@ public:
 	// override this if the hash is responsible for key storage
 	// char * KEY's are a good example
 	virtual void *CopyKey(KEY k) {
-		KEY *key = new KEY;
-		*key = k;
-		return key;
+		return (void *) k;
 	}
 
 	DATA &operator [](KEY k) {

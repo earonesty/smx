@@ -91,7 +91,7 @@ install_sh = @install_sh@
 ####### kdevelop will overwrite this part!!! (begin)##########
 lib_LTLIBRARIES = libsmx.la
 
-libsmx_la_SOURCES = base64.cpp qmail.cpp buf_chain.cpp buf_ref.cpp pscache.cpp math.cpp strx.cpp util.cpp unix.cpp time.cpp tabtd.cpp tabpre.cpp tabfmt.cpp string.cpp stdafx.cpp sqlgrp.cpp sql.cpp sock.cpp sha.cpp res.cpp regx.cpp rcex.cpp qthread.cpp qstr.cpp qsched.cpp qpriq.cpp qobj-ctx.cpp qobj.cpp qfopen.cpp qenv.cpp qctx.cpp qctx-comp.cpp psxutil.cpp psximpl.cpp pstable.cpp pset.cpp proto.cpp process.cpp opt.cpp open-enc.cpp map.cpp hset.cpp file.cpp fbuf.cpp ex.cpp dparse.cpp dbpset.cpp crit_unix.cpp core.cpp cgi.cpp card.cpp hash.c
+libsmx_la_SOURCES = base64.cpp qmail.cpp buf_chain.cpp buf_ref.cpp pscache.cpp math.cpp strx.cpp util.cpp unix.cpp time.cpp tabtd.cpp tabpre.cpp tabfmt.cpp string.cpp stdafx.cpp sqlgrp.cpp sql.cpp sock.cpp sha.cpp res.cpp regx.cpp rcex.cpp qthread.cpp qstr.cpp qsched.cpp qpriq.cpp qobj-ctx.cpp qobj.cpp qfopen.cpp qenv.cpp qctx.cpp qctx-comp.cpp psxutil.cpp psximpl.cpp pstable.cpp pset.cpp proto.cpp process.cpp opt.cpp open-enc.cpp map.cpp hset.cpp file.cpp fbuf.cpp ex.cpp dparse.cpp dbpset.cpp crit_unix.cpp core.cpp cgi.cpp card.cpp hash.c mapstr.cpp
 subdir = libsmx
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = $(top_builddir)/config.h
@@ -108,7 +108,7 @@ am_libsmx_la_OBJECTS = base64.lo qmail.lo buf_chain.lo buf_ref.lo \
 	qctx.lo qctx-comp.lo psxutil.lo psximpl.lo pstable.lo pset.lo \
 	proto.lo process.lo opt.lo open-enc.lo map.lo hset.lo file.lo \
 	fbuf.lo ex.lo dparse.lo dbpset.lo crit_unix.lo core.lo cgi.lo \
-	card.lo hash.lo
+	card.lo hash.lo mapstr.lo
 libsmx_la_OBJECTS = $(am_libsmx_la_OBJECTS)
 
 DEFS = @DEFS@
@@ -125,25 +125,26 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/dparse.Plo ./$(DEPDIR)/ex.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/fbuf.Plo ./$(DEPDIR)/file.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/hash.Plo ./$(DEPDIR)/hset.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/map.Plo ./$(DEPDIR)/math.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/open-enc.Plo ./$(DEPDIR)/opt.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/process.Plo ./$(DEPDIR)/proto.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/pscache.Plo ./$(DEPDIR)/pset.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/pstable.Plo ./$(DEPDIR)/psximpl.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/psxutil.Plo ./$(DEPDIR)/qctx-comp.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/qctx.Plo ./$(DEPDIR)/qenv.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/qfopen.Plo ./$(DEPDIR)/qmail.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/qobj-ctx.Plo ./$(DEPDIR)/qobj.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/qpriq.Plo ./$(DEPDIR)/qsched.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/qstr.Plo ./$(DEPDIR)/qthread.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/rcex.Plo ./$(DEPDIR)/regx.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/res.Plo ./$(DEPDIR)/sha.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/sock.Plo ./$(DEPDIR)/sql.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/sqlgrp.Plo ./$(DEPDIR)/stdafx.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/string.Plo ./$(DEPDIR)/strx.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/tabfmt.Plo ./$(DEPDIR)/tabpre.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/tabtd.Plo ./$(DEPDIR)/time.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/unix.Plo ./$(DEPDIR)/util.Plo
+@AMDEP_TRUE@	./$(DEPDIR)/map.Plo ./$(DEPDIR)/mapstr.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/math.Plo ./$(DEPDIR)/open-enc.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/opt.Plo ./$(DEPDIR)/process.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/proto.Plo ./$(DEPDIR)/pscache.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/pset.Plo ./$(DEPDIR)/pstable.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/psximpl.Plo ./$(DEPDIR)/psxutil.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/qctx-comp.Plo ./$(DEPDIR)/qctx.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/qenv.Plo ./$(DEPDIR)/qfopen.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/qmail.Plo ./$(DEPDIR)/qobj-ctx.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/qobj.Plo ./$(DEPDIR)/qpriq.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/qsched.Plo ./$(DEPDIR)/qstr.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/qthread.Plo ./$(DEPDIR)/rcex.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/regx.Plo ./$(DEPDIR)/res.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/sha.Plo ./$(DEPDIR)/sock.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/sql.Plo ./$(DEPDIR)/sqlgrp.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/stdafx.Plo ./$(DEPDIR)/string.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/strx.Plo ./$(DEPDIR)/tabfmt.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/tabpre.Plo ./$(DEPDIR)/tabtd.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/time.Plo ./$(DEPDIR)/unix.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/util.Plo
 COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
 	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) \
@@ -226,6 +227,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hash.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hset.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/map.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mapstr.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/math.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/open-enc.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/opt.Plo@am__quote@

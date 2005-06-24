@@ -230,7 +230,7 @@ qObjCGI *qObjCGI::DoFormParse(qCtx *ctx, qStr *out, qArgAry *args)
 
 		if (myFormAutoVar) {
 			MAPPOS pos;
-			const char * key; CStrLst *val;
+			const char * key=NULL; CStrLst *val;
 			for (pos = cgi_f->GetFormMap()->First(); cgi_f->GetFormMap()->Next(&pos, &key, &val);) {
 				if (key && *key) {
 					qObj *nil;
