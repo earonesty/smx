@@ -3,3 +3,5 @@ Makefile
 *.lo
 .libs
 libsmx.la
+test_map
+buildtests

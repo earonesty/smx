@@ -29,10 +29,6 @@ THIS SOFTWARE IS PROVIDED 'AS IS' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDI
 #endif
 #endif
 
-#ifndef BUFFER_CHAIN
-	#define BUFFER_CHAIN 1
-#endif
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -66,10 +62,7 @@ CBufRefChar::CBufRefChar(int n)
 		m_buf = pX->buf();
 		m_buf[n] = '\0';
 		pX->m_n = pX->m_x = n;
-
-#if BUFFER_CHAIN
 		SetRef(1);
-#endif
 	} else { 
 		m_buf = 0;
 	}
@@ -84,7 +77,6 @@ CBufRefChar::~CBufRefChar()
 void *CBufRefChar::Grow(int n) 
 {
 	if (n > 0) {
-#if BUFFER_CHAIN
 		BUFFER_INFO* pX;
 
 		int z;
@@ -123,12 +115,7 @@ void *CBufRefChar::Grow(int n)
 		}
 		
 		//SetAlloc( z );
-#else
-		m_buf = ((char *) realloc(GetX(), n + Alloc() + s_growby + sizeof(BUFFER_INFO))) + sizeof(BUFFER_INFO);
-		SetAlloc(n + Alloc() + s_growby);
-#endif
-		if (m_buf)
-	        SetCount(n);
+		if (m_buf) SetCount(n);
 		return m_buf;
 	} else {
 		if (m_buf) {
@@ -145,17 +132,14 @@ void *CBufRefChar::Grow(int n)
 void CBufRefChar::Free() 
 {
 	if (m_buf) {
-#if BUFFER_CHAIN
 		if (_Free()) 
 			free(GetX());
-#endif
 		m_buf = NULL;
 	}
 }
 
 void CBufRefChar::Change()
 {
-#if BUFFER_CHAIN
 	if (m_buf) {
 		BUFFER_INFO* pX = (BUFFER_INFO*) malloc(Alloc() + sizeof(BUFFER_INFO));
 		memcpy(pX, GetX(), Count() + sizeof(BUFFER_INFO));
@@ -163,12 +147,10 @@ void CBufRefChar::Change()
 		m_buf = pX->buf();
 		SetRef(1);
 	}
-#endif
 }
 
 CBufRefChar &CBufRefChar::Copy(const CBufRefChar &newBuf) 
 {
-#if BUFFER_CHAIN
 	if (m_buf != newBuf.m_buf) {
 		if (newBuf.m_buf) {
 			assert(((CBufRefChar &)newBuf).GetRef() > 0);
@@ -179,9 +161,5 @@ CBufRefChar &CBufRefChar::Copy(const CBufRefChar &newBuf)
 			Free();
 		}
 	}
-#else
-	Grow(newBuf.Count());
-	memcpy(m_buf, newBuf.m_buf, newBuf.Count());
-#endif
 	return *this;
 }

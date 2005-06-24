@@ -44,14 +44,6 @@ THIS SOFTWARE IS PROVIDED 'AS IS' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDI
 #define _QLIB_
 #endif
 
-#ifndef BUFFER_CHAIN
-	#define BUFFER_CHAIN 1
-#endif
-
-#ifndef _BUF_CHAIN_H_
-	#include "buf_chain.h"
-#endif
-
 #ifndef _BUF_REF_H_
 	#include "buf_ref.h"
 #endif
