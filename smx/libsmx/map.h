@@ -127,7 +127,7 @@ public:
 
 	bool Find(KEY k, DATA **d) {
 		hnode_t *node = hash_lookup(myH, k);
-		if (node) d = (DATA **) &(node->hash_data);
+		if (node) *d = (DATA *) node->hash_data;
 		return node ? true : false;
 	}
 
