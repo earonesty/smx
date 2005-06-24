@@ -16,13 +16,8 @@ THIS SOFTWARE IS PROVIDED 'AS IS' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDI
 
 #include "qstr.h"
 #include "qobj-ctx.h"
-
 #include "sock.h"
-
-#ifdef WIN32
 #include "qmail.h"
-#endif
-
 #include "util.h"
 
 class qObjProto : public qObj
