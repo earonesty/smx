@@ -20,8 +20,6 @@ THIS SOFTWARE IS PROVIDED 'AS IS' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDI
 #include "sock.h"
 
 #ifdef WIN32
-#include "../qmail/qmail.h"
-#else
 #include "qmail.h"
 #endif
 
