@@ -18,9 +18,7 @@ THIS SOFTWARE IS PROVIDED 'AS IS' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDI
 #include "util.h"
 
 #ifdef WIN32
-	// don't ask me why... we're getting rid of stl soon anyway
-	// so this will be a moot point
-	#ifdef _DEBUG
+	#ifndef USES_CONVERSION
 		#include <atlconv.h>
 	#endif
 	#include "qwebm.h"
@@ -351,7 +349,6 @@ void qObjCache::EvalModule(qCtx *ctx, qStr *out, qArgAry *args)
 #include <crtdbg.h>
 #include <stddef.h>
 #include <ole2.h>
-#include <atlconv.h>
 
 static bool  sInitOLE = false;
 static CCrit sCrit;
