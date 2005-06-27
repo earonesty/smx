@@ -25,11 +25,6 @@ THIS SOFTWARE IS PROVIDED 'AS IS' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDI
 
 #include "strary.h"
 
-#ifndef NONAG
-	#include "qnag.h"
-	#define Q_NAGKEY "qScript\\6b7RR543!"
-#endif
-
 bool qsUnreg = false;
 
 bool qsInitialized = false;
@@ -52,11 +47,6 @@ void qsInit(void *module)
 		qweb_init((HINSTANCE) module);
 #endif
 
-#ifndef NONAG
-		// evalueate nag
-		if (qNag(Q_NAGKEY,20,false) == qnNeedNag)
-			qsUnreg = true;
-#endif
 		qsInitialized = true;
 
 	}
