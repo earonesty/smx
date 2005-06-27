@@ -15,6 +15,10 @@ THIS SOFTWARE IS PROVIDED 'AS IS' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDI
 
 #ifdef WIN32
 #include "qwebm.h"
+#else
+#include "sock.h"
+#include "base64.h"
+#include "qstrsock.h"
 #endif
 
 #include "qctx.h"
@@ -197,6 +201,152 @@ qStr *OpenURL(qCtx *ctx, const CStr &path)
 		return NULL;
 	}
 }
+#else
+
+static char* SLASH = "/";
+
+bool ParseHTTPURI(const char *orig_url,char **proto, char **host, char **path, char **uid, char **pwd, int *port)
+{
+	CStr buf_url = orig_url;
+	char *url = buf_url.Data();
+	char *p;
+
+	*proto = url;
+	p = strstr(url, ":");
+	if (!p) return false;
+	*p++ = '\0';
+
+	if (stricmp(*proto, "http")
+#ifdef HAVE_OPENSSL
+		&& stricmp(*proto, "https")
+#endif
+	) return false;
+
+	if (*p++ != '/') return false;
+	if (*p++ != '/') return false;
+
+	*host = p;
+	if (p = strchr(*host, '/')) {
+		*path = p;
+		*p++ = '\0';
+	} else { 
+		*path=SLASH;
+	}
+
+        if (p = strchr(*host, '@'))
+        {
+	    *uid = *host;
+            *p++ = '\0';
+            *host = p;
+	    p = strchr(*uid, ':');
+	    if (p) {
+		*p++ = '\0';
+		*pwd = p;
+	    } else {
+		*pwd = NULL;
+	    }
+        } else {
+		*uid = *pwd = NULL;
+	}
+
+
+	*port = 0;
+
+	if (p = strchr(*host, ':'))
+	{
+	    *p = 0;
+	    *port = atoi(p + 1);
+	}
+
+	if (*port <= 0) {
+		if (!stricmp(*proto, "https"))
+			*port = 443;
+		else
+			*port = 80;
+	}
+	
+	return true;
+}
+
+qStr *OpenURL(qCtx *ctx, const CStr &arg_path)
+{
+	const char *p = arg_path;
+	char *proto, *host, *path, *uid, *pwd;
+	int port;
+	
+	if (!ParseHTTPURI(p, &proto, &host, &path, &uid, &pwd, &port))	{
+		ctx->Throw(ctx->GetEnv(), 558, "Invalid URL");
+		return NULL;
+	}
+
+	int timeout = ctx->EvalInt("http-timeout");
+
+	if (timeout <= 0 || timeout > 3600) 
+		timeout = 20;
+
+	int sock_err;
+	Sock sock;
+	sock.SetTimeout(timeout);
+	sock_err = sock.Open(host, port);
+
+	if (sock_err) {
+		if (sock_err == Sock::ERR_GETHOST)
+			ctx->ThrowF(ctx->GetEnv(), 571, "Unable to lookup host %s", host);
+		else if (sock_err == Sock::ERR_CONNECT)
+			ctx->ThrowF(ctx->GetEnv(), 572, "Unable to connect to host %s", host);
+		else if (sock_err == Sock::ERR_TIMEOUT)
+			ctx->ThrowF(ctx->GetEnv(), 572, "Timeout while connect to host %s", host);
+		else
+			ctx->ThrowF(ctx->GetEnv(), 572, "Error %d/%d while connecting to host %s", sock_err, errno, host);
+		return NULL;
+	}
+
+	CStr request = "GET ";
+
+	request << path;
+	request << ' '; 
+	request << "HTTP 1.0\r\n";
+
+	if (sock.Write(request, request.Length()) < 0) {
+		ctx->ThrowF(ctx->GetEnv(), 572, "Error %d while writing request to host %s", errno, host);
+		return NULL;
+	}
+
+	request.Grow(0);
+
+	if (uid && *uid) {
+		CStr tmp = uid;
+		tmp += ':';
+		if (pwd)
+			tmp += pwd;
+
+		CStr result;
+		base64(
+				(char *) tmp.Data(), 
+				tmp.Length(), 
+				result.Grow(tmp.Length() * 2).GetBuffer()
+		);
+		result.Shrink();
+		request << "Authorization:Basic " << result << "\r\n";
+	}
+
+	request << "Host:";
+	request << host;
+	request << "\r\n";
+
+	request << "Connection: close\n";
+	request << "User-Agent: smx\n";
+	request << "\r\n";
+
+	if (sock.Write(request, request.Length()) < 0) {
+		ctx->ThrowF(ctx->GetEnv(), 572, "Error %d while writing request to host %s", errno, host);
+		return NULL;
+	}
+
+	qStrSockI *qss = new qStrSockI(sock.GetSocket(true), true);
+
+	return qss;
+}
 
 #endif
 
@@ -208,14 +358,12 @@ qStr *OpenFileFQ(qCtx *ctx, const char *p)
 		path.Trim();
 		fix_path(path.GetBuffer());
 
-#ifdef WIN32
 		if (!strnicmp(path, "http", 4) 
 			&& (path[4] == ':' || (path[4] == 's' && path[5] == ':'))
 			) {
 			return OpenURL(ctx, path);
 		}
     else
-#endif
 		{
 			FILE *fp = fopen(path, "rb");
 			if (fp) {

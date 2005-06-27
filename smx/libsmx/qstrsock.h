@@ -11,19 +11,60 @@ THIS SOFTWARE IS PROVIDED 'AS IS' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDI
 
 */
 
-#ifndef _BUF_H
-#define _BUF_H
 
-#ifdef WIN32
-	#include <windows.h>
-	#include <winbase.h>
-#endif
 
-#include <memory.h>
-#include <malloc.h>
+#ifndef _QSTRSOCK_H
+#define _QSTRSOCK_H
 
-#include "qlib.h"
+#include "qstr.h"
 
-#include "buf_ref.h"
+class qStrSockI : public qStr {
+	SOCKET mySock;
+	bool myFree;
 
-#endif //#ifndef _BUF_H_
+public:
+	qStrSockI() {
+		mySock = INVALID_SOCKET;
+	}
+
+	~qStrSockI() {
+		if (myFree && (mySock != INVALID_SOCKET))
+			closesocket(mySock);
+	}
+
+	qStrSockI(SOCKET s, bool close = false) {
+		SetSock(s, close);
+	}
+
+	void SetSock(SOCKET s, bool close = false) {
+		mySock = s; 
+		myFree = close;
+	}
+
+	char GetC() {
+		char c;
+		int n = recv(mySock, &c, 1, 0);
+		if (n <= 0) c = EOF;
+		return c;
+	}
+
+	CStr GetS() {
+		CStr tmp(1024); 
+		int n;
+		if ((n=recv(mySock, tmp.GetBuffer(), 1024, 0)) > 0)
+			tmp.Grow(n); 
+		else
+			tmp.Grow(0);
+		return tmp;
+	}
+
+	int GetS(char *b, int n) {
+		return recv(mySock, b, n, 0);
+	}
+
+	void PutS(const char *s) {assert(false);};
+	void PutC(char c) {assert(false);};
+	void PutS(const char *s, int len) {assert(false);};
+};
+
+#endif //#ifndef _QSTRSOCK_H

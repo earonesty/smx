@@ -104,7 +104,6 @@ public:
 	char *GetBuf() { return m_buf; }
 	long GetBufSize() { return m_buf_size; }
 	void SetBufSize(long size);
-	
 
 	// accessors
 	BOOL Connected() {return m_connected;}
@@ -116,6 +115,8 @@ public:
 
 	char *GetHost() {return m_host;}
 	int GetPort() {return m_hostPort;}
+
+	SOCKET GetSocket(bool noclose=false) {if (noclose) m_connected = false; return m_sock;}
 };
 
 inline bool SockInit() {

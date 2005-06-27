@@ -60,6 +60,11 @@ inline char *strupr(char * a) {if (a) {char *p; for(p=a;*p;++p) *p=toupper(*p); 
 #define TRUE true
 #endif
 
+#ifndef INVALID_SOCKET
+#define INVALID_SOCKET -1
+#endif
+
+
 typedef unsigned long DWORD;
 
 char *itoa(int num, char *buf, int radix);
