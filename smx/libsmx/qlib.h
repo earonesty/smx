@@ -28,32 +28,6 @@ THIS SOFTWARE IS PROVIDED 'AS IS' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDI
 	typedef unsigned char UCHAR;
 #endif
 
-#if defined(__GNUC__)
-#  if __GNUC__ < 3 && __GNUC__ >= 2 && __GNUC_MINOR__ >= 95
-#     include <hash_map>
-#  elif __GNUC__ >= 3
-#     include <ext/hash_map>
-#  else
-#     include <hash_map.h>
-#  endif
-#elif defined(__MSVC_VER__)
-#  include <hash_map>
-#elif defined(__sgi__)
-#  include <hash_map>
-#else
-#  include <hash_map>
-#endif
-
-#ifndef _Q_NOFORCE_LIBS
-#ifdef WIN32
-	#ifdef _DEBUG
-		#pragma comment(lib, "qlibd.lib")
-	#else
-		#pragma comment(lib, "qlib.lib")
-	#endif
-#endif
-#endif
-
 #ifdef _MT
 	#define TLS __declspec(thread)
 #else
