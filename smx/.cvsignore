@@ -4,3 +4,4 @@ Makefile
 *.cache
 *.status
 config.h
+*.plg

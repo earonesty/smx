@@ -5,3 +5,4 @@ Makefile
 libsmx.la
 test_map
 buildtests
+*.plg

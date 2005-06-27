@@ -6,3 +6,4 @@ Makefile
 .libs
 libmodsmx.la
 *.log
+*.plg
