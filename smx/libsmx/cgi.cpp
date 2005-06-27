@@ -251,14 +251,9 @@ void qObjCGI::EvalFormEnum(qCtx *ctx, qStr *out, qArgAry *args)
 		(obj->*EvalFormEnumP)(ctx, out, args);
 }
 
-static bool EvalBool(const char *value)
-{
-	return (value && *value);
-}
-
 void qObjCGI::EvalFormCollate(qCtx *ctx, qStr *out, qArgAry *args)
 {
-	if (EvalBool((*args)[0]))
+	if (ParseBool((*args)[0]))
 		EvalFormEnumP = &qObjCGI::EvalFormEnumPCollated;
 	else
 		EvalFormEnumP = &qObjCGI::EvalFormEnumPFast;
@@ -266,7 +261,7 @@ void qObjCGI::EvalFormCollate(qCtx *ctx, qStr *out, qArgAry *args)
 
 void qObjCGI::EvalFormAutoVar(qCtx *ctx, qStr *out, qArgAry *args)
 {
-	myFormAutoVar =  EvalBool((*args)[0]);
+	myFormAutoVar =  ParseBool((*args)[0]);
 }
 
 

@@ -203,7 +203,7 @@ qStr *OpenURL(qCtx *ctx, const CStr &path)
 }
 #else
 
-static char* SLASH = "/";
+static char* EMPTY = "";
 
 bool ParseHTTPURI(const char *orig_url,char **proto, char **host, char **path, char **uid, char **pwd, int *port)
 {
@@ -227,10 +227,10 @@ bool ParseHTTPURI(const char *orig_url,char **proto, char **host, char **path, c
 
 	*host = p;
 	if (p = strchr(*host, '/')) {
-		*path = p;
 		*p++ = '\0';
+		*path = p;
 	} else { 
-		*path=SLASH;
+		*path = EMPTY;
 	}
 
         if (p = strchr(*host, '@'))
@@ -301,18 +301,18 @@ qStr *OpenURL(qCtx *ctx, const CStr &arg_path)
 		return NULL;
 	}
 
-	CStr request = "GET ";
+	CStr request = "GET /";
 
 	request << path;
 	request << ' '; 
-	request << "HTTP 1.0\r\n";
+	request << "HTTP/1.0\r\n";
 
 	if (sock.Write(request, request.Length()) < 0) {
 		ctx->ThrowF(ctx->GetEnv(), 572, "Error %d while writing request to host %s", errno, host);
 		return NULL;
 	}
 
-	request.Grow(0);
+	request.Format("Host: %s\r\n", host);
 
 	if (uid && *uid) {
 		CStr tmp = uid;
@@ -330,9 +330,6 @@ qStr *OpenURL(qCtx *ctx, const CStr &arg_path)
 		request << "Authorization:Basic " << result << "\r\n";
 	}
 
-	request << "Host:";
-	request << host;
-	request << "\r\n";
 
 	request << "Connection: close\n";
 	request << "User-Agent: smx\n";
@@ -343,7 +340,24 @@ qStr *OpenURL(qCtx *ctx, const CStr &arg_path)
 		return NULL;
 	}
 
+	bool noparse = ParseBool(ctx->Eval("http-noparse"));
+
 	qStrSockI *qss = new qStrSockI(sock.GetSocket(true), true);
+
+	if (!noparse) {
+		bool prev_nl = false;
+		char c;
+		while (qss->GetS(&c, 1) > 0) {
+			if (!prev_nl) {
+				if (c == '\n') prev_nl = true;
+			} else {
+                                if (c == '\r') prev_nl = true;	// do nothing
+                                else if (c = '\n') break;
+                                else prev_nl = false;
+			}
+
+		}
+	}
 
 	return qss;
 }
