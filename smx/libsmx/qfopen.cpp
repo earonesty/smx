@@ -352,7 +352,7 @@ qStr *OpenURL(qCtx *ctx, const CStr &arg_path)
 				if (c == '\n') prev_nl = true;
 			} else {
                                 if (c == '\r') prev_nl = true;	// do nothing
-                                else if (c = '\n') break;
+                                else if (c == '\n') break;
                                 else prev_nl = false;
 			}
 
