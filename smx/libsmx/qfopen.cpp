@@ -13,7 +13,7 @@ THIS SOFTWARE IS PROVIDED 'AS IS' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDI
 
 #include "stdafx.h"
 
-#ifdef WIN32
+#ifdef USE_QWEB
 #include "qwebm.h"
 #else
 #include "sock.h"
@@ -33,7 +33,7 @@ THIS SOFTWARE IS PROVIDED 'AS IS' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDI
 
 #include "qfopen.h"
 
-#ifdef WIN32
+#ifdef USE_QWEB
 class qObjHttpRequest : public qObjTS
 {
 public:
@@ -215,6 +215,7 @@ bool ParseHTTPURI(const char *orig_url,char **proto, char **host, char **path, c
 	p = strstr(url, ":");
 	if (!p) return false;
 	*p++ = '\0';
+	strlwr(*proto);
 
 	if (stricmp(*proto, "http")
 #ifdef HAVE_OPENSSL
@@ -288,6 +289,8 @@ qStr *OpenURL(qCtx *ctx, const CStr &arg_path)
 	Sock sock;
 	sock.SetTimeout(timeout);
 	sock_err = sock.Open(host, port);
+
+	// todo, open an SSLSock if the proto is "https"
 
 	if (sock_err) {
 		if (sock_err == Sock::ERR_GETHOST)
