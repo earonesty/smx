@@ -74,14 +74,12 @@ qStr *qObjCache::OpenFileFQ(qCtx *ctx, qObjTimed **found, const char *p)
 		else
 			timed->AddRef();
 
-#ifdef WIN32
 		if (!strnicmp(path, "http", 4) 
 			&& (path[4] == ':' || (path[4] == 's' && path[5] == ':'))
 			) {
 			return OpenURL(ctx, path);
 		} 
 		else 
-#endif
 		{
 			FILE *fp = safe_fopen(ctx, path, "rb");
 			qStrFileI *fi = NULL;
