@@ -373,7 +373,6 @@ qStr *OpenFileFQ(qCtx *ctx, const char *p)
 		CStr orig_path = p;
 		CStr path = p; 
 		path.Trim();
-		fix_path(path.GetBuffer());
 
 		if (!strnicmp(path, "http", 4) 
 			&& (path[4] == ':' || (path[4] == 's' && path[5] == ':'))
@@ -382,6 +381,8 @@ qStr *OpenFileFQ(qCtx *ctx, const char *p)
 		}
     else
 		{
+			fix_path(path.GetBuffer());
+
 			FILE *fp = fopen(path, "rb");
 			if (fp) {
 				return new qStrFileI(fp,true);
@@ -410,12 +411,9 @@ qStr *OpenFile(qCtx *ctx, CStr &path)
 void ResolvePath(qCtx *ctx, CStr &path)
 {
 	if (path) {
-		fix_path(path.GetBuffer());
-
 		qEnvHttp *env = GetHttpEnv(ctx);
 		if (env && !strchr((const char *)path,':')) {
 			CStr pdir = env->GetScriptPath();
-
 			if (!pdir.IsEmpty()) {
 				char *p = strrchr((const char *)pdir, '/');
 				if (p) {
@@ -425,7 +423,7 @@ void ResolvePath(qCtx *ctx, CStr &path)
 				}
 			} else
 				pdir = env->GetServerRoot();
-
+				fix_path(path.GetBuffer());
 				char *fp;
 				path.Grow(MAX_PATH);
 				path.Grow(
