@@ -205,11 +205,9 @@ qStr *OpenURL(qCtx *ctx, const CStr &path)
 
 static char* EMPTY = "";
 
-bool ParseHTTPURI(const char *orig_url,char **proto, char **host, char **path, char **uid, char **pwd, int *port)
+bool ParseHTTPURI(char *url, char **proto, char **host, char **path, char **uid, char **pwd, int *port)
 {
-	CStr buf_url = orig_url;
-	char *url = buf_url.Data();
-	char *p;
+	char *p = url;
 
 	*proto = url;
 	p = strstr(url, ":");
@@ -271,7 +269,8 @@ bool ParseHTTPURI(const char *orig_url,char **proto, char **host, char **path, c
 
 qStr *OpenURL(qCtx *ctx, const CStr &arg_path)
 {
-	const char *p = arg_path;
+	CStr copy = arg_path;
+	char *p = copy.Data();
 	char *proto, *host, *path, *uid, *pwd;
 	int port;
 	
@@ -315,7 +314,8 @@ qStr *OpenURL(qCtx *ctx, const CStr &arg_path)
 		return NULL;
 	}
 
-	request.Format("Host: %s\r\n", host);
+	request = "Host: ";
+	request << host << "\r\n";
 
 	if (uid && *uid) {
 		CStr tmp = uid;
