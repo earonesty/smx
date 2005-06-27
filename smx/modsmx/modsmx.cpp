@@ -32,6 +32,7 @@ THIS SOFTWARE IS PROVIDED 'AS IS' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDI
 #ifdef WIN32
 	#include "ole2.h"
 	#define _MSWSOCK_
+	#include <winsock.h>
 #endif
 
 #include "httpd.h"
