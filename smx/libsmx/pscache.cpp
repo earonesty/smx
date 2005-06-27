@@ -21,7 +21,6 @@ THIS SOFTWARE IS PROVIDED 'AS IS' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDI
 	#ifndef USES_CONVERSION
 		#include <atlconv.h>
 	#endif
-	#include "qwebm.h"
 #endif
 
 #include "qctx-comp.h"
@@ -342,7 +341,7 @@ void qObjCache::EvalModule(qCtx *ctx, qStr *out, qArgAry *args)
 }
 
 
-#ifdef WIN32
+#if defined(WIN32) && !defined(NOACTIVEX)
 
 #include <crtdbg.h>
 #include <stddef.h>
