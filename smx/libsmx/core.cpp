@@ -13,7 +13,7 @@ THIS SOFTWARE IS PROVIDED 'AS IS' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDI
 
 #include "stdafx.h"
 
-#ifdef WIN32
+#ifdef USE_QWEB
 #include "qwebm.h"
 #endif
 
@@ -48,7 +48,7 @@ void qsInit(void *module)
 		system("rm -f __db.??? > /dev/null 2>/dev/null");
 #endif
 
-#ifdef WIN32
+#ifdef USE_QWEB
 		qweb_init((HINSTANCE) module);
 #endif
 
