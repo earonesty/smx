@@ -287,7 +287,7 @@ qStr *OpenURL(qCtx *ctx, const CStr &arg_path)
 
 	int sock_err;
 	Sock sock;
-	sock.SetTimeout(timeout);
+	sock.SetTimeout((float)timeout);
 	sock_err = sock.Open(host, port);
 
 	// todo, open an SSLSock if the proto is "https"
