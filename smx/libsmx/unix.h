@@ -20,7 +20,7 @@ THIS SOFTWARE IS PROVIDED 'AS IS' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDI
 #define NOSSL
 
 #ifdef HAVE_CONFIG_H
-	#include "config.h"
+	#include "../config.h"
 #endif
 
 #include <stdlib.h>
