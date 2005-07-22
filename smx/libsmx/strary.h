@@ -21,6 +21,8 @@ THIS SOFTWARE IS PROVIDED 'AS IS' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDI
 
 #include <vector>
 
+#include <memory.h>
+
 class CStrAry : public std::vector<CStr> {
 protected:
 	const char **myV;

@@ -101,7 +101,7 @@ public:
 		hnode_t *node;
 		hash_scan_begin(&hs, myH);
 		while ((node = hash_scan_next(&hs))) {
-			MapEnumProc(other, (KEY) node->key, * (DATA *) node->data);
+			MapEnumProc(other, (KEY) node->hash_key, * (DATA *) node->hash_data);
 		}
 	}
 
