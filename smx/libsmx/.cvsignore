@@ -6,3 +6,5 @@ libsmx.la
 test_map
 buildtests
 *.plg
+test_str
+test_eval
