@@ -11,7 +11,6 @@ THIS SOFTWARE IS PROVIDED 'AS IS' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDI
 
 */
 
-
 #ifndef _STRARY_H
 #define _STRARY_H
 
@@ -19,60 +18,74 @@ THIS SOFTWARE IS PROVIDED 'AS IS' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDI
 #include "str.h"
 #endif
 
-#include <vector>
+#ifndef _ARY_H
+#include "ary.h"
+#endif
 
-#include <memory.h>
-
-class CStrAry : public std::vector<CStr> {
-protected:
-	const char **myV;
+class CStrAry : public CBufZ<CStr> {
 public:
-	CStrAry(int n=0) : std::vector<CStr>(n)
-		{ myV = NULL; }
-	CStrAry(CStr *d, int n) : std::vector<CStr>(n)
-		{ memcpy(pointer(), d, n * sizeof(CStr)); myV = NULL; }
-	~CStrAry() { if (myV) free(myV); }
+	CStrAry(int n = 0)
+		{ m_buf = 0; Grow(n); }
+	CStrAry(CStr *d, int n)
+		{ m_buf = 0; Grow(n); memcpy(m_buf, d, n * sizeof(CStr)); }
 
 	CStr *Grow(int n)
-		{resize(n); return Data();}
-	CStr *Data() 
-		{return &(*begin());};
+		{int o = Count(); CBufZ<CStr>::Grow(n);
+				if (Count() < o)
+				{int i; for (i = Count(); i < o; ++i) Data()[i].Free();}
+		return Data();}
+
+	~CStrAry()
+		{int i; for (i = 0; i < (Alloc() / (int) sizeof(CStr)); ++i) Data()[i].Free();}
+
 	int Count() const
-		{if (this) return size(); else return 0;}
+		{if (this) return CBufZ<CStr>::Count(); else return 0;}
 	CStr &GetAt(int i)
-		{if (i < Count()) return *(begin() + i); else return CStr::Null;}
+		{if (i < Count()) return Data()[i]; else return CStr::Null;}
 	CStr &SetAt(int i, const char *str)
-		{if (i >= Count()) Grow(i+1); return *(begin() + i) = str;}
-	CStr &operator[](int i)
-		{return GetAt(i);}
+		{if (i >= Count()) Grow(i+1); return Data()[i] = str;}
 	CStr &SetAt(int i, CStr &str)
-		{if (i >= Count()) Grow(i+1); return *(begin() + i) = str;}
+		{if (i >= Count()) Grow(i+1); return Data()[i] = str;}
 	CStr &Add(CStr str)
-		{push_back(str); return back();}
-	CStrAry &operator =(const char **newBuf) {
+		{Grow(Count()+1); return Data()[Count()-1] = str;}
+
+	operator char **()
+		{return (char **) Data();}
+	operator const char **()
+		{return (const char **) Data();}
+	CStr &operator [](int index)
+		{return GetAt(index);}
+
+
+	inline CStrAry &operator =(const CStrAry &newBuf) {
+		int i; 
+		for (i = 0; i < (Alloc() / (int) sizeof(CStr)); ++i) 
+			Data()[i].Free();
+		if (&newBuf && newBuf.Data()) {
+			i = newBuf.Count();
+			Grow(i);
+			for (i = 0; i < Count(); ++i) 
+				Data()[i] = newBuf.Data()[i];
+		}
+		return *this;
+	}
+
+
+	inline CStrAry &operator =(const char **newBuf) {
+		int i; 
+		for (i = 0; i < (Alloc() / (int) sizeof(CStr)); ++i) 
+			Data()[i].Free();
+		
 		if (newBuf) {
 			const char **t = newBuf;
 			while (*t) ++t;
 			Grow(t-newBuf);
-			int i=0;
-			for (t = newBuf; *t; ++t)
-				Data()[i++] = *t;
+			for (t = newBuf; *t; ++t) 
+				Data()[i] = *t;
 		}
 		return *this;
 	}
-	operator const char ** () {
-		myV = (const char **) realloc(myV,sizeof(char *) * size());
-		unsigned int i; for (i=0;i<size();++i) {
-			myV[i] = GetAt(i);
-		}
-		myV[size()]=NULL;
-		return myV;
-	}
-        void Shift(int n) {
-		_M_start += n;
-	}
-        void Restore(int n) {
-		_M_start -= n;
-	}
 };
+
 #endif // #ifndef _STRARY_H
+

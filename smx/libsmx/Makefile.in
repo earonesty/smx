@@ -94,11 +94,17 @@ lib_LTLIBRARIES = libsmx.la
 libsmx_la_SOURCES = base64.cpp qmail.cpp buf_ref.cpp pscache.cpp math.cpp strx.cpp util.cpp unix.cpp time.cpp tabtd.cpp tabpre.cpp tabfmt.cpp string.cpp stdafx.cpp sqlgrp.cpp sql.cpp sock.cpp sha.cpp res.cpp regx.cpp rcex.cpp qthread.cpp qstr.cpp qsched.cpp qpriq.cpp qobj-ctx.cpp qobj.cpp qfopen.cpp qenv.cpp qctx.cpp qctx-comp.cpp psxutil.cpp psximpl.cpp pstable.cpp pset.cpp proto.cpp process.cpp opt.cpp open-enc.cpp map.cpp hset.cpp file.cpp fbuf.cpp ex.cpp dparse.cpp dbpset.cpp crit_unix.cpp core.cpp cgi.cpp card.cpp hash.c mapstr.cpp
 
 test_map_SOURCES = test_map.cpp
-test_map_LDADD = mapstr.lo hash.lo
+test_map_LDADD = libsmx.la
 
-check_PROGRAMS = test_map
+test_str_SOURCES = test_str.cpp
+test_str_LDADD = libsmx.la
 
-TESTS = test_map
+test_eval_SOURCES = test_eval.cpp
+test_eval_LDADD = libsmx.la
+
+check_PROGRAMS = test_map test_str test_eval
+
+TESTS = test_map test_str test_eval
 subdir = libsmx
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = $(top_builddir)/config.h
@@ -117,11 +123,19 @@ am_libsmx_la_OBJECTS = base64.lo qmail.lo buf_ref.lo pscache.lo math.lo \
 	dparse.lo dbpset.lo crit_unix.lo core.lo cgi.lo card.lo hash.lo \
 	mapstr.lo
 libsmx_la_OBJECTS = $(am_libsmx_la_OBJECTS)
-check_PROGRAMS = test_map$(EXEEXT)
+check_PROGRAMS = test_map$(EXEEXT) test_str$(EXEEXT) test_eval$(EXEEXT)
+am_test_eval_OBJECTS = test_eval.$(OBJEXT)
+test_eval_OBJECTS = $(am_test_eval_OBJECTS)
+test_eval_DEPENDENCIES = libsmx.la
+test_eval_LDFLAGS =
 am_test_map_OBJECTS = test_map.$(OBJEXT)
 test_map_OBJECTS = $(am_test_map_OBJECTS)
-test_map_DEPENDENCIES = mapstr.lo hash.lo
+test_map_DEPENDENCIES = libsmx.la
 test_map_LDFLAGS =
+am_test_str_OBJECTS = test_str.$(OBJEXT)
+test_str_OBJECTS = $(am_test_str_OBJECTS)
+test_str_DEPENDENCIES = libsmx.la
+test_str_LDFLAGS =
 
 DEFS = @DEFS@
 DEFAULT_INCLUDES =  -I. -I$(srcdir) -I$(top_builddir)
@@ -154,7 +168,8 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/sqlgrp.Plo ./$(DEPDIR)/stdafx.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/string.Plo ./$(DEPDIR)/strx.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/tabfmt.Plo ./$(DEPDIR)/tabpre.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/tabtd.Plo ./$(DEPDIR)/test_map.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/tabtd.Plo ./$(DEPDIR)/test_eval.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/test_map.Po ./$(DEPDIR)/test_str.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/time.Plo ./$(DEPDIR)/unix.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/util.Plo
 COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
@@ -174,9 +189,10 @@ CXXLD = $(CXX)
 CXXLINK = $(LIBTOOL) --mode=link $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) \
 	$(AM_LDFLAGS) $(LDFLAGS) -o $@
 CXXFLAGS = @CXXFLAGS@
-DIST_SOURCES = $(libsmx_la_SOURCES) $(test_map_SOURCES)
+DIST_SOURCES = $(libsmx_la_SOURCES) $(test_eval_SOURCES) \
+	$(test_map_SOURCES) $(test_str_SOURCES)
 DIST_COMMON = Makefile.am Makefile.in
-SOURCES = $(libsmx_la_SOURCES) $(test_map_SOURCES)
+SOURCES = $(libsmx_la_SOURCES) $(test_eval_SOURCES) $(test_map_SOURCES) $(test_str_SOURCES)
 
 all: all-am
 
@@ -224,9 +240,15 @@ clean-checkPROGRAMS:
 	  echo " rm -f $$p $$f"; \
 	  rm -f $$p $$f ; \
 	done
+test_eval$(EXEEXT): $(test_eval_OBJECTS) $(test_eval_DEPENDENCIES) 
+	@rm -f test_eval$(EXEEXT)
+	$(CXXLINK) $(test_eval_LDFLAGS) $(test_eval_OBJECTS) $(test_eval_LDADD) $(LIBS)
 test_map$(EXEEXT): $(test_map_OBJECTS) $(test_map_DEPENDENCIES) 
 	@rm -f test_map$(EXEEXT)
 	$(CXXLINK) $(test_map_LDFLAGS) $(test_map_OBJECTS) $(test_map_LDADD) $(LIBS)
+test_str$(EXEEXT): $(test_str_OBJECTS) $(test_str_DEPENDENCIES) 
+	@rm -f test_str$(EXEEXT)
+	$(CXXLINK) $(test_str_LDFLAGS) $(test_str_OBJECTS) $(test_str_LDADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT) core *.core
@@ -283,7 +305,9 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/tabfmt.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/tabpre.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/tabtd.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_eval.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_map.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_str.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/time.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unix.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/util.Plo@am__quote@

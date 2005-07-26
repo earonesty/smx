@@ -22,11 +22,6 @@ THIS SOFTWARE IS PROVIDED 'AS IS' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDI
 #include "qctx.h"
 #include "util.h"
 
-#ifdef unix
-#include "unix.h"
-#endif
-
-
 class qObjLVal {
 
 	qCtx *myCtx;

@@ -914,9 +914,8 @@ void EvalPriorityExpand(const void *data, qCtx *ctx, qStr *out, qArgAry *args)
 void LoadCore(qCtx *ctx) {
 	qsInit(NULL);
 
-	ctx->MapObj(EvalNil,    "nil", QMAP_ALL);
+	ctx->MapObj(EvalNil,    CStr("nil"), QMAP_ALL);
 	ctx->MapObj(EvalNull,   "null", QMAP_ALL);
-
 
 	ctx->MapObj(EvalFor,    "for", "0001");
 	ctx->MapObj(EvalWhile,  "while", "11");

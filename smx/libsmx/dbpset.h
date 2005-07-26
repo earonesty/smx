@@ -25,6 +25,8 @@ THIS SOFTWARE IS PROVIDED 'AS IS' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDI
   #undef min
   #undef max
   #include <db4/db_cxx.h>
+  #define min(a,b) ((a)<(b)?(a):(b))
+  #define max(a,b) ((a)>(b)?(a):(b))
 #endif
 #endif
 

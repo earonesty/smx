@@ -27,6 +27,9 @@ THIS SOFTWARE IS PROVIDED 'AS IS' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDI
 
 #include "util.h"
 
+#include <new>
+using namespace std;
+
 // sha hash
 void EvalSha(const void *data, qCtx *ctx, qStr *pStream, qArgAry *args)
 {

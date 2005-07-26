@@ -20,6 +20,8 @@ THIS SOFTWARE IS PROVIDED 'AS IS' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDI
 #include "map.h"
 
 char *CStr::s_empty = "";
+CStr CStr::Null = 0;
+CStr CStr::Empty = CStr("", 0);
 
 CStr &operator <<(CStr &left, float right)
 {
@@ -52,8 +54,6 @@ CStr operator <<(const char *left, const CStr &right)
 	return CStr(left) << right;
 }
 
-CStr CStr::Null = 0;
-CStr CStr::Empty = CStr("", 0);
 
 // string conversion helpers
 void strcln(const char *p, char *t, char *e)

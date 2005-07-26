@@ -26,4 +26,8 @@ THIS SOFTWARE IS PROVIDED 'AS IS' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDI
 
 #include "buf_ref.h"
 
+#define CBuf CBufRef
+#define CBufZ CBufRefZ
+#define CBufChar CBufRefChar
+
 #endif //#ifndef _BUF_H_

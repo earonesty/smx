@@ -20,10 +20,7 @@
 #include <ctype.h>
 #include <time.h>
 
-#ifdef unix
 #include "unix.h"
-#endif
-
 
 #ifndef _BZERO
 	#define bzero(p, n) memset(p, 0, n)

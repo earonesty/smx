@@ -80,9 +80,4 @@ THIS SOFTWARE IS PROVIDED 'AS IS' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDI
 #include "ex.h"
 #include "crit.h"
 
-#ifndef min
-#define min(a,b) ((a)<(b)?(a):(b))
-#define max(a,b) ((a)>(b)?(a):(b))
-#endif
-
 #endif // #ifndef _QSCRIPT_STDINC_H

@@ -12,8 +12,8 @@ THIS SOFTWARE IS PROVIDED 'AS IS' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDI
 */
 
 #ifdef unix
-#ifndef unix_h
-#define unix_h
+#ifndef smx_unix_h
+#define smx_unix_h
 
 #define NO_LOAD_IO
 #define NONAG
@@ -33,6 +33,7 @@ THIS SOFTWARE IS PROVIDED 'AS IS' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDI
 #include <unistd.h>
 #include <errno.h>
 #include <dlfcn.h>
+
 #ifdef USE_ATOMIC_H
 #include <asm/atomic.h>
 #else
@@ -43,6 +44,9 @@ THIS SOFTWARE IS PROVIDED 'AS IS' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDI
 
 inline char *strlwr(char * a) {if (a) {char *p; for(p=a;*p;++p) *p=tolower(*p); } return a;}
 inline char *strupr(char * a) {if (a) {char *p; for(p=a;*p;++p) *p=toupper(*p); } return a;}
+
+#define min(a,b) ((a)<(b)?(a):(b))
+#define max(a,b) ((a)>(b)?(a):(b))
 
 #ifndef BOOL
 #define BOOL bool
@@ -141,10 +145,5 @@ typedef void * HINSTANCE;
 
 #include "qmail_resource.h"
 
-#ifndef min
-#define min(a,b) ((a)<(b)?(a):(b))
-#define max(a,b) ((a)>(b)?(a):(b))
-#endif
-
-#endif //ifndef unix_h
+#endif //ifndef smx_unix_h
 #endif //ifdef unix

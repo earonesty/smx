@@ -30,8 +30,6 @@ THIS SOFTWARE IS PROVIDED 'AS IS' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDI
 	#include <winsock.h>
 	#include <io.h>
 	#include <process.h> 
-#else
-	#include "unix.h"
 #endif
 
 #include <stdio.h>

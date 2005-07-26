@@ -11,9 +11,6 @@ THIS SOFTWARE IS PROVIDED 'AS IS' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDI
 
 */
 
-
-
-
 #ifndef _BUF_REF_H
 #define _BUF_REF_H
 
@@ -56,6 +53,7 @@ public:
 	CBufRefChar(const CBufRefChar &newBuf) 
 		{m_buf = NULL; Copy(newBuf);}
 	
+	char *Data() const	{return m_buf;}
 	void *Grow(int n);
 	void *Grow(int n, char *data)
 		{Grow(n); return memcpy(m_buf, data, n);}
@@ -78,8 +76,14 @@ public:
 	void SetRef(long n) 		  { atomic_set(&(GetX()->m_ref),n); }
 	long GetRef()			  { return atomic_read(&(GetX()->m_ref)); }
 #else
+/*
         void IncRef()                     { __atomic_add(&(GetX()->m_ref),1); }
         bool DecRef()                     { return __exchange_and_add(&(GetX()->m_ref),-1) <= 0; }
+        void SetRef(long n) 		  { GetX()->m_ref = n; }
+        long GetRef()                     { return GetX()->m_ref; }
+*/
+        void IncRef()                     { ++GetX()->m_ref; }
+        bool DecRef()                     { return --GetX()->m_ref <= 0; }
         void SetRef(long n) 		  { GetX()->m_ref = n; }
         long GetRef()                     { return GetX()->m_ref; }
 #endif	
@@ -92,7 +96,7 @@ public:
 template<class TYPE>
 class CBufRef : public CBufRefChar {
 protected:
-	int  Alloc() const      {return GetX() ? CBufRefChar::Alloc() : 0;}
+	int  Alloc() const      {return m_buf ? CBufRefChar::Alloc() : 0;}
 public:
 	CBufRef() 
 		{}
@@ -135,7 +139,7 @@ public:
 		memcpy(tmp,GetX(),sizeof(BUFFER_INFO));
 		m_buf -= n*sizeof(TYPE);
 		memmove(m_buf,m_buf-sizeof(BUFFER_INFO),n*sizeof(TYPE));
-		memcpy(GetX(),tmp,sizeof(BUFFER_INFO()));
+		memcpy(GetX(),tmp,sizeof(BUFFER_INFO));
 		SetCount(Count()+n);
 		return Data();
 	}

@@ -5,3 +5,4 @@ Makefile
 *.status
 config.h
 *.plg
+*.local

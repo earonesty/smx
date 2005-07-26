@@ -5,8 +5,14 @@ libsmx_la_SOURCES = base64.cpp qmail.cpp buf_ref.cpp pscache.cpp math.cpp strx.c
 
 
 test_map_SOURCES = test_map.cpp
-test_map_LDADD = mapstr.lo hash.lo
+test_map_LDADD = libsmx.la
 
-check_PROGRAMS = test_map
+test_str_SOURCES = test_str.cpp
+test_str_LDADD = libsmx.la
 
-TESTS=test_map
+test_eval_SOURCES = test_eval.cpp
+test_eval_LDADD = libsmx.la
+
+check_PROGRAMS = test_map test_str test_eval
+
+TESTS=test_map test_str test_eval
