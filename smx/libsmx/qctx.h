@@ -511,7 +511,7 @@ public:
 		{qStrBuf tmp; Eval(&tmp, func, arg1, arg2); return tmp;}
 
 	int EvalInt(const char *func, qArgAry *args = 0) 
-		{return atoi(Eval(func, args));}
+		{CStr tmp = Eval(func, args); return tmp.IsEmpty() ? 0 : atoi(tmp);}
 
 // delete all the way to the top
 	qCtx *DelObjTop(const char *name, qCtx *top);
