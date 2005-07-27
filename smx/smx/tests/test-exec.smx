@@ -1,0 +1,11 @@
+%set(res,)
+%try(
+	%let(res,%exec(set))
+	,%try(
+		%let(res,%exec(cmd.exe /c set))
+		,error
+	)
+)
+%set(nix,%rxmatch(%res%,OSTYPE=[^%lf%]+))
+%set(win,%rxmatch(%res%,OS=[^%lf%]+))
+win or nix: %or(%win%,%nix%)

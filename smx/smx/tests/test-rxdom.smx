@@ -1,0 +1,1 @@
+%rxmatch(mike.krebs.net,(.*?)\\.?([^.]*\.[^.]*)$,%subx(1)---%subx(2))

@@ -1,0 +1,6 @@
+%collate-enumform(T)
+%setenv(QUERY_STRING=name=bob&=5&=7&joe=6)
+%form(name)
+%enumform(
+	%name% = %value% %crlf%
+)

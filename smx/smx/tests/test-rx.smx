@@ -1,0 +1,2 @@
+%rxmatch(HELLO,(HELLO),%subx(1))
+%rxmatch(x.com,([^.]+)\\.?([^.]+)?\\.?$,%subx(1))

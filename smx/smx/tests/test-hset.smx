@@ -1,0 +1,20 @@
+%hset(/.smxtest/x/y,1)
+
+val = %hget(/.smxtest/x/y)
+
+%for(i,1,10,
+    %hset(/.smxtest/x/z,%i%)
+)
+
+%for(i,1,2,
+  %i% : %hget(/.smxtest/x/z)%crlf%
+)
+
+%for(i,1,2,
+    %hset(/x/z,)
+)
+
+%for(i,1,2,
+    %hget(/.smxtest/x/z,%i%)%crlf%
+)
+
