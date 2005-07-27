@@ -10,3 +10,4 @@ INCLUDES = -I../libsmx
 install-data-local:
 	pushd ../docs && smx doc2man && popd
 
+TESTS=tests/smxtest

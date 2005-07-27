@@ -5,7 +5,7 @@ pushd tests 2> /dev/null
 error()
 {
     echo "ERROR during test '$curtest', quitting"
-#    exit 1
+    exit 1
 }
 
 for curtest in test-*.smx
