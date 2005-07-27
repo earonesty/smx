@@ -114,7 +114,7 @@ AC_DEFUN([APACHE_APR], [
             AC_DEFINE([APACHE2], [1], [Enables Apache 2 Support])
           fi
         fi
-        APR_INCLUDE="-I`$APR --includedir`"
+        APR_INCLUDE="`$APR --includedir`"
         APR_LIBS="`$APR --libs`"
       else
         AC_MSG_ERROR(["no need for apr-config"])
@@ -133,7 +133,7 @@ AC_DEFUN([APACHE_APR], [
         else
           AC_MSG_RESULT(["$APR"])
         fi
-        APR_INCLUDE="-I`$APR --includedir`"
+        APR_INCLUDE="`$APR --includedir`"
         APR_LIBS="`$APR --libs`"
       else
         AC_MSG_RESULT(["no need for apr-config"])

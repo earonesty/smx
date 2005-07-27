@@ -11894,7 +11894,7 @@ _ACEOF
 
           fi
         fi
-        APR_INCLUDE="-I`$APR --includedir`"
+        APR_INCLUDE="`$APR --includedir`"
         APR_LIBS="`$APR --libs`"
       else
         { { echo "$as_me:$LINENO: error: \"no need for apr-config\"" >&5
@@ -11919,7 +11919,7 @@ echo "$as_me: error: \"could not find apr-config\"" >&2;}
           echo "$as_me:$LINENO: result: \"$APR\"" >&5
 echo "${ECHO_T}\"$APR\"" >&6
         fi
-        APR_INCLUDE="-I`$APR --includedir`"
+        APR_INCLUDE="`$APR --includedir`"
         APR_LIBS="`$APR --libs`"
       else
         echo "$as_me:$LINENO: result: \"no need for apr-config\"" >&5
