@@ -6,3 +6,4 @@ Makefile
 config.h
 *.plg
 *.local
+libtool
