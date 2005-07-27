@@ -150,15 +150,15 @@ template<class TYPE>
 class CBufRefZ : public CBufRef<TYPE> {
 public:
 	CBufRefZ(int n = 0)
-		{ m_buf = 0; Grow(n); }
+		{Grow(n); }
 	CBufRefZ(TYPE *d, int n)
-		{ m_buf = 0; Grow(n); memcpy(m_buf, d, n * sizeof(TYPE)); }
+		{Grow(n); memcpy(CBufRef<TYPE>::m_buf, d, n * sizeof(TYPE)); }
 
 	TYPE *Grow(int n)
-		{int o = Alloc(); CBufRefChar::Grow(n * sizeof(TYPE)); if (Alloc() > o) memset(m_buf + o, 0, (Alloc()-o)); return Data();}
+		{int o = CBufRef<TYPE>::Alloc(); CBufRef<TYPE>::Grow(n * sizeof(TYPE)); if (CBufRef<TYPE>::Alloc() > o) memset(CBufRef<TYPE>::m_buf + o, 0, (CBufRef<TYPE>::Alloc()-o)); return CBufRef<TYPE>::Data();}
 
 	const TYPE &Add(const TYPE &d)
-		{Grow(Count() + 1); Data()[Count()-1] = d; return d;}
+		{Grow(CBufRef<TYPE>::Count() + 1); CBufRef<TYPE>::Data()[CBufRef<TYPE>::Count()-1] = d; return d;}
 };
 
 #endif //#ifndef _BUF_REF_H
