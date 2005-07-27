@@ -31,8 +31,14 @@ template<class DATA> class CMapStr : public CMap<const char *, DATA>
         }
 public:
 	void *CopyKey(const char * k) {
-		char *k2 = new char[strlen(k)+1];
-		strcpy(k2, k);
+		char *k2;
+		if (k) {
+			k2 = new char[strlen(k)+1];
+			strcpy(k2, k);
+		} else {
+			k2 = new char[1];
+			*k2 = '\0';
+		}
 		return (void *)k2;
 	}
         CMapStr() : CMap<const char *, DATA>(HashCaseCharPtr, EqualCaseCharPtr) {
