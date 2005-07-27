@@ -249,7 +249,6 @@ void qObjCGI::EvalFormEnum(qCtx *ctx, qStr *out, qArgAry *args)
 	qObjCGI *obj = DoFormParse(ctx, out, args);
 	if (obj) {
 		(obj->*EvalFormEnumP)(ctx, out, args);
-		delete obj;
 	}
 }
 
@@ -328,7 +327,6 @@ void qObjCGI::EvalForm(qCtx *ctx, qStr *out, qArgAry *args)
 	qObjCGI *obj = DoFormParse(ctx, out, args);
 	if (obj) {
 		obj->EvalFormP(ctx, out, args);
-		delete obj;
 	}
 }
 
@@ -360,7 +358,6 @@ void qObjCGI::EvalFormParse(qCtx *ctx, qStr *out, qArgAry *args) {
 	qObjCGI *obj = DoFormParse(ctx, out, args);
 	if (obj) {
 		obj->EvalFormParseP(ctx, out, args);
-		delete obj;		
 	}
 }
 
@@ -374,7 +371,6 @@ void qObjCGI::EvalFormSet(qCtx *ctx, qStr *out, qArgAry *args)
 	qObjCGI *obj = DoFormParse(ctx, out, args);
 	if (obj) {
 		obj->EvalFormSetP(ctx, out, args);
-		delete obj;
 	}
 }
 
@@ -409,7 +405,6 @@ void qObjCGI::EvalFormSaveAs(qCtx *ctx, qStr *out, qArgAry *args)
 	qObjCGI *obj = DoFormParse(ctx, out, args);
 	if (obj) {
 		obj->EvalFormSaveAsP(ctx, out, args);
-		delete obj;;
 	}
 }
 
@@ -876,7 +871,6 @@ void qObjCGI::EvalClientState(qCtx *ctx, qStr *out, qArgAry *args)
 	qObjCGI *obj = DoFormParse(ctx, out, args);
 	if (obj) {
 		obj->EvalClientStateP(ctx, out, args);
-		delete obj;;
 	}
 }
 
@@ -908,7 +902,6 @@ void qObjCGI::EvalClientBody(qCtx *ctx, qStr *out, qArgAry *args)
 	qObjCGI *obj = DoFormParse(ctx, out, args);
 	if (obj) {
 		obj->EvalClientBodyP(ctx, out, args);
-		delete obj;;
 	}
 }
 
