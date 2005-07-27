@@ -52,7 +52,7 @@ public:
 	virtual qEnv *GetInterface(int envNum)  {return envNum == ENV_BASE ? this : NULL;}
 
 	virtual char *GetEnvString(char *name)  {return name ? getenv(name) : 0;}
-	virtual bool PutEnvString(char *value)  {return putenv(value)==0;}
+	virtual bool PutEnvString(char *value)  {return putenv(strdup(value))==0;}
 
 	virtual void  SetSessionCtx(qCtx *ctx ) {assert(ctx!=NULL); myCtx = ctx;}
 	virtual qCtx *GetSessionCtx()			{return myCtx;}

@@ -841,6 +841,7 @@ void EvalSetEnv(void *data, qCtx *ctx, qStr *out, qArgAry *args)
 	}
 	if (ctx->GetEnv()) {
 		CStr val = (*args)[0];
+		char * tmp = val;
 		ctx->GetEnv()->PutEnvString(val.GetBuffer());
 	}
 	return;

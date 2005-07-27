@@ -136,46 +136,6 @@ public:
 	}
 };
 
-class qStrApp : public qStr {
-	CStr *myBuf;
-	char *myP;
-
-public:
-	qStrApp(CStr &buf)
-		{myBuf = &buf; myP = (myBuf->GetBuffer() + myBuf->Length());}
-
-	char GetC()
-		{if (myP < ((const char *) *myBuf) + myBuf->Length()) return *myP++; else return -1;}
-
-	bool UngetC(char c) 
-		{if (myP > (const char *)*myBuf) {*(--myP)=c; return true; } else return false;}
-
-	int GetS(char *b, int n) {
-		if (myP < ((const char *) *myBuf) + myBuf->Length()) {
-			n = min(n, (myBuf->Data() + myBuf->Length()) - myP);
-			memcpy(b, myP, n);
-			myP+=n;
-			return n;
-		} else 
-			return 0;
-	}
-
-	CStr GetS()
-		{CStr tmp = myP; *myBuf = 0; return tmp;}
-
-	void PutS(const char *s)
-		{myBuf->Append(s);}
-
-	void PutS(const char *s, int len)
-		{myBuf->Append(s, len);}
-
-	void PutS(const CStr &s)
-		{if (s) PutS(s, s.Length());}
-
-	void PutC(char c)
-		{myBuf->Append(c);}
-};
-
 class qStrBuf : public qStr, public CStr {
 	int myP;
 

@@ -152,7 +152,7 @@ public:
 	}
 };
 
-// template for buffer of zero-initialized objects (memset, not calloc, lazy)
+// template for buffer of zero-initialized objects (memset, not calloc)
 template<class TYPE>
 class CBufRefZ : public CBufRef<TYPE> {
 public:
