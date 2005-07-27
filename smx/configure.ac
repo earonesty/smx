@@ -34,8 +34,9 @@ AX_PATH_BDB([3],[
 
 # sets apache version & include paths
 APACHE_APXS
+APACHE_APR
 AC_SUBST(APXS)
-CPPFLAGS="$CPPFLAGS -I $APXS_INCLUDE"
+CPPFLAGS="$CPPFLAGS -I $APXS_INCLUDE -I $APR_INCLUDE"
 
 # Checks for header files.
 AC_HEADER_DIRENT
