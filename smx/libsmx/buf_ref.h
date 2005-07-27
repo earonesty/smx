@@ -162,7 +162,7 @@ public:
 		{if (Grow(n)) memcpy(CBufRef<TYPE>::m_buf, d, n * sizeof(TYPE)); }
 
 	TYPE *Grow(int n)
-		{int o = CBufRef<TYPE>::Alloc(); CBufRef<TYPE>::Grow(n * sizeof(TYPE)); if (CBufRef<TYPE>::Alloc() > o) memset(CBufRef<TYPE>::m_buf + o, 0, (CBufRef<TYPE>::Alloc()-o)); return CBufRef<TYPE>::Data();}
+		{int o = CBufRef<TYPE>::Alloc(); CBufRef<TYPE>::Grow(n); if (CBufRef<TYPE>::Alloc() > o) memset(CBufRef<TYPE>::m_buf + o, 0, (CBufRef<TYPE>::Alloc()-o)); return CBufRef<TYPE>::Data();}
 
 	const TYPE &Add(const TYPE &d)
 		{Grow(CBufRef<TYPE>::Count() + 1); CBufRef<TYPE>::Data()[CBufRef<TYPE>::Count()-1] = d; return d;}
