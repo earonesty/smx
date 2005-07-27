@@ -52,6 +52,14 @@ protected:
 	    delete node;
 	}
 
+
+	DATA &AddNotFound(KEY k)
+	{
+                 hnode_t *node = myH->hash_allocnode(myH->hash_context);
+                 hnode_init(node, new DATA);
+                 hash_insert(myH, node, CopyKey(k));
+                 return * (DATA *) hnode_get(node);
+	}
 public:
 // initialization
 	~CMap() {
@@ -147,7 +155,7 @@ public:
 		if (node) {
 			return (* (DATA *) hnode_get(node)) = d;
 		} else {
-			return Add(k) = d;
+			return AddNotFound(k) = d;
 		}
 	}
 
@@ -157,7 +165,7 @@ public:
 			*old = (* (DATA *) hnode_get(node));
 			return (* (DATA *) hnode_get(node)) = d;
 		} else {
-			return Add(k) = d;
+			return AddNotFound(k) = d;
 		}
 	}
 
@@ -177,16 +185,13 @@ public:
 	virtual void *CopyKey(KEY k) {
 		return (void *) k;
 	}
-
+	
 	DATA &operator [](KEY k) {
 		hnode_t *node = hash_lookup(myH, k);
 		if (node) {
 			return * (DATA *) hnode_get(node);
 		} else {
-		    hnode_t *node = myH->hash_allocnode(myH->hash_context);
-		    hnode_init(node, new DATA);
-		    hash_insert(myH, node, CopyKey(k));
-		    return * (DATA *) hnode_get(node);
+		    return AddNotFound(k);
 		}
 	}
 
@@ -202,7 +207,7 @@ public:
                         *old = *(DATA *) hnode_get(node);
                         return (DATA *) hnode_get(node);
                 } else {
-                        return Add(k);
+		        return AddNotFound(k);
                 }
 	}
 };

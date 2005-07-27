@@ -341,7 +341,7 @@ void qCtx::ParseArgs(qStr *in, qArgAry *out)
 	} while (more && c != EOF);
 }
 
-inline bool qCtx::ParseArg(qStr *in, qStrBuf &cur, char c)
+bool qCtx::ParseArg(qStr *in, qStrBuf &cur, char c)
 {
 	bool more = true;
 	int numsp = 0;
