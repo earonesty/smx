@@ -1,0 +1,20 @@
+#!/bin/sh
+
+pushd tests 2> /dev/null
+
+error()
+{
+    echo "ERROR during test '$curtest', quitting"
+#    exit 1
+}
+
+for curtest in test-*.smx
+do
+	echo $curtest
+	../smx $curtest > $curtest.tmp
+	if ! diff $curtest.ok $curtest.tmp; then error; fi
+done
+
+rm -f *.tmp
+
+popd
