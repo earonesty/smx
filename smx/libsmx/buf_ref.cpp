@@ -58,11 +58,14 @@ CBufRefChar::CBufRefChar(int n)
 {
 	if (n > 0) {
 		BUFFER_INFO* pX = (BUFFER_INFO*) malloc(n + sizeof(BUFFER_INFO));
-
-		m_buf = pX->buf();
-		m_buf[n] = '\0';
-		pX->m_n = pX->m_x = n;
-		SetRef(1);
+		if (pX) {
+			m_buf = pX->buf();
+			m_buf[n] = '\0';
+			pX->m_n = pX->m_x = n;
+			SetRef(1);
+		} else {
+			m_buf = 0;
+		}
 	} else { 
 		m_buf = 0;
 	}
@@ -87,11 +90,11 @@ void *CBufRefChar::Grow(int n)
 
 		if (!m_buf) {
 			pX = (BUFFER_INFO*) malloc(z + sizeof(BUFFER_INFO));
-      if (pX) {
-  			m_buf = pX->buf();
-  			SetRef(1);
-  			SetAlloc( z );
-      }
+			if (pX) {
+  				m_buf = pX->buf();
+	  			SetRef(1);
+	  			SetAlloc( z );
+			}
 		} else if (GetRef() == 1) {
 			if (n > Alloc()) {
 				//z = (n << 1) + s_growby;
@@ -115,7 +118,8 @@ void *CBufRefChar::Grow(int n)
 		}
 		
 		//SetAlloc( z );
-		if (m_buf) SetCount(n);
+		if (m_buf) 
+			SetCount(n);
 		return m_buf;
 	} else {
 		if (m_buf) {
@@ -142,10 +146,12 @@ void CBufRefChar::Change()
 {
 	if (m_buf) {
 		BUFFER_INFO* pX = (BUFFER_INFO*) malloc(Alloc() + sizeof(BUFFER_INFO));
-		memcpy(pX, GetX(), Count() + sizeof(BUFFER_INFO));
-		Free();
-		m_buf = pX->buf();
-		SetRef(1);
+		if (pX) {
+			memcpy(pX, GetX(), Count() + sizeof(BUFFER_INFO));
+			Free();
+			m_buf = pX->buf();
+			SetRef(1);
+		}
 	}
 }
 

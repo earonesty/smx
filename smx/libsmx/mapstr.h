@@ -36,7 +36,7 @@ public:
 		return (void *)k2;
 	}
         CMapStr() : CMap<const char *, DATA>(HashCaseCharPtr, EqualCaseCharPtr) {
-                hash_set_allocator(myH, MapAlloc, MapFree, this);
+                hash_set_allocator(CMap<const char *, DATA>::myH, CMap<const char *, DATA>::MapAlloc, CMap<const char *, DATA>::MapFree, this);
         }
 };
 

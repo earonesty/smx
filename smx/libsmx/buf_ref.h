@@ -40,30 +40,11 @@ protected:
 
 	inline int SetCount(int n)		{ return GetX()->m_n = n; }
 	inline int SetAlloc(int n)		{ return GetX()->m_x = n; }
-	inline int Alloc() const       { return GetX()->m_x; }
+	inline int Alloc() const       		{ return m_buf ? GetX()->m_x : 0; }
 
 	inline bool _Free();
 //	inline long LokRef();
 
-public:
-	~CBufRefChar();
-	CBufRefChar() 
-		{m_buf = NULL;}
-	CBufRefChar(int n);
-	CBufRefChar(const CBufRefChar &newBuf) 
-		{m_buf = NULL; Copy(newBuf);}
-	
-	char *Data() const	{return m_buf;}
-	void *Grow(int n);
-	void *Grow(int n, char *data)
-		{Grow(n); return memcpy(m_buf, data, n);}
-
-	CBufRefChar &operator =(const CBufRefChar &newBuf)
-		{return Copy(newBuf);}
-
-	CBufRefChar &Copy(const CBufRefChar &newBuf);
-
-	int  Count() const	{ return m_buf ? GetX()->m_n : 0; }
 #if defined WIN32
 	void IncRef()			  { InterlockedIncrement(&(GetX()->m_ref)); }
 	bool DecRef()			  { return (InterlockedDecrement(&(GetX()->m_ref)) <= 0); }
@@ -88,6 +69,26 @@ public:
         long GetRef()                     { return GetX()->m_ref; }
 #endif	
 #endif
+
+public:
+	~CBufRefChar();
+	CBufRefChar() 
+		{m_buf = NULL;}
+	CBufRefChar(int n);
+	CBufRefChar(const CBufRefChar &newBuf) 
+		{m_buf = NULL; Copy(newBuf);}
+	
+	char *Data() const	{return m_buf;}
+	void *Grow(int n);
+	void *Grow(int n, char *data)
+		{Grow(n); return memcpy(m_buf, data, n);}
+
+	CBufRefChar &operator =(const CBufRefChar &newBuf)
+		{return Copy(newBuf);}
+
+	CBufRefChar &Copy(const CBufRefChar &newBuf);
+
+	int  Count() const	{ return m_buf ? GetX()->m_n : 0; }
 	void Change();
 	void Free();
 };
@@ -126,21 +127,27 @@ public:
 
 	TYPE *Shift(int n) {
 		void *tmp=malloc(sizeof(BUFFER_INFO));
-		memcpy(tmp,GetX(),sizeof(BUFFER_INFO));
-		memmove(GetX(),m_buf,n*sizeof(TYPE));
-		m_buf += n*sizeof(TYPE);
-		memcpy(GetX(),tmp,sizeof(BUFFER_INFO));
-		SetCount(Count()-n);
+		if (tmp) {
+			memcpy(tmp,GetX(),sizeof(BUFFER_INFO));
+			memmove(GetX(),m_buf,n*sizeof(TYPE));
+			m_buf += n*sizeof(TYPE);
+			memcpy(GetX(),tmp,sizeof(BUFFER_INFO));
+			SetCount(Count()-n);
+			free(tmp);
+		}
 		return Data();
 	}
 
 	TYPE *Restore(int n) {
 		void *tmp=malloc(sizeof(BUFFER_INFO));
-		memcpy(tmp,GetX(),sizeof(BUFFER_INFO));
-		m_buf -= n*sizeof(TYPE);
-		memmove(m_buf,m_buf-sizeof(BUFFER_INFO),n*sizeof(TYPE));
-		memcpy(GetX(),tmp,sizeof(BUFFER_INFO));
-		SetCount(Count()+n);
+		if (tmp) {
+			memcpy(tmp,GetX(),sizeof(BUFFER_INFO));
+			m_buf -= n*sizeof(TYPE);
+			memmove(m_buf,m_buf-sizeof(BUFFER_INFO),n*sizeof(TYPE));
+			memcpy(GetX(),tmp,sizeof(BUFFER_INFO));
+			SetCount(Count()+n);
+			free(tmp);
+		}
 		return Data();
 	}
 };
@@ -152,7 +159,7 @@ public:
 	CBufRefZ(int n = 0)
 		{Grow(n); }
 	CBufRefZ(TYPE *d, int n)
-		{Grow(n); memcpy(CBufRef<TYPE>::m_buf, d, n * sizeof(TYPE)); }
+		{if (Grow(n)) memcpy(CBufRef<TYPE>::m_buf, d, n * sizeof(TYPE)); }
 
 	TYPE *Grow(int n)
 		{int o = CBufRef<TYPE>::Alloc(); CBufRef<TYPE>::Grow(n * sizeof(TYPE)); if (CBufRef<TYPE>::Alloc() > o) memset(CBufRef<TYPE>::m_buf + o, 0, (CBufRef<TYPE>::Alloc()-o)); return CBufRef<TYPE>::Data();}

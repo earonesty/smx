@@ -86,7 +86,6 @@ public:
 	void     insert(compType v, storType x);
 	storType remove(int i=1);
 	storType peek();
-	storType replace(compType v, storType x);
 	void     upheap(int k);
 	void     downheap(int k);
 	bool     getnext(int i, compType *v, storType *x) {
@@ -178,15 +177,6 @@ storType qPriQ<compType, storType>::remove(int i)
     return v.s;
 }
 
-template <class compType, class storType>
-storType qPriQ<compType, storType>::replace(compType v, storType x)
-{
-    a[0].c = v;
-	a[0].s = x;
-    downheap(0);
-    return x;
-}
- 
 template <class compType, class storType>
 void heapsort(compType a[], int N)
 {
