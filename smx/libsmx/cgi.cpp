@@ -1317,14 +1317,13 @@ void qObjCGI::EvalHtmlClean(qCtx *ctx, qStr *out, qArgAry *args)
 }
 
 
-
 void qObjCGI::EvalHtmlQuote(qCtx *ctx, qStr *out, qArgAry *args) 
 {
 	if (args->Count()) {
 		CStr html       = (*args)[0];
 
 		char *p = html.GetBuffer();
-		while (*p) {
+		if (p) while (*p) {
 			switch (*p) {
 			case '>':
 				out->PutS("&gt;",4); break;
