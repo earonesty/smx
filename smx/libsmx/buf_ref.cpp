@@ -64,10 +64,11 @@ CBufRefChar::CBufRefChar(int n)
 			pX->m_n = pX->m_x = n;
 			SetRef(1);
 		} else {
-			m_buf = 0;
+			assert(0);
+			m_buf = NULL;
 		}
 	} else { 
-		m_buf = 0;
+		m_buf = NULL;
 	}
 }
 
@@ -94,6 +95,8 @@ void *CBufRefChar::Grow(int n)
   				m_buf = pX->buf();
 	  			SetRef(1);
 	  			SetAlloc( z );
+			} else {
+				assert(0);
 			}
 		} else if (GetRef() == 1) {
 			if (n > Alloc()) {
@@ -102,6 +105,9 @@ void *CBufRefChar::Grow(int n)
 				if (pX) {
 					m_buf = pX->buf();
 					SetAlloc( z );
+				} else {
+					assert(0);
+					Free();
 				}
 			}
 		} else {
@@ -114,6 +120,9 @@ void *CBufRefChar::Grow(int n)
 				m_buf = pX->buf();
 				SetRef(1);
 				SetAlloc( z );
+			} else {
+				assert(0);
+				Free();
 			}
 		}
 		
