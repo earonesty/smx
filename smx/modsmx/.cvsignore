@@ -5,3 +5,4 @@ Makefile
 .libs
 libmodsmx.la
 *.plg
+test

@@ -363,7 +363,7 @@ public:
 		return myServer ?
 				(myServer->defn_name ? 
 				 myServer->defn_name : 
-				 myServer->next->defn_name ? 
+				 myServer->next && myServer->next->defn_name ? 
 			     myServer->next->defn_name : 0) 
 			    : 0;
 	}
