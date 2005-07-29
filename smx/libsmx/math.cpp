@@ -22,6 +22,11 @@ THIS SOFTWARE IS PROVIDED 'AS IS' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDI
 #include "qctx.h"
 #include "util.h"
 
+#ifdef unix
+#include <signal.h>
+#include <setjmp.h>
+#endif
+
 class qObjLVal {
 
 	qCtx *myCtx;
@@ -87,14 +92,17 @@ void EvalIncr(const void *data, qCtx *ctx, qStr *out, qArgAry *args) {
 	double acc = 0;
 	for (i = 0; i < args->Count(); ++i) {
 		qObj *obj;
-		if (ctx->Find(&obj, args->GetAt(i))) {
+		CStr name = args->GetAt(i);
+		if (name) {
+		if (ctx->Find(&obj, name)) {
 			qStrBuf tmp;
 			char *ep; 
 			obj->Eval(ctx, &tmp);
 			acc = (tmp.IsEmpty() ? 0 : strtod(tmp.GetS(), &ep)) + 1;
 		} else 
 			acc = 1;
-		ctx->MapObjLet(ctx->CreateObj(acc), args->GetAt(i));
+		ctx->MapObjLet(ctx->CreateObj(acc), name);
+		}
 	}
 }
 
@@ -103,14 +111,17 @@ void EvalDecr(const void *data, qCtx *ctx, qStr *out, qArgAry *args) {
 	double acc = 0;
 	for (i = 0; i < args->Count(); ++i) {
 		qObj *obj;
-		if (ctx->Find(&obj, args->GetAt(i))) {
+		CStr name = args->GetAt(i);
+		if (name) {
+		if (ctx->Find(&obj, name)) {
 			qStrBuf tmp;
 			char *ep; 
 			obj->Eval(ctx, &tmp);
 			acc = (tmp.IsEmpty() ? 0 : strtod(tmp.GetS(), &ep)) - 1;
 		} else 
 			acc = -1;
-		ctx->MapObjLet(ctx->CreateObj(acc), args->GetAt(i));
+		ctx->MapObjLet(ctx->CreateObj(acc), name);
+		}
 	}
 }
 
@@ -120,6 +131,8 @@ void EvalAddX(const void *data, qCtx *ctx, qStr *out, qArgAry *args) {
 	qObj *obj = NULL;
 
 	CStr var = (*args)[0];
+
+	if (var) {
 	if (ctx->Find(&obj, var)) {
 		qStrBuf tmp;
 		char *ep; 
@@ -139,6 +152,7 @@ void EvalAddX(const void *data, qCtx *ctx, qStr *out, qArgAry *args) {
 		ctx->MapObjLet(ctx->CreateObj(acc), var);
 	else
 		ctx->MapObj(ctx->CreateObj(acc), var);
+	}
 }
 
 void EvalSubX(const void *data, qCtx *ctx, qStr *out, qArgAry *args) {
@@ -147,6 +161,7 @@ void EvalSubX(const void *data, qCtx *ctx, qStr *out, qArgAry *args) {
 	qObj *obj;
 
 	CStr var = (*args)[0];
+	if (var) {
 	if (ctx->Find(&obj, var)) {
 		qStrBuf tmp;
 		char *ep; 
@@ -166,6 +181,7 @@ void EvalSubX(const void *data, qCtx *ctx, qStr *out, qArgAry *args) {
 		ctx->MapObjLet(ctx->CreateObj(acc), var);
 	else
 		ctx->MapObj(ctx->CreateObj(acc), var);
+	}
 }
 
 
@@ -187,13 +203,30 @@ void EvalISub(const void *data, qCtx *ctx, qStr *out, qArgAry *args) {
 	out->PutN(acc);
 }
 
+#ifdef unix
+jmp_buf sigenv;
+static void signal_handler(int sig)
+{
+	longjmp(sigenv,sig);
+}
+
+#define BEGINFPE if (setjmp(sigenv)!=0) {return;} sigset(SIGFPE, signal_handler);
+#define ENDFPE signal(SIGFPE, SIG_DFL);
+#else
+#define BEGINFPE
+#define ENDFPE 
+#endif
+
 void EvalIDiv(const void *data, qCtx *ctx, qStr *out, qArgAry *args) {
+	VALID_ARGC("idiv", 2, 2);
+	BEGINFPE
 	int i; 
 	int acc = ParseInt((*args)[0]);
 	for (i = 1; i < args->Count(); ++i) {
 		acc /= ParseInt((*args)[i]);
 	}
 	out->PutN(acc);
+	ENDFPE
 }
 
 void EvalIMult(const void *data, qCtx *ctx, qStr *out, qArgAry *args) {
@@ -207,9 +240,11 @@ void EvalIMult(const void *data, qCtx *ctx, qStr *out, qArgAry *args) {
 
 void EvalIMod(const void *data, qCtx *ctx, qStr *out, qArgAry *args) {
 	VALID_ARGC("imod", 2, 2);
+	BEGINFPE
 	int v1 = ParseInt((*args)[0]);
 	int v2 = ParseInt((*args)[1]);
 	out->PutN(v1%v2);
+	ENDFPE
 }
 
 void EvalMax(const void *data, qCtx *ctx, qStr *out, qArgAry *args) {

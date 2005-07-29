@@ -273,6 +273,9 @@ time_t date_parse(const char *str)
     int ampm, got_zone;
     time_t t;
 
+
+    if (!str || !*str) return (time_t) 0;
+
     /* Initialize tm with relevant parts of current local time. */
     now = time( (time_t*) 0 );
     now_tmP = localtime( &now );

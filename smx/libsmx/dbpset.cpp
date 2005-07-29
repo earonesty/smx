@@ -307,13 +307,13 @@ bool CDBHash::Open()
 	} catch (DbException x) {
 		smx_log_pf(SMXLOGLEVEL_WARNING, x.get_errno(), "DbOpen", x.what(), m_path);
   		m_oktxn = false;
-  		return false;
 		delete t;
+  		return false;
         } catch (...) {
 		smx_log_pf(SMXLOGLEVEL_ERROR, 0, "DbOpen", "unknown exception", m_path);
   		m_oktxn = false;
-  		return false;
 		delete t;
+  		return false;
 	}
 
 	smx_log_pf(SMXLOGLEVEL_DEBUG, m_oktxn, "DBDoneOpen",m_path);
@@ -859,7 +859,10 @@ bool CDBHash::Close()
   m_db = NULL;
   bool ret;
   ret = tdb_close(t);
-  delete t;
+
+// i think tdb_lib calls free
+// delete t;
+
 #else
   Db *t = m_db;
   m_db = NULL;

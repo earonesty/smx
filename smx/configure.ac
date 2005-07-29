@@ -42,7 +42,7 @@ CPPFLAGS="$CPPFLAGS -I $APXS_INCLUDE -I $APR_INCLUDE"
 AC_HEADER_DIRENT
 AC_HEADER_STDC
 AC_HEADER_SYS_WAIT
-AC_CHECK_HEADERS([arpa/inet.h fcntl.h limits.h malloc.h memory.h netdb.h netinet/in.h stddef.h stdlib.h string.h sys/file.h sys/ioctl.h sys/socket.h sys/time.h unistd.h wchar.h wctype.h apr_strings.h httpd.h odbc.h pthread.h openssl/evp.h tdb.h])
+AC_CHECK_HEADERS([arpa/inet.h fcntl.h limits.h malloc.h memory.h netdb.h netinet/in.h stddef.h stdlib.h string.h sys/file.h sys/ioctl.h sys/socket.h sys/time.h unistd.h wchar.h wctype.h apr_strings.h httpd.h odbc.h pthread.h openssl/evp.h tdb.h signal.h])
 
 # Checks for typedefs, structures, and compiler characteristics.
 AC_HEADER_STDBOOL

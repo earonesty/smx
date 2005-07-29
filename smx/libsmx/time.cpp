@@ -114,7 +114,7 @@ void EvalFmtlTime(const void *data, qCtx *ctx, qStr *out, qArgAry *args) {
 		else
 			p = (*args)[1];
 
-		if (tms) {
+		if (p && tms) {
 			FmtTime(tms, p, out);
 		}
 	}
@@ -132,7 +132,9 @@ void EvalFmtgTime(const void *data, qCtx *ctx, qStr *out, qArgAry *args) {
 		else
 			p = (*args)[1];
 
-		FmtTime(tms, p, out);
+		if (p && tms) {
+			FmtTime(tms, p, out);
+		}
 	}
 }
 

@@ -106,7 +106,7 @@ void EvalEncrypt(const void *data, qCtx *ctx, qStr *pStream, qArgAry *args)
 void EvalCrypt(const void *data, qCtx *ctx, qStr *pStream, qArgAry *args)
 {
         if (args->Count() > 1) {
-		pStream->PutS(crypt((*args)[0],(*args)[1]));
+		pStream->PutS(crypt((*args)[0].SafeP(),(*args)[1].SafeP()));
         }
 }
 #endif
@@ -120,9 +120,9 @@ void EvalDecrypt(const void *data, qCtx *ctx, qStr *pStream, qArgAry *args)
 		CStr out;
 
 		if (!encoding.IsEmpty() && !stricmp(encoding, "hex")) {
-			out = EVP_decrypt((*args)[1],HEX_decode((*args)[0]),cipher);
+			out = EVP_decrypt((*args)[1].SafeP(),HEX_decode((*args)[0].SafeP()),cipher);
 		} else {
-			out = EVP_decrypt((*args)[1],B64_decode((*args)[0]),cipher);
+			out = EVP_decrypt((*args)[1].SafeP(),B64_decode((*args)[0].SafeP()),cipher);
 		}
 		pStream->PutS(out);
 	}
@@ -136,9 +136,9 @@ void EvalEncode(const void *data, qCtx *ctx, qStr *pStream, qArgAry *args)
 		CStr out;
 
 		if (!encoding.IsEmpty() && !stricmp(encoding, "hex")) {
-			out = HEX_encode((*args)[0]);
+			out = HEX_encode((*args)[0].SafeP());
 		} else {
-			out = B64_encode((*args)[0]);
+			out = B64_encode((*args)[0].SafeP());
 		}
 		pStream->PutS(out);
 	}
@@ -152,9 +152,9 @@ void EvalDecode(const void *data, qCtx *ctx, qStr *pStream, qArgAry *args)
 		CStr out;
 
 		if (!encoding.IsEmpty() && !stricmp(encoding, "hex")) {
-			out = HEX_decode((*args)[0]);
+			out = HEX_decode((*args)[0].SafeP());
 		} else {
-			out = B64_decode((*args)[0]);
+			out = B64_decode((*args)[0].SafeP());
 		}
 		pStream->PutS(out);
 	}
@@ -163,7 +163,7 @@ void EvalDecode(const void *data, qCtx *ctx, qStr *pStream, qArgAry *args)
 void EvalObfuscate(const void *data, qCtx *ctx, qStr *pStream, qArgAry *args)
 {
 	if (args->Count() > 0) {
-		CStr out = B64_encode(EVP_encrypt("PSX",(*args)[0], 0));
+		CStr out = B64_encode(EVP_encrypt("PSX",(*args)[0].SafeP(), 0));
 		pStream->PutS(out);
 	}
 }
@@ -172,7 +172,7 @@ void EvalObfuscate(const void *data, qCtx *ctx, qStr *pStream, qArgAry *args)
 void EvalDeobfuscate(const void *data, qCtx *ctx, qStr *pStream, qArgAry *args)
 {
 	if (args->Count() > 0) {
-		CStr out = EVP_decrypt("PSX",B64_decode((*args)[0]),0);
+		CStr out = EVP_decrypt("PSX",B64_decode((*args)[0].SafeP()),0);
 		pStream->PutS(out);
 	}
 }

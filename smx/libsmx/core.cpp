@@ -194,6 +194,11 @@ void EvalSet(const void *data, qCtx *ctx, qStr *out, qArgAry *args)
 	else 
 		name = (*args)[0];
 
+	if (name.IsEmpty()) {
+		ctx->Throw(out, 121, "set: empty variable name");
+		return;
+	}
+
 	//CStr val = (*args)[1];
 
 	if (args->Count() >= 2) {
@@ -209,6 +214,10 @@ void EvalGSet(const void *data, qCtx *ctx, qStr *out, qArgAry *args)
 	VALID_ARGC("gset", 1, 2);
 	if (args->Count() >= 1) {
 		CStr var   = (*args)[0];
+		if (var.IsEmpty()) {
+			ctx->Throw(out, 121, "gset: empty variable name");
+			return;
+		}
 		if (args->Count() >= 2) {
 			CStr val = (*args)[1];
 			if (ctx->GetEnv() && ctx->GetEnv()->GetSessionCtx()) {
@@ -225,6 +234,10 @@ void EvalLet(const void *data, qCtx *ctx, qStr *out, qArgAry *args)
 	VALID_ARGC("let", 1, 2);
 	if (args->Count() >= 1) {
 		CStr var   = (*args)[0];
+                if (var.IsEmpty()) {
+                        ctx->Throw(out, 121, "let: empty variable name");
+                        return;
+                }
 		if (args->Count() >= 2) {
 			CStr val = (*args)[1];
 			ctx->MapObjLet(ctx->CreateObj(val), var);
@@ -311,8 +324,8 @@ void qObjDef::Eval(qCtx *ctx, qStr *out, qArgAry *args)
 			if (myArgNames[i].Length() > 0) {
 				CStr s = args->GetAt(i);
 				CStr n = myArgNames[i]; //n.Change();
-
-				if (myQuoted[i] == dParsed) {
+				if (!n.IsEmpty()) {
+				if (myQuoted[i] == dParsed ) {
 					qObjParsed *p = new qObjParsed(s);
 					tmpCtx.MapObj(p, n);
 				} else if (myQuoted[i] == dQuoted) {
@@ -327,6 +340,8 @@ void qObjDef::Eval(qCtx *ctx, qStr *out, qArgAry *args)
 				} else {
 					args->SetAt(i, s);
 					tmpCtx.MapObj(s, n);
+				}} else {
+					args->SetAt(i, s);
 				}
 			}
 		}
@@ -334,7 +349,8 @@ void qObjDef::Eval(qCtx *ctx, qStr *out, qArgAry *args)
 		for (; i < an; ++i) {
 			if (myArgNames[i].Length() > 0) {
 				CStr n = myArgNames[i]; n.Change();
-				tmpCtx.MapObj(CStr::Null, n);
+				if (!n.IsEmpty()) 
+					tmpCtx.MapObj(CStr::Null, n);
 			}
 		}
 
@@ -522,6 +538,10 @@ void EvalFor(const void *data, qCtx *ctx, qStr *out, qArgAry *args)
 	VALID_ARGC("for", 4, 5);
 	if (args->Count() >= 4) {
 		CStr var   = (*args)[0];
+		if (var.IsEmpty()) {
+			ctx->Throw(out, 121, "for: empty variable name");
+			return;
+		}
 		int  from = ParseInt((*args)[1]);
 		int  to = ParseInt((*args)[2]);
 		int  step = ParseInt((*args)[4]);
@@ -774,13 +794,18 @@ void EvalDefctx(const void *data, qCtx *ctx, qStr *out, qArgAry *args) {
 	VALID_ARGC("defctx", 2, 3);
 	if (args->Count() > 1) {
 		CStr name = (*args)[0];
+                if (name.IsEmpty()) {
+                        ctx->Throw(out, 121, "defctx: empty variable name");
+                        return;
+                }
 		CStr bname = (*args)[1];
 		CStr body;
 		if (args->Count() > 2)
 			body = args->GetAt(2);
 	
 		qObj *base = 0;
-		ctx->Find(&base, bname);
+		if (!bname.IsEmpty())
+			ctx->Find(&base, bname);
 
 		qObjClass *obj = new qObjClass((qObjClass *)base);
 

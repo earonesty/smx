@@ -70,28 +70,33 @@ void EvalExt(const void *data, qCtx *ctx, qStr *out, qArgAry *args)
 {
 	VALID_ARGC("ext", 1, 1);
 	CStr path = (*args)[0];
+	if (path) { 
 	char *r = strrchr((const char *)path, '.');
 	if (r) {
 		out->PutS(r+1);
-	}
+	}}
 }
 
 void EvalBase(const void *data, qCtx *ctx, qStr *out, qArgAry *args)
 {
 	VALID_ARGC("base", 1, 1);
 	CStr path = (*args)[0];
+	if (path){
 	char *r = strrchr((const char *)path, '.');
 	if (r) {
 		*r = '\0';
 		path.Grow(r - (const char *)path);
 	}
 	out->PutS(path);
+	}
 }
 
 void EvalFileName(const void *data, qCtx *ctx, qStr *out, qArgAry *args)
 {
 	VALID_ARGC("filename", 1, 1);
 	CStr path = (*args)[0];
+
+	if (path) {
 	const char *b = path;
 
 	const char *r = b + path.Length() - 1;
@@ -100,12 +105,15 @@ void EvalFileName(const void *data, qCtx *ctx, qStr *out, qArgAry *args)
 	}
 	++r;
 	out->PutS(r, path.Length() - (r - b));
+	}
 }
 void EvalFilePath(const void *data, qCtx *ctx, qStr *out, qArgAry *args)
 {
 	VALID_ARGC("filepath", 1, 1);
 	CStr path = (*args)[0];
 	char *b = path.GetBuffer();
+
+	if (b) {
 	char *r = b + path.Length() - 1;
 	while (r >= b && !(ISPATHSEP(*r))) {
 		--r;
@@ -116,6 +124,7 @@ void EvalFilePath(const void *data, qCtx *ctx, qStr *out, qArgAry *args)
 		path.Grow(r - b);
 		out->PutS(path);
 	}
+	}
 }
 
 void EvalMakePath(const void *data, qCtx *ctx, qStr *out, qArgAry *args)
@@ -123,8 +132,8 @@ void EvalMakePath(const void *data, qCtx *ctx, qStr *out, qArgAry *args)
 	VALID_ARGC("makepath", 2, 2);
 	CStr path1 = (*args)[0];
 	CStr path2 = (*args)[1];
-	fslash(path1.Data());
-	fslash(path2.Data());
+	fslash(path1.SafeP());
+	fslash(path2.SafeP());
 #ifdef WIN32
 	path1.RTrim(DIRSEP);
 	path2.LTrim(DIRSEP);
@@ -138,7 +147,7 @@ void EvalMakePath(const void *data, qCtx *ctx, qStr *out, qArgAry *args)
 	out->PutS(path1);
 
 #ifdef WIN32
-	if (!ISPATHSEP(path1.Data()[path1.Length()-1]))
+	if (path1.Length() > 0 && !ISPATHSEP(path1.SafeP()[path1.Length()-1]))
 #endif
 		out->PutC(DIRSEP);
 	out->PutS(path2);
@@ -283,6 +292,11 @@ void EvalDir(const void *data, qCtx *ctx, qStr *out, qArgAry *args)
 	VALID_ARGC("dir", 2, 3);
 
 	CStr path = (*args)[0];
+
+	if (!path) {
+		ctx->ThrowF(out, 601, "Empty directory path is invalid");
+		return;
+	}
 
 	if (!safe_fcheck(ctx, path)) {
 		ctx->ThrowF(out, 601, "Failed to open directory. %y", GetLastError());
@@ -497,7 +511,7 @@ void EvalFileExists(const void *mode, qCtx *ctx, qStr *out, qArgAry *args)
 void EvalDirMake(const void *mode, qCtx *ctx, qStr *out, qArgAry *args)
 {
 	VALID_ARGC("mkdir", 1, 1);
-	CStr path = (*args)[0];
+	char * path = (*args)[0].SafeP();
 #ifdef WIN32
 	_mkdir(path);
 #else
@@ -509,18 +523,24 @@ void EvalDirRemove(const void *mode, qCtx *ctx, qStr *out, qArgAry *args)
 {
 	VALID_ARGC("rmdir", 1, 1);
 	CStr path = (*args)[0];
+	if (path) {
 	bslash(path.GetBuffer());
 #ifdef WIN32
 	_rmdir(path);
 #else
   rmdir(path);
 #endif
+	}
 }
 
 
 void EvalInclude(const void *nada, qCtx *ctx, qStr *out, qArgAry *args)
 {
 	VALID_ARGC("include", 1, 1);
+
+	if ((*args)[0].IsEmpty())
+		return;
+
 	qStrRef in = OpenFile(ctx, (*args)[0]);
 	if (in)
 		out->PutS(in);
