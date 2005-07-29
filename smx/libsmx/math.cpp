@@ -91,7 +91,7 @@ void EvalIncr(const void *data, qCtx *ctx, qStr *out, qArgAry *args) {
 			qStrBuf tmp;
 			char *ep; 
 			obj->Eval(ctx, &tmp);
-			acc = strtod(tmp.GetS(), &ep) + 1;
+			acc = (tmp.IsEmpty() ? 0 : strtod(tmp.GetS(), &ep)) + 1;
 		} else 
 			acc = 1;
 		ctx->MapObjLet(ctx->CreateObj(acc), args->GetAt(i));
@@ -107,7 +107,7 @@ void EvalDecr(const void *data, qCtx *ctx, qStr *out, qArgAry *args) {
 			qStrBuf tmp;
 			char *ep; 
 			obj->Eval(ctx, &tmp);
-			acc = strtod(tmp.GetS(), &ep) - 1;
+			acc = (tmp.IsEmpty() ? 0 : strtod(tmp.GetS(), &ep)) - 1;
 		} else 
 			acc = -1;
 		ctx->MapObjLet(ctx->CreateObj(acc), args->GetAt(i));
@@ -124,7 +124,7 @@ void EvalAddX(const void *data, qCtx *ctx, qStr *out, qArgAry *args) {
 		qStrBuf tmp;
 		char *ep; 
 		obj->Eval(ctx, &tmp);
-		acc = strtod(tmp.GetS(), &ep);
+		acc = (tmp.IsEmpty() ? 0 : strtod(tmp.GetS(), &ep));
 	} else 
 		acc = 0;
 	
@@ -151,7 +151,7 @@ void EvalSubX(const void *data, qCtx *ctx, qStr *out, qArgAry *args) {
 		qStrBuf tmp;
 		char *ep; 
 		obj->Eval(ctx, &tmp);
-		acc = strtod(tmp.GetS(), &ep);
+		acc = (tmp.IsEmpty() ? 0 : strtod(tmp.GetS(), &ep));
 	} else 
 		acc = 0;
 	
