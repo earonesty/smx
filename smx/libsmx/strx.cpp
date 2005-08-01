@@ -54,7 +54,6 @@ CStr operator <<(const char *left, const CStr &right)
 	return CStr(left) << right;
 }
 
-
 // string conversion helpers
 void strcln(const char *p, char *t, char *e)
 {

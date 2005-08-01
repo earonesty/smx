@@ -713,7 +713,7 @@ void EvalDebugTrace(const void *data, qCtx *ctx, qStr *out, qArgAry *args)
 	debout.PutS((*args)[0]);
 }
 
-#ifdef WIN32
+#if defined(WIN32) && defined(MEMDEBUG)
 #ifdef _DEBUG
 class qObjMemState : public qObjTS
 {
@@ -982,7 +982,7 @@ void LoadCore(qCtx *ctx) {
 	ctx->MapObj(EvalDebugStop,"_stop");
 	ctx->MapObj(EvalDebugTrace,"_trace");
 
-#ifdef WIN32
+#if defined(WIN32) && defined(MEMDEBUG)
 #ifdef _DEBUG
 	ctx->MapObj(EvalDebugMemSnap,"_memsnap");
 	ctx->MapObj(EvalDebugMemDiff,"_memdiff");

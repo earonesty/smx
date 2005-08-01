@@ -183,7 +183,6 @@ CStr &operator <<(CStr &left, long right);
 CStr &operator <<(CStr &left, float right);
 CStr &operator <<(CStr &left, double right);
 CStr operator <<(const char *left, const CStr &right);
-CStr operator +(const CStr &left, char right);
 
 inline bool operator &&(const CStr &a, bool b) {
         return b && a.Length() > 0;

@@ -34,9 +34,7 @@ THIS SOFTWARE IS PROVIDED 'AS IS' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDI
 
 #ifdef _DEBUG 
 	#ifdef WIN32
-		#define _AFX_NOFORCE_LIBS
 		#include <afxwin.h>
-		#undef _AFX_NOFORCE_LIBS
 		#undef TRACE
 	#else
 		#include "unix.h"

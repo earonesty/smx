@@ -224,7 +224,7 @@ bool CDBHash::Open()
 	    env_dir = env_dir + "\\.smx";
 	    CreateDirectory(env_dir,NULL);
 	    char c; for (c = '1'; c < '9'; ++c)
-	        remove(((env_dir + "\\__db.00") + c).c_str());
+	        remove(((env_dir + "\\__db.00") << c));
 #else
 	    env_dir = getenv("HOME");
 	    if (env_dir.IsEmpty()) 

@@ -114,7 +114,7 @@ void EvalFmtlTime(const void *data, qCtx *ctx, qStr *out, qArgAry *args) {
 		else
 			p = (*args)[1];
 
-		if (p && tms) {
+		if (!p.IsEmpty() && tms) {
 			FmtTime(tms, p, out);
 		}
 	}
@@ -132,7 +132,7 @@ void EvalFmtgTime(const void *data, qCtx *ctx, qStr *out, qArgAry *args) {
 		else
 			p = (*args)[1];
 
-		if (p && tms) {
+		if (!p.IsEmpty() && tms) {
 			FmtTime(tms, p, out);
 		}
 	}
