@@ -420,15 +420,21 @@ void ResolvePath(qCtx *ctx, CStr &path)
 					*p = '\0';
 					pdir.Grow(p - pdir.Data());
 					path.Grow(pdir.Length() + path.Length());
+				} else {
+					pdir = env->GetServerRoot();
 				}
 			} else
 				pdir = env->GetServerRoot();
-				fix_path(path.GetBuffer());
-				char *fp;
-				path.Grow(MAX_PATH);
-				path.Grow(
-					SearchPath(pdir, path, 0, path.Length(), path.GetBuffer(), &fp)
-				);
+
+			if (pdir.IsEmpty())
+				pdir = ".";
+
+			fix_path(path.GetBuffer());
+			char *fp;
+			path.Grow(MAX_PATH);
+			path.Grow(
+				SearchPath(pdir, path, 0, path.Length(), path.GetBuffer(), &fp)
+			);
 		}
 	}
 }

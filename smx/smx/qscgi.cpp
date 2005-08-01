@@ -50,7 +50,21 @@ int main(int argc, char* argv[], char* envp[])
 		}
 
 		if (getoptbool("e*xpand")) {
-			setenv("PATH_TRANSLATED","<shell>",0);
+#ifdef WIN32
+			CStr script_path;
+			script_path.Grow(MAX_PATH);
+			DWORD nb;
+			if (nb = GetCurrentDirectory(MAX_PATH, script_path.GetBuffer())) {
+				script_path.Shrink();
+				script_path << "<shell>";
+				setenv("PATH_TRANSLATED",script_path,0);
+			}
+			else 
+#endif
+			{
+				setenv("PATH_TRANSLATED","./<shell>",0);
+			}
+
 			CStr toParse = argv[1];
 			int i;
 			for (i = 2; i < argc; ++i) {
