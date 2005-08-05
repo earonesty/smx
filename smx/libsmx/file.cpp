@@ -416,10 +416,10 @@ void WriteCSV(const void *mode, bool forceQuoted, qCtx *ctx, qStr *out, qArgAry 
 void EvalFileWrite(const void *mode, qCtx *ctx, qStr *out, qArgAry *args)
 {
 	CStr path = ctx->ParseStr((*args)[0]);
-	CStr perm_str = ctx->ParseStr((*args)[2]);
 	FILE *fp;
 
 #ifndef WIN32
+	CStr perm_str = ctx->ParseStr((*args)[2]);
 	int perms = strtol(perm_str,(char **)NULL, 0);
 	mode_t prev_perms;
 	if (perms) {
