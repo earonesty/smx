@@ -77,6 +77,35 @@ void EvalExt(const void *data, qCtx *ctx, qStr *out, qArgAry *args)
 	}}
 }
 
+#ifndef WIN32
+void EvalUmask(const void *data, qCtx *ctx, qStr *out, qArgAry *args)
+{
+        VALID_ARGC("umask", 2, 2);
+        CStr mask_str = (*args)[0];
+        CStr body = (*args)[1];
+
+        int mask = strtol(mask_str.SafeP(),(char **)NULL, 0);
+
+	if (args->Count() > 1) {
+	        mode_t prev_mask;
+	        prev_mask = umask((mode_t)mask);
+		try {
+			ctx->Parse(body, out);
+		} catch (qCtxEx ex) {
+			umask(prev_mask);
+			throw ex;
+		} 
+		umask(prev_mask);
+	} else {
+	        if (!ctx->GetSafeMode()) {
+			umask((mode_t)mask);
+		} else {
+			ctx->ThrowF(out, 619, "Permission denied");
+		}
+	}
+}
+#endif
+
 void EvalBase(const void *data, qCtx *ctx, qStr *out, qArgAry *args)
 {
 	VALID_ARGC("base", 1, 1);
@@ -387,11 +416,31 @@ void WriteCSV(const void *mode, bool forceQuoted, qCtx *ctx, qStr *out, qArgAry 
 void EvalFileWrite(const void *mode, qCtx *ctx, qStr *out, qArgAry *args)
 {
 	CStr path = ctx->ParseStr((*args)[0]);
+	CStr perm_str = ctx->ParseStr((*args)[2]);
+	FILE *fp;
+
+#ifndef WIN32
+	int perms = strtol(perm_str,(char **)NULL, 0);
+	mode_t prev_perms;
+	if (perms) {
+		prev_perms = umask((mode_t)~perms);
+		printf("umask: %d (%d)\n", perms, prev_perms);
+	}
+	try {	
+#endif
 
 	if (path.IsEmpty())
 		return;
-	
-	FILE *fp = safe_fopen(ctx, path, (const char *) mode);
+
+	fp = safe_fopen(ctx, path, (const char *) mode);
+
+#ifndef WIN32
+	} catch (qCtxEx ex) {
+	        if (perms) umask(prev_perms);
+		throw ex;
+	}
+        if (perms) umask(prev_perms);
+#endif
 
 	if (!fp) {
 		ctx->ThrowF(out, 601, "Failed to open file for writing. %y", GetLastError());
@@ -568,6 +617,9 @@ void LoadFile(qCtx *ctx) {
 	ctx->MapObj(EvalFilePath,		"filepath");
 	ctx->MapObj(EvalMakePath,		"makepath");
 
+#ifndef WIN32
+	ctx->MapObj(EvalUmask,			"umask", "01");
+#endif
 
 	ctx->MapObj("wb", EvalFileWrite, "create-file",QMAP_ALL);
 	ctx->MapObj("ab", EvalFileWrite, "text-append",QMAP_ALL);
