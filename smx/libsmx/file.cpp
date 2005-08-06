@@ -420,7 +420,7 @@ void EvalFileWrite(const void *mode, qCtx *ctx, qStr *out, qArgAry *args)
 
 #ifndef WIN32
 	CStr perm_str = ctx->ParseStr((*args)[2]);
-	int perms = strtol(perm_str,(char **)NULL, 0);
+	int perms = strtol(perm_str.SafeP(),(char **)NULL, 0);
 	mode_t prev_perms;
 	if (perms) {
 		prev_perms = umask((mode_t)~perms);
