@@ -1,5 +1,0 @@
-#!/bin/sh
-
-#g++ -Wno-deprecated -I/usr/local/BerkeleyDB.3.2/include -L/usr/local/BerkeleyDB.3.2/lib -ggdb -l db_cxx -l db dblib.cpp
-g++ -I/usr/include -ggdb -l db_cxx -l db dblib.cpp
-
