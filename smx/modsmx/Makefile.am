@@ -6,4 +6,4 @@ libmodsmx_la_LDFLAGS = -version-info 0:0:0 --shared
 INCLUDES = -I../libsmx
 
 install-data-local:
-	@APXS@ -i -n 'mod_smx' -a libmodsmx.la
+	@APXS@ -S LIBEXECDIR=${prefix}/lib -i -n 'smx' -a libmodsmx.la
