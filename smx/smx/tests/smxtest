@@ -8,13 +8,38 @@ error()
     exit 1
 }
 
+
 for curtest in test-*.smx
 do
-	echo $curtest
-	../smx $curtest > $curtest.tmp
-	if ! diff $curtest.ok $curtest.tmp; then error; fi
+	if [ -e "$curtest.skip"  ]; then
+		echo "$curtest ... skipping"
+	else
+		echo $curtest
+		../smx $curtest > $curtest.tmp
+		if ! diff $curtest.ok $curtest.tmp; then error; fi
+	fi
 done
+
+curtest="safemode.smx"
+if [ -e "$curtest.skip"  ]; then
+        echo "$curtest ... skipping"
+else
+	echo $curtest
+
+	useradd smxsafemodeuser 2> /dev/null
+	mkdir "safemodedir" 2> /dev/null
+	chown smxsafemodeuser "safemodedir"
+	cp "safemode.smx" "safemodedir"
+	chown smxsafemodeuser "safemodedir/safemode.smx"
+
+	../smx "safemodedir/safemode.smx" > safemode.tmp
+
+	userdel smxsafemodeuser
+	rm -rf "safemodedir"
+
+	if ! diff safemode.ok safemode.tmp; then error; fi
+fi
 
 rm -f *.tmp
 
-popd
+popd 2> /dev/null
