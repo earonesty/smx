@@ -421,6 +421,7 @@ void EvalFileWrite(const void *mode, qCtx *ctx, qStr *out, qArgAry *args)
 #ifndef WIN32
 	CStr perm_str = ctx->ParseStr((*args)[2]);
 	int perms = strtol(perm_str.SafeP(),(char **)NULL, 0);
+	int err = 0;
 	mode_t prev_perms;
 	if (perms) {
 		prev_perms = umask((mode_t)~perms);
@@ -434,6 +435,8 @@ void EvalFileWrite(const void *mode, qCtx *ctx, qStr *out, qArgAry *args)
 
 	fp = safe_fopen(ctx, path, (const char *) mode);
 
+	if (!fp) err = GetLastError();
+
 #ifndef WIN32
 	} catch (qCtxEx ex) {
 	        if (perms) umask(prev_perms);
@@ -443,7 +446,7 @@ void EvalFileWrite(const void *mode, qCtx *ctx, qStr *out, qArgAry *args)
 #endif
 
 	if (!fp) {
-		ctx->ThrowF(out, 601, "Failed to open file for writing. %y", GetLastError());
+		ctx->ThrowF(out, 601, "Failed to open file for writing. %y", err);
 		return;
 	}
 
