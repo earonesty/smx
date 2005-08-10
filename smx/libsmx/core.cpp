@@ -886,7 +886,7 @@ CStr SmxQuote(CStr in) {
 void EvalPriorityExpand(const void *data, qCtx *ctx, qStr *out, qArgAry *args) 
 {
 	if (ctx->GetSafeMode()) {ctx->Throw(out, 301, "function not available"); return;}
-	DWORD priority = THREAD_PRIORITY_ERROR_RETURN;
+	int priority = THREAD_PRIORITY_ERROR_RETURN;
 
 	CStr pname = (*args)[0];
 

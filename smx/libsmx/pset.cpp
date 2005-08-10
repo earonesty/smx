@@ -12,7 +12,7 @@ THIS SOFTWARE IS PROVIDED 'AS IS' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDI
 */
 
 
-#ifdef WIN32
+#ifndef HAVE_LIBTDB
 // including stdafx before db_cxx breaks on WIN32, VS.NET
 #include <db_cxx.h>
 #endif

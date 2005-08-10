@@ -22,6 +22,7 @@ THIS SOFTWARE IS PROVIDED 'AS IS' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDI
 #include <ctype.h>
 #include <errno.h>
 #include <iostream>
+#include <fcntl.h>
 
 #ifdef WIN32
 	#include <process.h>
@@ -55,7 +56,7 @@ public:
 			myEnv = new DbEnv(myFlags);
 			myEnv->set_error_stream(&std::cerr);
 			if (myDetector) {
-#ifdef WIN32
+#ifndef HAVE_LIBTDB
 				unsigned tid;
 				myTH = (HANDLE) _beginthreadex(0, 0, LockDetectLoop, this, CREATE_SUSPENDED, &tid);
 				ResumeThread(myTH);
@@ -74,7 +75,7 @@ public:
 
 	~DestroyableDBEnv() {
 		try {
-#ifdef WIN32
+#ifndef HAVE_LIBTDB
 			if (myTH != 0)
 				TerminateThread(myTH, 0);
 #endif
@@ -113,7 +114,7 @@ public:
 	}
 
 	static unsigned STDCALL LockDetectLoop(void *parm) {
-#ifdef WIN32
+#ifndef HAVE_LIBTDB
     ((DestroyableDBEnv *)parm)->LockDetectLoop();
 #endif
 		return 0;

@@ -417,11 +417,11 @@ void EvalFileWrite(const void *mode, qCtx *ctx, qStr *out, qArgAry *args)
 {
 	CStr path = ctx->ParseStr((*args)[0]);
 	FILE *fp;
+	int err = 0;
 
 #ifndef WIN32
 	CStr perm_str = ctx->ParseStr((*args)[2]);
 	int perms = strtol(perm_str.SafeP(),(char **)NULL, 0);
-	int err = 0;
 	mode_t prev_perms;
 	if (perms) {
 		prev_perms = umask((mode_t)~perms);
@@ -610,7 +610,7 @@ void LoadFile(qCtx *ctx) {
 	ctx->MapObj(NULL, EvalInclude, "include");
 
 	ctx->MapObj(modules, (QOBJMETH) &qObjCache::EvalModule, "module");
-#ifdef WIN32
+#if defined(WIN32) && !defined(NOACTIVEX)
 	ctx->MapObj(modules, (QOBJMETH) &qObjCache::EvalActiveX, "activex");
 #endif
 

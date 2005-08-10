@@ -75,7 +75,7 @@ public:
 		if (myTH) {
 			DWORD rVal = WaitForSingleObject(myTH, 10);
 			if (rVal != WAIT_OBJECT_0)
-				TerminateThread(myTH, -1);
+				TerminateThread(myTH, ~0);
 			CloseHandle(myTH);
 		}
 		myCtx->Clear(true);
@@ -112,7 +112,7 @@ public:
 	int EvalKill(qCtx *ctx, qStr *out, qArgAry *args) {
 		CLock lock = myLock.Enter();
 		if (myTH) {
-			TerminateThread(myTH, -1);
+			TerminateThread(myTH, ~0);
 			CloseHandle(myTH);
 			myTH = 0;
 		}
@@ -173,7 +173,7 @@ void EvalExec(const void *data, qCtx *ctx, qStr *out, qArgAry *args)
 	si.hStdError   = (HANDLE) _get_osfhandle(pErr.PrepChildWrite());
 
 	PROCESS_INFORMATION pi;
-	if (CreateProcess(NULL, exec.GetBuffer(), NULL, NULL, TRUE, NULL, NULL, NULL, &si, &pi)) {
+	if (CreateProcess(NULL, exec.GetBuffer(), NULL, NULL, TRUE, 0, NULL, NULL, &si, &pi)) {
 		pH = (int) pi.dwProcessId;
 		CloseHandle(pi.hProcess);
 		CloseHandle(pi.hThread);

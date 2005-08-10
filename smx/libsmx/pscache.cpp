@@ -18,8 +18,10 @@ THIS SOFTWARE IS PROVIDED 'AS IS' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDI
 #include "util.h"
 
 #ifdef WIN32
+    #ifndef NOACTIVEX
 	#ifndef USES_CONVERSION
 		#include <atlconv.h>
+	#endif
 	#endif
 #endif
 

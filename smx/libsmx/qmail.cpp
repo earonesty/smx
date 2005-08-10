@@ -840,11 +840,11 @@ bool GetRegistryValue(HKEY hKey, LPCTSTR szName, CStr &strData)
 
 void SetRegistryValue(HKEY hKey, LPCTSTR szName, CStr strData)
 {
-	RegSetValueEx(hKey, szName, NULL, REG_SZ, (LPBYTE) (LPCTSTR) strData, strData.Length());
+	RegSetValueEx(hKey, szName, 0, REG_SZ, (LPBYTE) (LPCTSTR) strData, strData.Length());
 }
 
 void SetRegistryValue(HKEY hKey, LPCTSTR szName, DWORD data)
 {
-	RegSetValueEx(hKey, szName, NULL, REG_DWORD, (LPBYTE) &data, sizeof(DWORD));
+	RegSetValueEx(hKey, szName, 0, REG_DWORD, (LPBYTE) &data, sizeof(DWORD));
 }
 #endif
