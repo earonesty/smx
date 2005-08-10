@@ -31,9 +31,13 @@ THIS SOFTWARE IS PROVIDED 'AS IS' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDI
 
 #if defined(_WINDOWS) || defined(WIN32)
 
+#ifdef __GNUC__
 #define ConvWin32Time(t) \
 		(time_t) ((((ULARGE_INTEGER&)t).QuadPart-116444736000000000LL)/10000000)
-
+#else
+#define ConvWin32Time(t) \
+		(time_t) ((((ULARGE_INTEGER&)t).QuadPart-116444736000000000)/10000000)
+#endif
 #endif
 
 time_t GetFileModified(const FILE *fp);

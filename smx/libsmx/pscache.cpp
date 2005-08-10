@@ -20,9 +20,10 @@ THIS SOFTWARE IS PROVIDED 'AS IS' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDI
 #ifdef WIN32
     #ifndef NOACTIVEX
 	#ifndef USES_CONVERSION
+		#include <atlbase.h>
 		#include <atlconv.h>
 	#endif
-	#endif
+    #endif
 #endif
 
 #include "qctx-comp.h"
