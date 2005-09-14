@@ -298,7 +298,11 @@ bool safe_fcheck(qCtx *ctx, const char *path)
 	
         int uid = ctx->GetSafeUID();
         if (uid == 0) return true;
-        if (uid == -1) return false;
+        if (uid == -1)  {
+		// script owner user id is probably too low
+		errno = EPERM;
+		return false;
+	}
 
         CStr dir = path;
         char *pbs = strrchr(dir,'/');
