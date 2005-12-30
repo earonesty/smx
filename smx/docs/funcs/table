@@ -1,98 +1,108 @@
 %set(name,table)
-%set(syntax,%%table(body)  - outputs rows and columns of an html table
-%%tabpre(body) - outputs fixed-width columns)
-%set(description,Both %%table%% and %%tabpre%% support the output of tables in a way that 
-reduces coding
+%set(description,"Both %%table%% and %%tabpre%% support the output of tables in a way that  reduces coding
 
 %%table%% outputs rows and columns of an html table
 %%tabpre%% outputs fixed-width columns
 
 Functions defined within Table:
 
-%%row(<value-1>\,<value-2>\,<value-3>\,...)
-  Spits out values according to the formatting/styles currently 
-defined.
+%%row\(<value-1>,<value-2>,<value-3>,...\)
 
-%%sum(<num>[\,lev])
-  Produces out the sum of values that were *passed* to the %%row() 
-function\, optionally 
-    retrieves subtotals at the specified level
-%%avg(<num>[\,lev])
-  Produces average of values that were *passed* to the %%row() function
-%%dev(<num>[\,lev])
-  Produces standard deviation of values that were *passed* to the 
-%%row() function
+  Spits out values according to the formatting/styles currently defined.
+
+%%sum\(<num>[,lev]\)
+
+  Produces out the sum of values that were *passed* to the %%row\(\) function, optionally retrieves subtotals at the specified level 
+
+%%avg\(<num>[,lev]\)
+
+  Produces average of values that were *passed* to the %%row\(\) function
+
+%%dev\(<num>[,lev]\)
+
+  Produces standard deviation of values that were *passed* to the %%row\(\) function
+
 %%cols%%
+
   Count of columns in the current format.
+
 %%rows%%
-  Count of rows that the %%row() function has seen.
+
+  Count of rows that the %%row\(\) function has seen.
   
-%%set-sum(<num>[\,lev])
+%%set-sum\(<num>[,lev]\)
+
   Override current running [sub]total. Be careful when subtotaling!  
+
 This invalidates deviation calcs.
-%%set-rows(<num>[\,lev])
+
+%%set-rows\(<num>[,lev]\)
+
   Override current running row count.
 
-%%subt(<lev>\,'<body>)
-  This is the key to multilevel subtotaling! (may be combined with 
-%%sqlg%%)
-  A) Changes the context so that all of the %%sum\, %%avg\, etc. functions 
-default to subtotals.
-  B) Clears the subtotal at the specified level (sets to zero)
+%%subt\(<lev>,'<body>\)
 
-%%rowstyle(<each-row>[\,all columns of each row])
+  This is the key to multilevel subtotaling! \(may be combined with %%sqlg%%\).  A\) Changes the context so that all of the %%sum\\, %%avg\\, etc. functions 
+default to subtotals.  B\) Clears the subtotal at the specified level \(sets to zero\)
+
+%%rowstyle\(<each-row>[\\,all columns of each row]\)
   Sets stuff to go in the <TR ...> and the <TD ...> for each row.
 
-%%rowdef(col #1\, col #2\, col #3\, col #4\, ...)
-  Defines the format for stuff output with the "%%row" function
+%%rowdef\(col #1\\, col #2\\, col #3\\, col #4\\, ...\)
+  Defines the format for stuff output with the \"%%row\" function
 
-** Rowdef format specifiers (all are optional) **
+** Rowdef format specifiers \(all are optional\) **
 
   alignments:
 
-    r[wid]  right align column (using width for padding for tabpre)
+    r[wid]  right align column \(using width for padding for tabpre\)
     l[wid]  left align column
     c[wid]  center align column
-    d[wid]  decimal align column (if available\, else right align)
-    j[wid]  justify column (if available\, else left align)
+    d[wid]  decimal align column \(if available\\, else right align\)
+    j[wid]  justify column \(if available\\, else left align\)
 
-  * alignments take an optional "width" which trim/pad columns to a 
+  * alignments take an optional \"width\" which trim/pad columns to a 
 specific width
 
   numeric formats:
     .<num>  causes a column to be interpreted as a numeric with the 
 specified number of decimals
-    t[num]  trailing zero-decimals are trimmed (to minimum [num] of 
-decimals)
+    t[num]  trailing zero-decimals are trimmed \(to minimum [num] of 
+decimals\)
     $    spits out a currency qualifier at the front of this 
-column\, default is '$'\, but can be set with %%set-currency()
+column\\, default is '$'\\, but can be set with %%set-currency\(\)
     %%    spits out a '%%' after the column
     z0    puts a '0' in the column for zero values
     z-    puts a '-' in the column for zero values
     z_    leaves numeric column empty for zero values
-    n<num>  sets negative value color to specified "hex" html color
+    n<num>  sets negative value color to specified \"hex\" html color
 
   style formats:
   
-    p<num>  pads column with <num> spaces (tabpre only)
-    f<num>  sets font color to specified "hex" html color (hex 
-only)
+    p<num>  pads column with <num> spaces \(tabpre only\)
+    f<num>  sets font color to specified \"hex\" html color \(hex 
+only\)
     s    sums column
     h    makes column a 'header'
     u    underline
     b    bold
     i    italic
-    ;    use a ';' for the thousands separator instead of "\,"\, 
-and '\,' for the decimal point
+    ;    use a ';' for the thousands separator instead of \"\\,\"\\, 
+and '\\,' for the decimal point
     
   extended table format
-    '<text>' adds the specified "text" inside the <TD ...> of the 
+    '<text>' adds the specified \"text\" inside the <TD ...> of the 
 cell
-         (use two single quotes for a literal quote)
+         \(use two single quotes for a literal quote\)
 
   misc formats
     !n    don't pad null cells
-    !\,    don't do thousands formatting)
-%set(author,)
+    !\\,    don't do thousands formatting\)
+")
+%set(syntax,"%%table\(body\)  - outputs rows and columns of an html table
+%%tabpre\(body\) - outputs fixed-width columns")
 %set(example,)
 %set(seealso,)
+%set(authorip,216.254.73.183)
+%set(authorlogin,erik)
+%set(author,Erik Aronesty <erik@q32.com>)
