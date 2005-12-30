@@ -297,6 +297,22 @@ void EvalFMtime(const void *data, qCtx *ctx, qStr *out, qArgAry *args)
 #endif
 }
 
+void EvalFCtime(const void *data, qCtx *ctx, qStr *out, qArgAry *args)
+{
+        VALID_ARGC("fctime", 0, 0);
+        DIRSTATE *state = (DIRSTATE *) data;
+#ifdef WIN32
+        if (state->data.ftCreationTime.dwLowDateTime>0) {
+                out->PutN(ConvWin32Time(state->data.ftCreationTime));
+        }
+#else
+        if (GetDirStatus(state)) {
+    out->PutN((int)state->data.st_ctime);
+  }
+#endif
+}
+
+
 #ifdef unix
 void EvalFMode(const void *data, qCtx *ctx, qStr *out, qArgAry *args)
 {
@@ -656,6 +672,7 @@ bool ScanDir(CStr path, int mask, CStr body, qCtx *ctx, qStr *out)
 	tmpCtx.MapObj(&st, EvalFExt,  "fext");
 	tmpCtx.MapObj(&st, EvalFSize, "fsize");
 	tmpCtx.MapObj(&st, EvalFMtime,"fmtime");
+	tmpCtx.MapObj(&st, EvalFCtime,"fctime");
 
 #ifdef unix
 	tmpCtx.MapObj(&st, EvalFMode,"fmode");
