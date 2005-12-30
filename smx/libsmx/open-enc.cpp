@@ -28,6 +28,10 @@ void SHA1_string(const char *strin, int cbstr, char *strout)
 	SHA1((unsigned char *)strin, cbstr, (unsigned char *)strout);
 }
 
+void MD5_string(const char *strin, int cbstr, char *strout)
+{
+	MD5((unsigned char *)strin, cbstr, (unsigned char *)strout);
+}
 
 void SHA0_string(const char *strin, int cbstr, char *strout)
 {
@@ -208,6 +212,12 @@ CStr SHA1_string(CStr strin)
 	return strout;
 }
 
+CStr MD5_string(CStr strin)
+{
+	CStr strout(MD5_DIGEST_LENGTH);
+	MD5_string(strin, strin.Length(), strout.GetBuffer());
+	return strout;
+}
 
 CStr HEX_encode(CStr strin)
 {
