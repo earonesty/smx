@@ -263,12 +263,13 @@ static int psx_user(request_rec *r)
 			return OK;
 		}
 	} catch (...) {
+		// login code redirected things
+		if (r->status == HTTP_MOVED_TEMPORARILY) {
+			return OK;
+		}
+
 		if (renv)
 			renv->Free();
-
-		// login code redirected things
-		if (r->status == HTTP_MOVED_TEMPORARILY)
-			return OK;
 
 		smx_log_str(SMXLOGLEVEL_ERROR, "unhandled exception during authentication");
 
@@ -295,6 +296,11 @@ static int psx_handler(request_rec *r)
 	if (!renv)
 		return DECLINED;
 	
+	if (r->status == HTTP_MOVED_TEMPORARILY) {
+		renv->Done();
+		return r->status;
+	}
+
 	if (r->filename && *r->filename) {
 		qStr *pIn = NULL;
 		qStrBuf *badUrl = NULL;
