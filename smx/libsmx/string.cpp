@@ -175,7 +175,9 @@ void EvalDecode(const void *data, qCtx *ctx, qStr *pStream, qArgAry *args)
 void EvalObfuscate(const void *data, qCtx *ctx, qStr *pStream, qArgAry *args)
 {
 	if (args->Count() > 0) {
-		CStr out = B64_encode(EVP_encrypt("PSX",(*args)[0].SafeP(), 0));
+		CStr key = ctx->Eval("obfuscate-key");
+		if (key.Length() <= 0) key = "PSX";
+		CStr out = B64_encode(EVP_encrypt(key,(*args)[0].SafeP(), 0));
 		pStream->PutS(out);
 	}
 }
@@ -184,7 +186,9 @@ void EvalObfuscate(const void *data, qCtx *ctx, qStr *pStream, qArgAry *args)
 void EvalDeobfuscate(const void *data, qCtx *ctx, qStr *pStream, qArgAry *args)
 {
 	if (args->Count() > 0) {
-		CStr out = EVP_decrypt("PSX",B64_decode((*args)[0].SafeP()),0);
+		CStr key = ctx->Eval("obfuscate-key");
+		if (key.Length() <= 0) key = "PSX";
+		CStr out = EVP_decrypt(key,B64_decode((*args)[0].SafeP()),0);
 		pStream->PutS(out);
 	}
 }
