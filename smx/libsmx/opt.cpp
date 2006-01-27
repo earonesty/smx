@@ -114,12 +114,12 @@ char *getopt(const char *name, const char *def, const char *neg){
 		if (*p == '/' || *p == '-') {
 			++p;
 			if ((f = optcmp(name, p))) {
-				while (*pv) {*pv = *(pv++ + 1);} --*pargc; // delarg
+				while (*pv) {pv[0] = pv[1]; ++pv;} --*pargc; // delarg
 				return f;
 			} else if (  (!strnicmp(p,"no",2) && *(p+=2))
 			   || (!strnicmp(p,"!",1) && *(++p))  ) {
 				if (optcmp(name, p)) {
-					while (*pv) {*pv = *(pv++ + 1);} --*pargc; // delarg
+					while (*pv) {pv[0] = pv[1]; ++pv;} --*pargc; // delarg
 					return (char *) neg;
 				}
 			}
