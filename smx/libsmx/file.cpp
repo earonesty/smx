@@ -36,6 +36,7 @@ public:
 	DIRSTATE() {
 		memset(&data, 0, sizeof(data));
 	}
+	bool bquit;
 };
 #else
 
@@ -51,6 +52,7 @@ struct DIRSTATE {
 	char *found;
 	DIRSTATUS status;
 	struct stat data;
+	bool bquit;
 };
 #endif
 
@@ -248,6 +250,14 @@ void EvalFIsDir(const void *data, qCtx *ctx, qStr *out, qArgAry *args)
 		out->PutC('T');
     
 }
+
+void EvalFBreak(const void *data, qCtx *ctx, qStr *out, qArgAry *args)
+{
+        VALID_ARGC("break", 0, 0);
+        DIRSTATE *state = (DIRSTATE *) data;
+	state->bquit = true;
+}
+
 
 void EvalFExt(const void *data, qCtx *ctx, qStr *out, qArgAry *args)
 {
@@ -679,8 +689,10 @@ bool ScanDir(CStr path, int mask, CStr body, qCtx *ctx, qStr *out)
 #endif
 
 	tmpCtx.MapObj(&st, EvalFIsDir,"isdir");
+	tmpCtx.MapObj(&st, EvalFBreak,"break");
   
-  return _ScanDir(path, mask, body, &tmpCtx, out, st);
+	st.bquit = false;
+  	return _ScanDir(path, mask, body, &tmpCtx, out, st);
 }
 
 #ifdef WIN32
@@ -729,7 +741,7 @@ bool _ScanDir(CStr path, int mask, CStr body, qCtx *ctx, qStr *out, DIRSTATE &st
 	WIN32_FIND_DATA *r = &st.data;
     hFind = FindFirstFile(path, r); 
     bMore = (hFind != (HANDLE) -1); 
-    while (bMore) { 
+    while (bMore &&!st.bquit) { 
     if ((mask & r->dwFileAttributes)
 			&& !(r->cFileName[0]=='.'&&r->cFileName[1]=='\0')
 			) {
@@ -767,7 +779,7 @@ bool _ScanDir(CStr path, int mask, CStr body, qCtx *ctx, qStr *out, DIRSTATE &st
   
   char **curp = gb.gl_pathv;
   
-  while (*curp) {
+  while (*curp && !st.bquit) {
     if ( !( (*curp)[0]=='.'&&(*curp)[1]=='\0') ) {
       st.found = *curp;
       st.status = DIR_EMPTY;
