@@ -1,6 +1,5 @@
 %set(name,dir)
-%set(syntax,%%dir(dirspec\,'body[\,filter])
-%set(description,%%dir(...) lists all of the files matching the 'dirspec'.  'dirspec' must contain wildcard characters if you want to list more than one file in a directory.  The body of dir is expanded for each file.  Inside the body the following macros are defined:<br>
+%set(description,"%%dir\(...\) lists all of the files matching the 'dirspec'.  'dirspec' must contain wildcard characters if you want to list more than one file in a directory.  The body of dir is expanded for each file.  Inside the body the following macros are defined:<br>
 
 %%fname%%  - file name
 %%fpath%%  - file path
@@ -8,9 +7,16 @@
 %%fext%%   - extension
 %%fsize%%  - size
 %%fmtime%% - last modification time
-%%isdir%%  - T if it is a directory %%null%% otherwise)
-%set(author,)
-%set(example,%%dir(c:/*.*\,%%fname%%%%crlf%%)
+%%fmode%%  - file permissions \(unix only\)
+%%isdir%%  - T if it is a directory %%null%% otherwise
+%%break%%  - break out of loop")
+%set(syntax,"%%dir\(dirspec,'body[,filter]\)
+
+
+
+
+")
+%set(example,"%%dir\(c:/*.*,%%fname%%%%crlf%%\)
 
 Results:
 
@@ -28,5 +34,8 @@ viso-stuff
 NTDETECT.COM
 boot.ini
 NTBOOTDD.SYS
-system)
+system")
 %set(seealso,)
+%set(authorip,64.131.154.83)
+%set(authorlogin,erik)
+%set(author,Erik Aronesty <erik@q32.com>)
