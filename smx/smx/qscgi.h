@@ -39,9 +39,8 @@ public:
 
 	CStr GetHeader(const char *name);
 	
-	virtual int  GetHeaders(qEnvHttpHeaderCB *fHeaderCB) 
-		{return 0;}
-
+	virtual int GetHeaders(qEnvHttpHeaderCB *fHeaderCB);
+	virtual void PrintHeaders();
 
 	CStr MapFullPath(const char *path);
 	bool Flush();

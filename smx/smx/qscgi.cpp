@@ -114,9 +114,11 @@ int main(int argc, char* argv[], char* envp[])
 
 				if (cgi) {
 					ctx.ParseTry(&env, env.GetBuf());
-					env.PutS("Content-length: ");
+					env.PutS("Content-Length: ");
 					env.PutN(env.GetBuf()->Length());
-					env.PutS("\n\n");
+					env.PutC('\n');
+					env.PrintHeaders();
+					env.PutC('\n');
 					env.PutS(*env.GetBuf());
 				} else {
 					ctx.ParseTry(&env, &env);
@@ -154,6 +156,7 @@ qEnvCGI::qEnvCGI(FILE *script, FILE *out, int newBufSize)
 	myIn = script;
 	myOut = out;
 	myBufSize = newBufSize;
+	myHeaders=NULL;
 }
 
 CStr qEnvCGI::GetHeader(const char *name)
@@ -173,11 +176,41 @@ CStr qEnvCGI::GetHeader(const char *name)
 	}
 }
 
+#define ISPATHSEP(c) ((c)=='/'||(c) =='\\'||(c) ==':')
+
 CStr qEnvCGI::MapFullPath(const char *path) 
 {
 	CStr path1 = GetHeader("PATH_TRANSLATED");
-	CStr path2 = path;
+
+	if (!path1.IsEmpty()) {
+		CStr strip = GetHeader("PATH_INFO");
+		if (strip.IsEmpty()) strip = GetHeader("SCRIPT_NAME");
+
+		int i = strip.Length();
+		int j = path1.Length();
+
+		while (--i > 0 && --j > 0 && strip.Data()[i] == path1.Data()[j]) {
+		}
+
+		if ((j + 1) < path1.Length() && ISPATHSEP(path1.Data()[j+1])) {
+			path1.Grow(j+1);
+		}
+	} else {
+		path = GetHeader("SCRIPT_NAME");
+		int i = path1.Length();
+
+		while (i-- > 0) {
+			if (ISPATHSEP(path1.Data()[i])) {
+				break;
+			}
+		}
+		if (i >= 0) {
+			path1.Grow(i);
+		}
+	}
+
 	path1.RTrim();
+	CStr path2 = path;
 	CStr path3(path1.Length()+path2.Length()+1);
 	PathCombine(path3.GetBuffer(),path1,path2);
 	path1.Grow(path3.Length());
@@ -193,3 +226,39 @@ bool qEnvCGI::Flush()
 	// todo : rebind stream to context parser
 	return false;
 }
+
+#ifdef WIN32
+	#define environ _environ
+#endif
+int qEnvCGI::GetHeaders(qEnvHttpHeaderCB *CB)
+{
+	char **pp = environ;
+	if (!pp) return 0;
+	while(*pp) {
+		char *p = *pp;
+		if (!strncmp(p,"HTTP_",5)) {
+		  p+=5;
+		  char *v = p;
+		  while (*v && *v != '=') ++v;
+		  
+		  CStr name(p,v-p);
+		  if (*v == '=') ++v;
+		  CB->Callback(name, v);
+		}
+		++pp;
+	}
+}
+
+void qEnvCGI::PrintHeaders()
+{
+        CLst<HEADER_ENT> *lst = myHeaders;
+        while(lst) {
+		PutS(lst->Data().Name);
+		PutS(": ");
+		PutS(lst->Data().Value);
+		PutC('\n');
+		lst=lst->Next();
+        }
+}
+
+
