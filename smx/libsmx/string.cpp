@@ -30,6 +30,8 @@ THIS SOFTWARE IS PROVIDED 'AS IS' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDI
 #include <new>
 using namespace std;
 
+#if defined(HAVE_OPENSSL_EVP_H) || defined(HAVE_OPENSSL)
+
 // sha hash
 void EvalSha(const void *data, qCtx *ctx, qStr *pStream, qArgAry *args)
 {
@@ -53,6 +55,7 @@ void EvalMD5(const void *data, qCtx *ctx, qStr *pStream, qArgAry *args)
                         pStream->PutS(out);
         }
 }
+#endif
 
 // string position
 void EvalPos(const void *data, qCtx *ctx, qStr *out, qArgAry *args) 
@@ -98,6 +101,7 @@ void EvalXin(const void *data, qCtx *ctx, qStr *out, qArgAry *args)
 	}
 }
 
+#if defined(HAVE_OPENSSL_EVP_H) || defined(HAVE_OPENSSL)
 void EvalEncrypt(const void *data, qCtx *ctx, qStr *pStream, qArgAry *args)
 {
 	if (args->Count() > 1) {
@@ -113,6 +117,7 @@ void EvalEncrypt(const void *data, qCtx *ctx, qStr *pStream, qArgAry *args)
 		pStream->PutS(out);
 	}
 }
+#endif
 
 #ifdef unix
 void EvalCrypt(const void *data, qCtx *ctx, qStr *pStream, qArgAry *args)
@@ -123,6 +128,7 @@ void EvalCrypt(const void *data, qCtx *ctx, qStr *pStream, qArgAry *args)
 }
 #endif
 
+#if defined(HAVE_OPENSSL_EVP_H) || defined(HAVE_OPENSSL)
 
 void EvalDecrypt(const void *data, qCtx *ctx, qStr *pStream, qArgAry *args)
 {
@@ -139,6 +145,8 @@ void EvalDecrypt(const void *data, qCtx *ctx, qStr *pStream, qArgAry *args)
 		pStream->PutS(out);
 	}
 }
+#endif
+#if defined(HAVE_OPENSSL_EVP_H) || defined(HAVE_OPENSSL)
 
 // HEX/ENCODE
 void EvalEncode(const void *data, qCtx *ctx, qStr *pStream, qArgAry *args)
@@ -192,6 +200,7 @@ void EvalDeobfuscate(const void *data, qCtx *ctx, qStr *pStream, qArgAry *args)
 		pStream->PutS(out);
 	}
 }
+#endif
 
 void EvalLt(const void *data, qCtx *ctx, qStr *out, qArgAry *args) {
 	if (args->Count() > 1 && 
@@ -372,9 +381,6 @@ void EvalRTrim(const void *data, qCtx *ctx, qStr *out, qArgAry *args) {
 		if (str.IsEmpty()) 
 			return;
 		CStr toks = (*args)[1];
-
-
-
 
 		if (toks.Length() == 0)
 			out->PutS(str);
@@ -1262,22 +1268,23 @@ void LoadString(qCtx *ctx) {
 	ctx->MapObj(EvalXin,	       "xin");
 	ctx->MapObj(EvalIn,	           "in");
 
-// encrypt
-	ctx->MapObj(EvalSha,	       "sha");
-	ctx->MapObj(EvalMD5,	       "md5");
-
-	ctx->MapObj(EvalEncrypt,       "encrypt");
-	ctx->MapObj(EvalDecrypt,       "decrypt");
-
 #ifdef unix
 	ctx->MapObj(EvalCrypt,         "crypt");
 #endif
 
+#if defined(HAVE_OPENSSL_EVP_H) || defined(HAVE_OPENSSL)
 	ctx->MapObj(EvalEncode,        "encode");
 	ctx->MapObj(EvalDecode,        "decode");
 
 	ctx->MapObj(EvalObfuscate,     "obfuscate");
 	ctx->MapObj(EvalDeobfuscate,   "deobfuscate");
+
+	ctx->MapObj(EvalSha,	       "sha");
+	ctx->MapObj(EvalMD5,	       "md5");
+
+	ctx->MapObj(EvalEncrypt,       "encrypt");
+	ctx->MapObj(EvalDecrypt,       "decrypt");
+#endif
 
 	ctx->MapObj(EvalRxMatch,       "rxmatch","0011");
 	ctx->MapObj(EvalRxSplit,       "rxsplit","0011");

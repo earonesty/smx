@@ -57,7 +57,7 @@ public:
 
 	bool Kill() {
 		if (m_thread) {
-			bool ok = TerminateThread(m_thread, -1) != 0;
+			bool ok = TerminateThread(m_thread, (DWORD) -1) != 0;
 			CloseHandle(m_thread);
 			m_thread = NULL;
 			return ok;
@@ -86,3 +86,4 @@ public:
 };
 
 #endif
+
