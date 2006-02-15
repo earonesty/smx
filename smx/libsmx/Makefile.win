@@ -1,0 +1,187 @@
+# Project: libsmx
+# Makefile created by Dev-C++ 4.9.9.2
+
+CPP  = g++.exe
+CC   = gcc.exe
+WINDRES = windres.exe
+RES  = 
+OBJ  = util.o base64.o buf_ref.o card.o cgi.o core.o crit_unix.o dbpset.o dparse.o ex.o fbuf.o file.o hset.o io.o map.o math.o opt.o process.o proto.o pscache.o pset.o pstable.o psximpl.o psxutil.o qctx.o qctx-comp.o qenv.o qfopen.o qmail.o qobj.o qobj-ctx.o qpriq.o qsched.o qstr.o qthread.o regx.o res.o sha.o sock.o sql.o sqlgrp.o stdafx.o string.o strx.o tabfmt.o tabpre.o tabtd.o time.o ../../tdb/tdb.o hash.o ../../tdb/spinlock.o mapstr.o $(RES)
+LINKOBJ  = util.o base64.o buf_ref.o card.o cgi.o core.o crit_unix.o dbpset.o dparse.o ex.o fbuf.o file.o hset.o io.o map.o math.o opt.o process.o proto.o pscache.o pset.o pstable.o psximpl.o psxutil.o qctx.o qctx-comp.o qenv.o qfopen.o qmail.o qobj.o qobj-ctx.o qpriq.o qsched.o qstr.o qthread.o regx.o res.o sha.o sock.o sql.o sqlgrp.o stdafx.o string.o strx.o tabfmt.o tabpre.o tabtd.o time.o ../../tdb/tdb.o hash.o ../../tdb/spinlock.o mapstr.o $(RES)
+LIBS =  -L"C:/Dev-Cpp/lib" -lwsock32 -lodbc32 --export-all-symbols  
+INCS =  -I"C:/Dev-Cpp/include"  -I"../../tdb" 
+CXXINCS =  -I"C:/Dev-Cpp/lib/gcc/mingw32/3.4.2/include"  -I"C:/Dev-Cpp/include/c++/3.4.2/backward"  -I"C:/Dev-Cpp/include/c++/3.4.2/mingw32"  -I"C:/Dev-Cpp/include/c++/3.4.2"  -I"C:/Dev-Cpp/include"  -I"../../tdb" 
+BIN  = libsmx.dll
+CXXFLAGS = $(CXXINCS) -DSS_ANSI -DHAVE_LIBTDB -DNOACTIVEX -DNO_LOAD_TSET   -fexceptions
+CFLAGS = $(INCS)    -fexceptions
+RM = rm -f
+
+.PHONY: all all-before all-after clean clean-custom
+
+all: all-before libsmx.dll all-after
+
+
+clean: clean-custom
+	${RM} $(OBJ) $(BIN)
+
+DLLWRAP=dllwrap.exe
+DEFFILE=liblibsmx.def
+STATICLIB=liblibsmx.a
+
+$(BIN): $(LINKOBJ)
+	$(DLLWRAP) --output-def $(DEFFILE) --driver-name c++ --implib $(STATICLIB) $(LINKOBJ) $(LIBS) -o $(BIN)
+
+util.o: util.cpp
+	$(CPP) -c util.cpp -o util.o $(CXXFLAGS)
+
+base64.o: base64.cpp
+	$(CPP) -c base64.cpp -o base64.o $(CXXFLAGS)
+
+buf_ref.o: buf_ref.cpp
+	$(CPP) -c buf_ref.cpp -o buf_ref.o $(CXXFLAGS)
+
+card.o: card.cpp
+	$(CPP) -c card.cpp -o card.o $(CXXFLAGS)
+
+cgi.o: cgi.cpp
+	$(CPP) -c cgi.cpp -o cgi.o $(CXXFLAGS)
+
+core.o: core.cpp
+	$(CPP) -c core.cpp -o core.o $(CXXFLAGS)
+
+crit_unix.o: crit_unix.cpp
+	$(CPP) -c crit_unix.cpp -o crit_unix.o $(CXXFLAGS)
+
+dbpset.o: dbpset.cpp
+	$(CPP) -c dbpset.cpp -o dbpset.o $(CXXFLAGS)
+
+dparse.o: dparse.cpp
+	$(CPP) -c dparse.cpp -o dparse.o $(CXXFLAGS)
+
+ex.o: ex.cpp
+	$(CPP) -c ex.cpp -o ex.o $(CXXFLAGS)
+
+fbuf.o: fbuf.cpp
+	$(CPP) -c fbuf.cpp -o fbuf.o $(CXXFLAGS)
+
+file.o: file.cpp
+	$(CPP) -c file.cpp -o file.o $(CXXFLAGS)
+
+hset.o: hset.cpp
+	$(CPP) -c hset.cpp -o hset.o $(CXXFLAGS)
+
+io.o: io.cpp
+	$(CPP) -c io.cpp -o io.o $(CXXFLAGS)
+
+map.o: map.cpp
+	$(CPP) -c map.cpp -o map.o $(CXXFLAGS)
+
+math.o: math.cpp
+	$(CPP) -c math.cpp -o math.o $(CXXFLAGS)
+
+opt.o: opt.cpp
+	$(CPP) -c opt.cpp -o opt.o $(CXXFLAGS)
+
+process.o: process.cpp
+	$(CPP) -c process.cpp -o process.o $(CXXFLAGS)
+
+proto.o: proto.cpp
+	$(CPP) -c proto.cpp -o proto.o $(CXXFLAGS)
+
+pscache.o: pscache.cpp
+	$(CPP) -c pscache.cpp -o pscache.o $(CXXFLAGS)
+
+pset.o: pset.cpp
+	$(CPP) -c pset.cpp -o pset.o $(CXXFLAGS)
+
+pstable.o: pstable.cpp
+	$(CPP) -c pstable.cpp -o pstable.o $(CXXFLAGS)
+
+psximpl.o: psximpl.cpp
+	$(CPP) -c psximpl.cpp -o psximpl.o $(CXXFLAGS)
+
+psxutil.o: psxutil.cpp
+	$(CPP) -c psxutil.cpp -o psxutil.o $(CXXFLAGS)
+
+qctx.o: qctx.cpp
+	$(CPP) -c qctx.cpp -o qctx.o $(CXXFLAGS)
+
+qctx-comp.o: qctx-comp.cpp
+	$(CPP) -c qctx-comp.cpp -o qctx-comp.o $(CXXFLAGS)
+
+qenv.o: qenv.cpp
+	$(CPP) -c qenv.cpp -o qenv.o $(CXXFLAGS)
+
+qfopen.o: qfopen.cpp
+	$(CPP) -c qfopen.cpp -o qfopen.o $(CXXFLAGS)
+
+qmail.o: qmail.cpp
+	$(CPP) -c qmail.cpp -o qmail.o $(CXXFLAGS)
+
+qobj.o: qobj.cpp
+	$(CPP) -c qobj.cpp -o qobj.o $(CXXFLAGS)
+
+qobj-ctx.o: qobj-ctx.cpp
+	$(CPP) -c qobj-ctx.cpp -o qobj-ctx.o $(CXXFLAGS)
+
+qpriq.o: qpriq.cpp
+	$(CPP) -c qpriq.cpp -o qpriq.o $(CXXFLAGS)
+
+qsched.o: qsched.cpp
+	$(CPP) -c qsched.cpp -o qsched.o $(CXXFLAGS)
+
+qstr.o: qstr.cpp
+	$(CPP) -c qstr.cpp -o qstr.o $(CXXFLAGS)
+
+qthread.o: qthread.cpp
+	$(CPP) -c qthread.cpp -o qthread.o $(CXXFLAGS)
+
+regx.o: regx.cpp
+	$(CPP) -c regx.cpp -o regx.o $(CXXFLAGS)
+
+res.o: res.cpp
+	$(CPP) -c res.cpp -o res.o $(CXXFLAGS)
+
+sha.o: sha.cpp
+	$(CPP) -c sha.cpp -o sha.o $(CXXFLAGS)
+
+sock.o: sock.cpp
+	$(CPP) -c sock.cpp -o sock.o $(CXXFLAGS)
+
+sql.o: sql.cpp
+	$(CPP) -c sql.cpp -o sql.o $(CXXFLAGS)
+
+sqlgrp.o: sqlgrp.cpp
+	$(CPP) -c sqlgrp.cpp -o sqlgrp.o $(CXXFLAGS)
+
+stdafx.o: stdafx.cpp
+	$(CPP) -c stdafx.cpp -o stdafx.o $(CXXFLAGS)
+
+string.o: string.cpp
+	$(CPP) -c string.cpp -o string.o $(CXXFLAGS)
+
+strx.o: strx.cpp
+	$(CPP) -c strx.cpp -o strx.o $(CXXFLAGS)
+
+tabfmt.o: tabfmt.cpp
+	$(CPP) -c tabfmt.cpp -o tabfmt.o $(CXXFLAGS)
+
+tabpre.o: tabpre.cpp
+	$(CPP) -c tabpre.cpp -o tabpre.o $(CXXFLAGS)
+
+tabtd.o: tabtd.cpp
+	$(CPP) -c tabtd.cpp -o tabtd.o $(CXXFLAGS)
+
+time.o: time.cpp
+	$(CPP) -c time.cpp -o time.o $(CXXFLAGS)
+
+../../tdb/tdb.o: ../../tdb/tdb.c
+	$(CPP) -c ../../tdb/tdb.c -o ../../tdb/tdb.o $(CXXFLAGS)
+
+hash.o: hash.c
+	$(CPP) -c hash.c -o hash.o $(CXXFLAGS)
+
+../../tdb/spinlock.o: ../../tdb/spinlock.c
+	$(CPP) -c ../../tdb/spinlock.c -o ../../tdb/spinlock.o $(CXXFLAGS)
+
+mapstr.o: mapstr.cpp
+	$(CPP) -c mapstr.cpp -o mapstr.o $(CXXFLAGS)
