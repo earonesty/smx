@@ -40,46 +40,9 @@ CEx *qExF(int id, char *msg, ...)
 	va_list vargs;
 	va_start( vargs, msg );
 
-	strcpy(gEx.msg,  gExPrefix);
-	strcpy(gEx.msg + gExPrefixLen, msg);
+	strncpy(gEx.msg,  gExPrefix, QEX_MAXMSG);
+	strncpy(gEx.msg + gExPrefixLen, msg, QEX_MAXMSG);
 
-	return qExV(id, gEx.msg, ((char *)vargs)-sizeof(int));
-}
-
-CEx *qExRc(int id, ...)
-{
-	va_list vargs;
-	va_start( vargs, id );
-
-	char *data;
-	long len = resLoad(ghRes, id, &data);
-
-	if (len <= 0)
-		strcpy(gEx.msg, "Unknown error.");
-	else {
-		strncpy(gEx.msg, data, QEX_MAXMSG);
-		gEx.msg[QEX_MAXMSG-1] = 0;
-	}
-
-	return qExV(id, gEx.msg, vargs);
-}
-
-CEx *qExRcF(int id, ...)
-{
-	va_list vargs;
-	va_start( vargs, id );
-
-	strcpy(gEx.msg,  gExPrefix);
-
-	char *data;
-	long len = resLoad(ghRes, id, &data);
-
-	if (len <= 0) {
-		strcpy(gEx.msg + gExPrefixLen, "Unknown error.");
-	} else {
-		strncpy(gEx.msg + gExPrefixLen, data, QEX_MAXMSG - gExPrefixLen);
-		gEx.msg[QEX_MAXMSG - gExPrefixLen - 1] = 0;
-	}
 	return qExV(id, gEx.msg, ((char *)vargs)-sizeof(int));
 }
 

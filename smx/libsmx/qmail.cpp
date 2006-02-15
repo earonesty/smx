@@ -560,16 +560,6 @@ void qinit()
 	char *argv[1] = {NULL};
 #endif
 
-#ifdef RESDEBUG
-	printf("qmail/qinit pre: ghRes %d\n", ghRes);
-#endif
-
-	RES_INIT;
-
-#ifdef RESDEBUG
-	printf("qmail/qinit post: ghRes %d\n", ghRes);
-#endif
-
 #if MAC
 	GUSISetup(GUSIwithSIOUXSockets);
 	GUSISetup(GUSIwithInternetSockets);
@@ -592,9 +582,6 @@ void qterm()
 	if (gAppKey) 
         RegCloseKey(gAppKey);
 #endif
-
-    if (ghRes) 
-        resTerm(ghRes);
 }
 
 #ifdef WIN32

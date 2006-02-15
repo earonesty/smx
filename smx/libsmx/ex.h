@@ -25,8 +25,6 @@ THIS SOFTWARE IS PROVIDED 'AS IS' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDI
 	#include "qlib.h"
 #endif
 
-#include "res.h"
-
 #define QEX_PREFIX "ERROR #%d: "
 #define QEX_MAXMSG 2048
 
@@ -38,8 +36,6 @@ struct CEx {
 CEx *qExV(int id, char *msg, va_list vargs);
 CEx *qEx(int id, char *msg, ...);
 CEx *qExF(int id, char *msg, ...);
-CEx *qExRc(int id, ...);
-CEx *qExRcF(int id, ...);
 CEx *qExLast();
 
 #ifndef TLS

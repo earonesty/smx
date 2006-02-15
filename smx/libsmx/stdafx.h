@@ -75,7 +75,6 @@ THIS SOFTWARE IS PROVIDED 'AS IS' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDI
 #include "map.h"
 #include "ary.h"
 #include "lst.h"
-#include "ex.h"
 #include "crit.h"
 
 #endif // #ifndef _QSCRIPT_STDINC_H
