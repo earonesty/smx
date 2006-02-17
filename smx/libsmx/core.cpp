@@ -33,20 +33,11 @@ void qsInit(void *module)
 {
 	if (!qsInitialized) {
 
-		if (!ghRes) ghRes = (long) module;
-
 #if defined(_WINDOWS) || defined(WIN32)
 		system("del /q /f __db.??? >nul 2>nul");
 		_setmaxstdio(2048);
 		_set_sbh_threshold(0);
-#else
-		system("rm -f __db.??? > /dev/null 2>/dev/null");
 #endif
-
-#ifdef USE_QWEB
-		qweb_init((HINSTANCE) module);
-#endif
-
 		qsInitialized = true;
 
 	}

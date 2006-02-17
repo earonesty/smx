@@ -19,6 +19,7 @@ THIS SOFTWARE IS PROVIDED 'AS IS' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDI
 #include "sock.h"
 #include "qmail.h"
 #include "util.h"
+#include "ex.h"
 
 class qObjProto : public qObj
 {
