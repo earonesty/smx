@@ -149,7 +149,7 @@ void EvalFilePath(const void *data, qCtx *ctx, qStr *out, qArgAry *args)
 	while (r >= b && !(ISPATHSEP(*r))) {
 		--r;
 	}
-	if (r > b) {
+	if (r >= b) {
 		*r++ = DIRSEP;
 		*r = '\0';
 		path.Grow(r - b);
