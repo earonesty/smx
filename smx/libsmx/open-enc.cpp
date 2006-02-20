@@ -114,11 +114,12 @@ int EVP_cipher(const char *passw, int cbpass, char *strin, int cbstr, int op, co
 
 int B64_decode(const char *strin, char *strout, int cbstr)
 {
+	CStr altin;
 	if ((cbstr % 4 == 3) || (cbstr % 4 == 2)) {
-		CStr altin(strin);
-		if (cbstr % 4 <= 3) altin += '=';
-		if (cbstr % 4 == 2) altin += '=';
-		strin = altin;
+		altin.Copy(strin, cbstr);
+		if (cbstr % 4 <= 3) altin << '=';
+		if (cbstr % 4 == 2) altin << '=';
+		strin = altin.Data();
 		cbstr = altin.Length();
 	}
 
