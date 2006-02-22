@@ -710,6 +710,9 @@ CDbStmt CDbConn::Execute(const char *sql)
 		return CDbStmt(this, (SQLHSTMT)NULL);
 	}
 
+	if (!sql)
+		return CDbStmt(this, (SQLHSTMT)NULL);
+
 	while (isspace(*sql))
 		++sql;
 
@@ -1113,35 +1116,8 @@ void EvalSql(const void *data, qCtx *ctx, qStr *out, qArgAry *args)
 		if (conn = data ? ((CDbPool*)data)->Connect(cstr.GetBuffer()) : dbLib->Connect(cstr.GetBuffer())) {
 			CDbStmt stmt;
 			CStr sql = (*args)[1];
-#ifdef SQLTRIM
-			char *p = sql;
-			char *c = sql;
-
-			// trim and sql quote the query
-			while (*p) {
-				while (isspace(*p))
-					++p;
-				while (*c = *p) {
-					if (*p == '\'') {
-						while (*++c = *++p) {
-							if (*p == '\'' && p[1] != '\'') {
-								*++c = *++p;
-								break;
-							}
-						}
-					} else if (isspace(*p)) {
-						*c++ = ' ';
-						while (isspace(*++p));
-					} else {
-						++c; ++p;
-					}
-				}
-			}
-			sql.Grow(c - (char *) sql);
-#else
 			sql.Trim();
-#endif
-			if ( stmt = conn.Execute(sql) ) {
+			if ( !sql.IsEmpty() && ( stmt = conn.Execute(sql) ) ) {
 				if (args->Count() >= 3) {
 					if (stmt.Bind()) {
 						qCtxTmp loopCtx(ctx);
