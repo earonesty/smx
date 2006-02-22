@@ -124,32 +124,6 @@ public:
 	int Count() const		{return CBufRefChar::Count() / sizeof(TYPE);}
 
 	const TYPE &Add(const TYPE &d) {Grow(Count() + 1); Data()[Count()-1] = d; return d;}
-
-	TYPE *Shift(int n) {
-		void *tmp=malloc(sizeof(BUFFER_INFO));
-		if (tmp) {
-			memcpy(tmp,GetX(),sizeof(BUFFER_INFO));
-			memmove(GetX(),m_buf,n*sizeof(TYPE));
-			m_buf += n*sizeof(TYPE);
-			memcpy(GetX(),tmp,sizeof(BUFFER_INFO));
-			SetCount(Count()-n);
-			free(tmp);
-		}
-		return Data();
-	}
-
-	TYPE *Restore(int n) {
-		void *tmp=malloc(sizeof(BUFFER_INFO));
-		if (tmp) {
-			memcpy(tmp,GetX(),sizeof(BUFFER_INFO));
-			m_buf -= n*sizeof(TYPE);
-			memmove(m_buf,m_buf-sizeof(BUFFER_INFO),n*sizeof(TYPE));
-			memcpy(GetX(),tmp,sizeof(BUFFER_INFO));
-			SetCount(Count()+n);
-			free(tmp);
-		}
-		return Data();
-	}
 };
 
 // template for buffer of zero-initialized objects (memset, not calloc)

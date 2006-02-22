@@ -158,17 +158,12 @@ void EvalInvoke(const void *data, qCtx *ctx, qStr *out, qArgAry *args)
 	qObj *obj;
 	if (ctx->Find(&obj, var)) {
 		if (args->Count() >= 2) {
-			args->Shift(1);
-			try {
-				obj->Eval(ctx,out,args);
-			} catch(qCtxEx ex) {
-				args->Restore(1);
-				throw ex;
-			} catch (qCtxExAbort ex) {
-				args->Restore(1);
-				throw ex;
+			int i;
+			for (i = 0; i < (args->Count()-1); ++i) {
+				args->SetAt(i,args->GetAt(i+1));
 			}
-			args->Restore(1);
+			args->Grow(args->Count()-1);
+			obj->Eval(ctx,out,args);
 		} else {
 			obj->Eval(ctx,out,0);
 		}

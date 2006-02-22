@@ -44,21 +44,6 @@ public:
 		myOpts = 0; myOptsN = 0;
 	}
 	
-	void Shift(int n) {
-		CStrAry::Shift(n);
-		if (myOpts) {
-			myOpts++;
-			myOptsN--;
-		}
-	}
-	void Restore(int n) {
-		CStrAry::Restore(n);
-		if (myOpts) {
-			myOpts--;
-			myOptsN++;
-		}
-	}
-
 	void SetQuot(int n, char value) {
 		if (!this)
 			return;
