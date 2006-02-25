@@ -13,16 +13,14 @@ THIS SOFTWARE IS PROVIDED 'AS IS' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDI
 
 
 #include "stdafx.h"
+
 #undef UCHAR
 #include <sql.h>
-#include "sqlext.h"
-
+#include <sqlext.h>
 
 #include "qstr.h"
 #include "qobj.h"
 #include "qctx.h"
-
-#include "sqlgrp.h"
 
 #include "util.h"
 
@@ -30,6 +28,12 @@ THIS SOFTWARE IS PROVIDED 'AS IS' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDI
 
 #ifdef WIN32
 	#include <process.h>
+#endif
+
+#include "smx_sql.h"
+
+#ifdef HAVE_SQLITE3_H
+	#include "smx_sqlite.h"
 #endif
 
 class CDbLib;
@@ -858,12 +862,14 @@ CDbCol *CDbStmt::Column(const char * index)
 
 CDbLib *myDBL;
 
-class qObjSql : public qObj {
-	int myIndex;
-	CDbStmt *myStmt;
+class qObjODBC : public qObjSql {
+	CDbStmt myStmt;
+	CDbConn myConn;
 	CDbCol *GetEvalCol(qCtx *ctx, qArgAry *args);
 public:
-	qObjSql(CDbStmt *stmt) {myStmt = stmt;}
+	qObjODBC(char *dsn, qCtx *ctx, const void *data);
+	void Open(char *dsn, qCtx *ctx, const void *data);
+	void Execute(qCtx *ctx, qStr *out, const char *sql, CStr &body, CStr &head, CStr &foot);
 	void EvalColName(qCtx *ctx, qStr *out, qArgAry *args);
 	void EvalColType(qCtx *ctx, qStr *out, qArgAry *args);
 	void EvalRow(qCtx *ctx, qStr *out, qArgAry *args);
@@ -873,7 +879,36 @@ public:
 	void EvalEnumCol(qCtx *ctx, qStr *out, qArgAry *args) ;
 };
 
-CDbCol *qObjSql::GetEvalCol(qCtx *ctx, qArgAry *args)
+void qObjODBC::Execute(qCtx *ctx, qStr *out, const char *sql, CStr &body, CStr &head, CStr &foot)
+{
+	myStmt = myConn.Execute(sql);
+	if ( ! ( body.IsEmpty() && head.IsEmpty() && foot.IsEmpty() ) ) {
+		if (myStmt.Bind()) {
+			bool ok = myStmt.Next();
+			ctx->MapObj(&ok, (QOBJFUNC) EvalBreak, "break");
+			if (!head.IsEmpty()) ctx->Parse(head, out);
+			ok = ok && !myStmt.Done();
+                        while (ok) {
+                        	ctx->Parse(body, out);
+				if (ok)
+                                	ok = myStmt.Next();
+                        }
+			if (!foot.IsEmpty()) ctx->Parse(foot, out);
+		}
+	}
+}
+
+qObjODBC::qObjODBC(char *dsn, qCtx *ctx, const void *data)
+{
+	Open(dsn,ctx,data);
+}
+
+void qObjODBC::Open(char *dsn, qCtx *ctx, const void *data)
+{
+	myConn = data ? ((CDbPool*)data)->Connect(dsn) : GetDbLib(ctx)->Connect(dsn);
+}
+
+CDbCol *qObjODBC::GetEvalCol(qCtx *ctx, qArgAry *args)
 {
 	CDbCol *col = 0;
 
@@ -882,39 +917,39 @@ CDbCol *qObjSql::GetEvalCol(qCtx *ctx, qArgAry *args)
 	index.Trim();
 	if (!index.IsEmpty()) {
 		if (isdigit(index[0])) {
-			col = myStmt->Column(atoi(index)-1);
+			col = myStmt.Column(atoi(index)-1);
 		} else {
 			strlwr(index.GetBuffer());
-			col = myStmt->Column((const char *)index);
+			col = myStmt.Column((const char *)index);
 		}
 	}
         }
 	return col;
 }
 
-void qObjSql::EvalSkipRows(qCtx *ctx, qStr *out, qArgAry *args)
+void qObjODBC::EvalSkipRows(qCtx *ctx, qStr *out, qArgAry *args)
 {
 	int val = ParseInt((*args)[0]);
-	myStmt->Skip(val);
+	myStmt.Skip(val);
 }
 
-void qObjSql::EvalRow(qCtx *ctx, qStr *out, qArgAry *args)
+void qObjODBC::EvalRow(qCtx *ctx, qStr *out, qArgAry *args)
 {
-	assert(myStmt->RowCount()!=-1);
-	if (myStmt->RowCount() == -1)
+	assert(myStmt.RowCount()!=-1);
+	if (myStmt.RowCount() == -1)
 		return;
-	out->PutN(myStmt->RowCount());
+	out->PutN(myStmt.RowCount());
 }
 
-void qObjSql::EvalCol(qCtx *ctx, qStr *out, qArgAry *args) 
+void qObjODBC::EvalCol(qCtx *ctx, qStr *out, qArgAry *args) 
 {
-	assert(myStmt->RowCount()!=-1);
-	if (myStmt->RowCount() == -1)
+	assert(myStmt.RowCount()!=-1);
+	if (myStmt.RowCount() == -1)
 		return;
 	CDbCol *col;
 	if ((col = GetEvalCol(ctx, args))) {
 		int ind = col->GetInd();
-		if (myStmt->HasData() && SQL_HAS_DATA(ind)) {
+		if (myStmt.HasData() && SQL_HAS_DATA(ind)) {
 			col->ConvBuf();
 			col->RTrim();
 			if (col->GetBuf() && *col->GetBuf())
@@ -923,15 +958,15 @@ void qObjSql::EvalCol(qCtx *ctx, qStr *out, qArgAry *args)
 	}
 }
 
-void qObjSql::EvalColumn(qCtx *ctx, qStr *out, qArgAry *args) 
+void qObjODBC::EvalColumn(qCtx *ctx, qStr *out, qArgAry *args) 
 {
-	assert(myStmt->RowCount()!=-1);
-	if (myStmt->RowCount() == -1)
+	assert(myStmt.RowCount()!=-1);
+	if (myStmt.RowCount() == -1)
 		return;
 	CDbCol *col;
 	if ((col = GetEvalCol(ctx, args))) {
 		int ind = col->GetInd();
-		if (myStmt->HasData() && SQL_HAS_DATA(ind)) {
+		if (myStmt.HasData() && SQL_HAS_DATA(ind)) {
 			col->ConvBuf();
 			if (ind >= 0) {
 				int n = min((SQLINTEGER)ind, col->DispSize);
@@ -943,10 +978,10 @@ void qObjSql::EvalColumn(qCtx *ctx, qStr *out, qArgAry *args)
 	}
 }
 
-void qObjSql::EvalEnumCol(qCtx *ctx, qStr *out, qArgAry *args) 
+void qObjODBC::EvalEnumCol(qCtx *ctx, qStr *out, qArgAry *args) 
 {
-	assert(myStmt->RowCount()!=-1);
-	if (myStmt->RowCount() == -1)
+	assert(myStmt.RowCount()!=-1);
+	if (myStmt.RowCount() == -1)
 		return;
 	if (args->Count() == 0)
 		return;
@@ -967,10 +1002,10 @@ void qObjSql::EvalEnumCol(qCtx *ctx, qStr *out, qArgAry *args)
 	sub.MapObj(&ok, (QOBJFUNC) EvalBreak, "break");
 
 	CDbCol *col;
-	for(num = 1; ok && num <= myStmt->ColCount(); ++num) {
-		col = myStmt->Column(num-1);
+	for(num = 1; ok && num <= myStmt.ColCount(); ++num) {
+		col = myStmt.Column(num-1);
 		name = col->Name;
-		if (myStmt->HasData() && SQL_HAS_DATA(col->GetInd())) {
+		if (myStmt.HasData() && SQL_HAS_DATA(col->GetInd())) {
 			col->ConvBuf();
 			col->RTrim();
 			value = col->GetBuf();
@@ -983,10 +1018,10 @@ void qObjSql::EvalEnumCol(qCtx *ctx, qStr *out, qArgAry *args)
 	}
 }
 
-void qObjSql::EvalColName(qCtx *ctx, qStr *out, qArgAry *args) 
+void qObjODBC::EvalColName(qCtx *ctx, qStr *out, qArgAry *args) 
 {
-	assert(myStmt->RowCount()!=-1);
-	if (myStmt->RowCount() == -1)
+	assert(myStmt.RowCount()!=-1);
+	if (myStmt.RowCount() == -1)
 		return;
 	CDbCol *col;
 	if ((col = GetEvalCol(ctx, args))) {
@@ -994,10 +1029,10 @@ void qObjSql::EvalColName(qCtx *ctx, qStr *out, qArgAry *args)
 	}
 }
 
-void qObjSql::EvalColType(qCtx *ctx, qStr *out, qArgAry *args) 
+void qObjODBC::EvalColType(qCtx *ctx, qStr *out, qArgAry *args) 
 {
-	assert(myStmt->RowCount()!=-1);
-	if (myStmt->RowCount() == -1)
+	assert(myStmt.RowCount()!=-1);
+	if (myStmt.RowCount() == -1)
 		return;
 
 	CDbCol *col;
@@ -1031,6 +1066,7 @@ void ParseDSN(char *cstr, char *&dsn, char *&uid, char *&pwd, char *&etc)
 {
 	dsn = cstr;
 	while (isspace(*dsn)) ++dsn;
+
 	uid = strchr(dsn,';');
 	pwd = 0;
 	etc = 0;
@@ -1108,65 +1144,49 @@ void EvalSql(const void *data, qCtx *ctx, qStr *out, qArgAry *args)
 	CDbLib *dbLib = GetDbLib(ctx);
 
 	CDbConn conn;
-	CStr cstr = (*args)[0];
+	CStr dsn = (*args)[0];
+	dsn.Trim();
 
-	qObjTSRef ts = dbLib->GetRef();
+	qObjSql *handler;
+
+	CStr sql = (*args)[1];
+	sql.Trim();
+
+	if (dsn.IsEmpty()) {
+		ctx->Throw(out, 358, "No datasource specified");
+		return;
+	}
 
 	try {
-		if (conn = data ? ((CDbPool*)data)->Connect(cstr.GetBuffer()) : dbLib->Connect(cstr.GetBuffer())) {
-			CDbStmt stmt;
-			CStr sql = (*args)[1];
-			sql.Trim();
-			if ( !sql.IsEmpty() && ( stmt = conn.Execute(sql) ) ) {
-				if (args->Count() >= 3) {
-					if (stmt.Bind()) {
-						qCtxTmp loopCtx(ctx);
-						qObjSql handler(&stmt);
+	    qObjTSRef ts;
+#ifdef HAVE_SQLITE3_H
+            if(!strnicmp(dsn,"sqlite:",7)) {
+		const char *p = dsn+7;
+		while (isspace(*p)) ++p;
+		handler = new qObjSqlite(p);
+            } else 
+#endif // HAVE_SQLITE3_H	
+	    {
+		ts = dbLib->GetRef();
+		handler = new qObjODBC(dsn, ctx, data);
+	    }
 
-						bool ok = stmt.Next();
+	    qCtxTmp loopCtx(ctx);
+            loopCtx.MapObj(handler, (QOBJMETH) &qObjSql::EvalColName, "column-name");
+            loopCtx.MapObj(handler, (QOBJMETH) &qObjSql::EvalColName, "col-name");
+            loopCtx.MapObj(handler, (QOBJMETH) &qObjSql::EvalColType, "column-type");
+            loopCtx.MapObj(handler, (QOBJMETH) &qObjSql::EvalColType, "col-type");
+            loopCtx.MapObj(handler, (QOBJMETH) &qObjSql::EvalEnumCol, "enumcolumn","1");
+            loopCtx.MapObj(handler, (QOBJMETH) &qObjSql::EvalEnumCol, "enumcol","1");
+            loopCtx.MapObj(handler, (QOBJMETH) &qObjSql::EvalColumn,  "column");
+            loopCtx.MapObj(handler, (QOBJMETH) &qObjSql::EvalCol,     "col");
+            loopCtx.MapObj(handler, (QOBJMETH) &qObjSql::EvalRow,     "num-rows");
+            loopCtx.MapObj(handler, (QOBJMETH) &qObjSql::EvalSkipRows,"skip-rows");
 
-						// functions available inside of sql body
-						loopCtx.MapObj(&handler, (QOBJMETH) &qObjSql::EvalColName, "column-name");
-						loopCtx.MapObj(&handler, (QOBJMETH) &qObjSql::EvalColName, "col-name");
-						loopCtx.MapObj(&handler, (QOBJMETH) &qObjSql::EvalColType, "column-type");
-						loopCtx.MapObj(&handler, (QOBJMETH) &qObjSql::EvalColType, "col-type");
-						loopCtx.MapObj(&handler, (QOBJMETH) &qObjSql::EvalEnumCol, "enumcolumn","1");
-						loopCtx.MapObj(&handler, (QOBJMETH) &qObjSql::EvalEnumCol, "enumcol","1");
-						loopCtx.MapObj(&handler, (QOBJMETH) &qObjSql::EvalColumn,  "column");
-						loopCtx.MapObj(&handler, (QOBJMETH) &qObjSql::EvalCol,     "col");
-						loopCtx.MapObj(&handler, (QOBJMETH) &qObjSql::EvalRow,     "num-rows");
-						loopCtx.MapObj(&handler, (QOBJMETH) &qObjSql::EvalSkipRows,"skip-rows");
+            CStr sql = (*args)[1];
+            sql.Trim();
 
-						loopCtx.MapObj(&ok, (QOBJFUNC) EvalBreak, "break");
-
-						if (args->Count() >= 4) {
-							loopCtx.Parse(args->GetAt(3), out);
-						}
-
-						ok = ok && !stmt.Done();
-						while (ok) {
-							loopCtx.Parse(args->GetAt(2), out);
-							if (ok)
-								ok = stmt.Next();
-						}
-
-						if (args->Count() >= 5) {
-							loopCtx.Parse(args->GetAt(4), out);
-						}
-					}
-				}
-				if (data) {
-					stmt.Finish();
-					((CDbPool*)data)->AddStmt(stmt);
-				}
-			} else {
-				errCode = 301;
-				errMsg  = stmt.GetErrorMsg();
-			}
-		} else {
-				errCode = 302;
-				errMsg  = conn.GetErrorMsg();
-		}
+            handler->Execute(&loopCtx, out, sql, args->GetAt(2), args->GetAt(3), args->GetAt(4));
 	} catch(qCtxEx ex) {
 		errCode = ex.GetID();
 		errMsg = ex.GetMsg();
