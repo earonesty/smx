@@ -1,2 +1,2 @@
 %safe-mode(1)
-%create-file(test-safe-dir/test-safe.tmp,1)
+%create-file(safemodedir/test-safe.tmp,1)
