@@ -25,23 +25,33 @@ THIS SOFTWARE IS PROVIDED 'AS IS' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDI
 
 #include "smx_sqlite.h"
 
-qObjSqlite::qObjSqlite(const char *dsn)
+qObjSqlite::qObjSqlite(const char *dsn, qCtx *ctx)
 {
 	myDB = NULL;
 	myDBOpen = false;
 	myMapped = false;
-	Open(dsn);
+	Open(dsn, ctx);
 }
 
 qObjSqlite::~qObjSqlite()
 {
 	if (myDB) {
 		sqlite3_close(myDB);
+		myDB=NULL;
+		myDBOpen=false;
 	}
 }
 
-bool qObjSqlite::Open(const char *dsn)
+bool qObjSqlite::Open(const char *dsn, qCtx *ctx)
 {
+	if (myDB) {
+		sqlite3_close(myDB);
+		myDB=NULL;
+		myDBOpen=false;
+	}
+	if(!safe_fcheck(ctx, dsn)) {
+		return false;
+	}
         int rc = sqlite3_open(dsn, &myDB);
         myDBOpen = !rc;
 	if (myDBOpen)
@@ -71,7 +81,11 @@ int qObjSqlite::Callback(int argc, char **argv, char **azColName) {
 void qObjSqlite::Execute(qCtx *ctx, qStr *out, const char *sql, CStr &body, CStr &head, CStr &foot)
 {
 	if (!myDBOpen) {
-		ctx->Throw(out, 0, sqlite3_errmsg(myDB));
+		if (myDB) {
+			ctx->Throw(out, 0, sqlite3_errmsg(myDB));
+		} else {
+			ctx->Throw(out, 0, "database could not be opened");
+		}
 		return;
 	}
 	myMapped = false;

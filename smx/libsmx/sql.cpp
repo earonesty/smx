@@ -1163,7 +1163,7 @@ void EvalSql(const void *data, qCtx *ctx, qStr *out, qArgAry *args)
             if(!strnicmp(dsn,"sqlite:",7)) {
 		const char *p = dsn+7;
 		while (isspace(*p)) ++p;
-		handler = new qObjSqlite(p);
+		handler = new qObjSqlite(p, ctx);
             } else 
 #endif // HAVE_SQLITE3_H	
 	    {

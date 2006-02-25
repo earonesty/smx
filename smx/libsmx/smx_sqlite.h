@@ -20,9 +20,9 @@ class qObjSqlite : public qObjSql {
 	CStr myFoot;
 
 public:
-        qObjSqlite(const char *dsn);
+        qObjSqlite(const char *dsn, qCtx *ctx);
         ~qObjSqlite();
-        bool Open(const char *dsn);
+        bool Open(const char *dsn, qCtx *ctx);
 	void Execute(qCtx *ctx, qStr *out, const char *sql, CStr &body, CStr &head, CStr &foot);
 	int Callback(int argc, char **argv, char **azColName);
         void EvalColName(qCtx *ctx, qStr *out, qArgAry *args);
