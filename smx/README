@@ -1,3 +1,26 @@
+**** ABOUT
+
+smx is a macro-parsing system
+
+it allows the use of text-embedded macros that are delmited
+by a "magic character". the traditional magic character is "%"
+
+for example, you can include
+
+%header%
+
+some text
+
+%footer%
+
+in your documents, and then use smx to parse them.
+
+or
+
+%counter(home-hits)
+
+in your web pages
+
 **** PREEQUISITES
 
 yum install or apt-get 
