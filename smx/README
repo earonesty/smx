@@ -1,0 +1,57 @@
+**** PREEQUISITES
+
+yum install or apt-get 
+
+	unixODBC unixODBC-devel sqlite sqlite-devel httpd-devel
+
+tdb is necessary until sqlite is better tested as the 
+only embedded db
+
+	http://sourceforge.net/projects/tdb/
+
+**** INSTALL
+
+
+Should be able to run 
+
+	./configure
+	./make
+	./make install
+
+If you did a cvs update, and you get a libtool error, run 
+
+	./make clean
+
+
+**** APACHE CONFIG
+
+Add this to your apache conf:
+
+	LoadModule /usr/local/lib/libmodsmx.so
+
+And then add
+
+	AddHandler smx-parsed .htm
+	AddHandler smx-parsed .html
+
+If you want it to magig-mode-parse html files.  You must put 
+%expand% at the top of magic-mode files.
+
+Add SMXInit <code-to-run> to your conf, if you want a 
+global-init .
+
+These globally defined macros affect the operation 
+of the apache module:
+
+	http-user	- defines a basic auth handler
+	http-badurl	- defines a 404 handler
+	http-init	- defines a per-page expanded macro
+
+**** CGI CONFIG
+
+If you want to run it as a CGI, put
+
+#!/usr/bin/smx -c
+
+at the top of your CGI scripts.  %expand% magic is 
+not necessary for CGI
