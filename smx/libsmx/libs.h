@@ -37,6 +37,9 @@ static void LoadAllLibs(qCtx *ctx)
 	LoadString(ctx);
 	LoadTime(ctx);
 	LoadHSet(ctx);
+#ifndef NO_LOAD_PSET
+	LoadPSet(ctx);
+#endif
 #ifndef NO_LOAD_FILE
 	LoadFile(ctx);
 #endif
@@ -49,9 +52,6 @@ static void LoadAllLibs(qCtx *ctx)
 #endif
 #ifndef NO_LOAD_PROTO
 	LoadProto(ctx);
-#endif
-#ifndef NO_LOAD_PSET
-	LoadPSet(ctx);
 #endif
 #ifndef NO_LOAD_PROCESS
 	LoadProcess(ctx);

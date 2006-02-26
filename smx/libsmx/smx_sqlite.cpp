@@ -101,7 +101,6 @@ void qObjSqlite::Execute(qCtx *ctx, qStr *out, const char *sql, CStr &body, CStr
 		ctx->Throw(out, 0, zErrMsg);
 		return;
 	}
-	myCtx->Parse(myFoot, myOut);
 }
 
 void qObjSqlite::EvalColName(qCtx *ctx, qStr *out, qArgAry *args)

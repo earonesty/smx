@@ -17,7 +17,6 @@ class qObjSqlite : public qObjSql {
 	qStr *myOut;	
 	CStr myHead;
 	CStr myBody;
-	CStr myFoot;
 
 public:
         qObjSqlite(const char *dsn, qCtx *ctx);

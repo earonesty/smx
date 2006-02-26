@@ -11,12 +11,11 @@ THIS SOFTWARE IS PROVIDED 'AS IS' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDI
 
 */
 
-#ifndef HAVE_LIBTDB
-// including stdafx before db_cxx breaks on WIN32, VS.NET
-#include <db_cxx.h>
-#endif
-
 #include "stdafx.h"
+#include "util.h"
+
+#if defined(HAVE_LIBTDB) || defined(HAVE_SQLITE3) || defined(HAVE_DB_H)
+
 #include "qctx.h"
 #include "qobj-ctx.h"
 #include "hset.h"
@@ -27,6 +26,8 @@ THIS SOFTWARE IS PROVIDED 'AS IS' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDI
 #define H_VALUES 2
 
 
+void LoadHSet(qCtx *ctx, const char *tmpName);
+
 void qObjHCtx::Cleanup(bool aborted) {
         myHash.Close();
 #ifdef WIN32
@@ -34,15 +35,6 @@ void qObjHCtx::Cleanup(bool aborted) {
                 remove(myHash.GetPath());
         }
 #endif
-        if (myParent && !aborted) {
-                myParent->DelObj("hset");
-                myParent->DelObj("hget");
-                myParent->DelObj("hdel");
-                myParent->DelObj("hexists");
-                myParent->DelObj("henumvalues");
-                myParent->DelObj("henumkeys");
-                myParent->DelObj("henumtree");
-        }
 }
 
 void qObjHCtx::HGet(qCtx *ctx, qStr *out, qArgAry *args)
@@ -88,6 +80,71 @@ void qObjHCtx::HSet(qCtx *ctx, qStr *out, qArgAry *args)
 		}
 	}
 }
+
+void qObjHCtx::Eval(qCtx *ctx, qStr *out, qArgAry *args)
+{
+	out->PutS(myHash.GetPath());
+}
+
+qObjHCtx *GetHCtx(qCtx *ctx)
+{
+        qObjHCtx *hCtx=NULL;
+	if (ctx->GetSafeMode()) {
+        	if ( ctx->GetEnv() && ctx->GetEnv()->GetSessionCtx() )
+                	ctx=ctx->GetEnv()->GetSessionCtx();
+        	ctx->FindL((qObj **)&hCtx, "<hctx>");
+	} else {
+        	ctx->Find((qObj **)&hCtx, "<hctx>");
+	}
+	return hCtx;
+}
+
+
+void EvalHFile(const void *data, qCtx *ctx, qStr *out, qArgAry *args)
+{
+        qObjHCtx *hCtx;
+        if ( ctx->GetEnv() && ctx->GetEnv()->GetSessionCtx() )
+        	ctx=ctx->GetEnv()->GetSessionCtx();
+
+        if (args->Count() == 1) {
+                if (!safe_fcheck(ctx, (*args)[0])) {
+                        ctx->ThrowF(out, 909, "Permission denied");
+                        return;
+                }
+		hCtx = new qObjHCtx(ctx);
+       		hCtx->SetPath((*args)[0], true);
+		ctx->MapObj(hCtx, "<hctx>");
+        } else if (args->Count() == 0) {
+        	if (hCtx=GetHCtx(ctx)) 
+			hCtx->Eval(ctx, out, args);
+        }
+}
+
+void EvalHGet(const void *data, qCtx *ctx, qStr *out, qArgAry *args)
+{
+        qObjHCtx *hCtx;
+        if (hCtx=GetHCtx(ctx)) 
+		hCtx->HGet(ctx, out, args);
+}
+void EvalHExists(const void *data, qCtx *ctx, qStr *out, qArgAry *args)
+{
+        qObjHCtx *hCtx;
+        if (hCtx=GetHCtx(ctx))
+                hCtx->HExists(ctx, out, args);
+}
+void EvalHDel(const void *data, qCtx *ctx, qStr *out, qArgAry *args)
+{
+        qObjHCtx *hCtx;
+        if (hCtx=GetHCtx(ctx))
+                hCtx->HDel(ctx, out, args);
+}
+void EvalHSet(const void *data, qCtx *ctx, qStr *out, qArgAry *args)
+{
+        qObjHCtx *hCtx;
+        if (hCtx=GetHCtx(ctx))
+                hCtx->HSet(ctx, out, args);
+}
+
 
 void qObjHCtx::HDel(qCtx *ctx, qStr *out, qArgAry *args)
 {
@@ -163,31 +220,39 @@ void qObjHCtx::HEnum(qCtx *ctx, qStr *out, qArgAry *args)
 	return;
 }
 
-
 void EvalHEnumValues(const void *data, qCtx *ctx, qStr *out, qArgAry *args) 
 {
+        qObjHCtx *hCtx;
 	if (args->Count() >= 1) {
-		CStr var   = (*args)[0];
-		args->SetAt(2, "V");
-		((qObjHCtx*)data)->HEnum(ctx, out, args);
+        	if (hCtx=GetHCtx(ctx)) {
+			CStr var   = (*args)[0];
+			args->SetAt(2, "V");
+			hCtx->HEnum(ctx, out, args);
+		}
 	}
 }
 
 void EvalHEnumKeys(const void *data, qCtx *ctx, qStr *out, qArgAry *args) 
 {
-	if (args->Count() >= 1) {
-		CStr var   = (*args)[0];
-		args->SetAt(2, "K");
-		((qObjHCtx*)data)->HEnum(ctx, out, args);
+        qObjHCtx *hCtx;
+        if (args->Count() >= 1) {
+        	if (hCtx=GetHCtx(ctx)) {
+			CStr var   = (*args)[0];
+			args->SetAt(2, "K");
+			hCtx->HEnum(ctx, out, args);
+		}
 	}
 }
 
 void EvalHEnumTree(const void *data, qCtx *ctx, qStr *out, qArgAry *args) 
 {
-	if (args->Count() >= 1) {
-		CStr var   = (*args)[0];
-		args->SetAt(2, "T");
-		((qObjHCtx*)data)->HEnum(ctx, out, args);
+        qObjHCtx *hCtx;
+        if (args->Count() >= 1) {
+        	if (hCtx=GetHCtx(ctx)) {
+			CStr var   = (*args)[0];
+			args->SetAt(2, "T");
+			hCtx->HEnum(ctx, out, args);
+		}
 	}
 }
 
@@ -196,6 +261,7 @@ void LoadHSet(qCtx *ctx) {
     CStr tmpName;
 
     tmpName = getenv("SMXHOME");
+
     if (tmpName.IsEmpty()) {
 #ifdef WIN32
 	tmpName = getenv("TEMP");
@@ -234,16 +300,18 @@ void LoadHSet(qCtx *ctx) {
 
         qObjHCtx *hCtx = new qObjHCtx(ctx);
 
-        hCtx->SetPath(tmpName.GetBuffer(), true);
+        hCtx->SetPath(tmpName, true);
 
-        ctx->MapObj(hCtx,(QOBJMETH) &qObjHCtx::HSet,  "hset");
-        ctx->MapObj(hCtx,(QOBJMETH) &qObjHCtx::HSet,  "hdel");
-        ctx->MapObj(hCtx,(QOBJMETH) &qObjHCtx::HGet,  "hget");
-        ctx->MapObj(hCtx,(QOBJMETH) &qObjHCtx::HExists,  "hexists");
-        ctx->MapObj(hCtx,(QOBJMETH) &qObjHCtx::HFile,  "hdbfile");
+        ctx->MapObj(hCtx, EvalHSet,  "hset");
+        ctx->MapObj(hCtx, EvalHSet,  "hdel");
+        ctx->MapObj(hCtx, EvalHGet,  "hget");
+        ctx->MapObj(hCtx, EvalHExists,  "hexists");
+        ctx->MapObj(hCtx, EvalHFile,  "hdbfile");
 
-        ctx->MapObj(hCtx,EvalHEnumValues,                      "henumvalues");
-        ctx->MapObj(hCtx,EvalHEnumKeys,                        "henumkeys");
-        ctx->MapObj(hCtx,EvalHEnumTree,                        "henumtree");
+        ctx->MapObj(hCtx, EvalHEnumValues,                      "henumvalues");
+        ctx->MapObj(hCtx, EvalHEnumKeys,                        "henumkeys");
+        ctx->MapObj(hCtx, EvalHEnumTree,                        "henumtree");
         ctx->MapObj(hCtx, "<hctx>");
 }
+
+#endif  // HAVE_LIBTDB/SQLITE3

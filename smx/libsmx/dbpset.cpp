@@ -42,9 +42,7 @@ bool gEnvOpen = false;
 #ifndef HAVE_LIBTDB
 
 class DestroyableDBEnv {
-	HANDLE  myTH;
 	DbEnv  *myEnv;
-	bool    myDetector;
 	u_int32_t myFlags;
 
 public:
@@ -55,31 +53,17 @@ public:
 		if (!myEnv) {
 			myEnv = new DbEnv(myFlags);
 			myEnv->set_error_stream(&std::cerr);
-			if (myDetector) {
-#ifndef HAVE_LIBTDB
-				unsigned tid;
-				myTH = (HANDLE) _beginthreadex(0, 0, LockDetectLoop, this, CREATE_SUSPENDED, &tid);
-				ResumeThread(myTH);
-#endif
-			}
 		}
 		return myEnv;
 	}
 
 	DestroyableDBEnv(u_int32_t flags, bool detector = false) {
-		myTH = (HANDLE) 0;
 		myEnv = NULL;
-		myDetector = detector;
 		myFlags = flags;
 	}
 
 	~DestroyableDBEnv() {
 		try {
-#ifndef HAVE_LIBTDB
-			if (myTH != 0)
-				TerminateThread(myTH, 0);
-#endif
-
 			if (myEnv) {
 				if (gEnvOpen) {
 					myEnv->close(0);
@@ -112,31 +96,6 @@ public:
 		} catch (...) {
 		}
 	}
-
-	static unsigned STDCALL LockDetectLoop(void *parm) {
-#ifndef HAVE_LIBTDB
-    ((DestroyableDBEnv *)parm)->LockDetectLoop();
-#endif
-		return 0;
-	}
-
-	void LockDetectLoop() {
-		while (0 && this) {
-			if (gEnvOpen) {
-				Sleep(500);
-				int abr = 0;
-				try {
-					if (myEnv)
-						myEnv->lock_detect(0, DB_LOCK_DEFAULT, &abr);
-				} catch (...) {
-				}
-				if (abr > 0) {
-	   				smx_log_pf(SMXLOGLEVEL_WARNING, abr, "Locks aborted");
-				}
-			}
-		}
-	}
-};
 
 static DestroyableDBEnv gEnv(0, true);
 

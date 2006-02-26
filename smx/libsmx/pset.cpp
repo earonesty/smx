@@ -12,12 +12,10 @@ THIS SOFTWARE IS PROVIDED 'AS IS' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDI
 */
 
 
-#ifndef HAVE_LIBTDB
-// including stdafx before db_cxx breaks on WIN32, VS.NET
-#include <db_cxx.h>
-#endif
-
 #include "stdafx.h"
+#include "util.h"
+
+#if defined(HAVE_LIBTDB) || defined(HAVE_SQLITE3) || defined(HAVE_DB_H)
 
 #include "qstr.h"
 #include "qobj.h"
@@ -25,8 +23,6 @@ THIS SOFTWARE IS PROVIDED 'AS IS' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDI
 
 #include "hset.h"
 #include "core.h"
-
-#include "util.h"
 
 class qObjPCtx : public qObjHCtx {
 public:
@@ -225,3 +221,5 @@ void LoadPSet(qCtx *ctx) {
 
     ctx->MapObj(pCtx, "<pset>");
 }
+
+#endif // HAVE_TDB/SQLITE3

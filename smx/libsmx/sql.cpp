@@ -881,7 +881,18 @@ public:
 
 void qObjODBC::Execute(qCtx *ctx, qStr *out, const char *sql, CStr &body, CStr &head, CStr &foot)
 {
+	if (!myConn) {
+		ctx->Throw(out, 302, myConn.GetErrorMsg());
+		return;
+	}
+
 	myStmt = myConn.Execute(sql);
+
+        if (!myStmt) {
+                ctx->Throw(out, 302, myStmt.GetErrorMsg());
+                return;
+        }
+
 	if ( ! ( body.IsEmpty() && head.IsEmpty() && foot.IsEmpty() ) ) {
 		if (myStmt.Bind()) {
 			bool ok = myStmt.Next();
@@ -1187,14 +1198,18 @@ void EvalSql(const void *data, qCtx *ctx, qStr *out, qArgAry *args)
             sql.Trim();
 
             handler->Execute(&loopCtx, out, sql, args->GetAt(2), args->GetAt(3), args->GetAt(4));
+	    delete handler;
 	} catch(qCtxEx ex) {
 		errCode = ex.GetID();
 		errMsg = ex.GetMsg();
+	    	delete handler;
 	} catch (qCtxExAbort ex) {
 		throw ex;
+	    	delete handler;
 	} catch (...) {
 		errCode = 303;
 		errMsg  = "Unknown SQL Library error.";
+	    	delete handler;
 	}
 
 	if (errCode)
