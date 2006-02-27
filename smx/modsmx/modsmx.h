@@ -189,7 +189,7 @@ public:
 			}
 
 			if (myReq->header_only)
-				return true;
+				return OK;
 
 			ap_rwrite(myStrBuf, myStrBuf.Length(), myReq);
 
