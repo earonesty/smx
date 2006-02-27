@@ -9,7 +9,12 @@ AC_DEFUN([APACHE_APXS], [
                           defaults to "apxs".]],
     [
     if test "$withval" = "yes"; then
-      for i in /usr/local/apache/bin /usr/local/apache2/bin /usr/sbin ; do
+      for i in /usr/local/apache/bin /usr/local/apache2/bin /usr/sbin /usr/bin ; do
+        if test -f "$i/apxs2"; then
+          APXS="$i/apxs2"
+        fi
+      done
+      for i in /usr/local/apache/bin /usr/local/apache2/bin /usr/sbin /usr/bin ; do
         if test -f "$i/apxs"; then
           APXS="$i/apxs"
         fi
@@ -24,15 +29,16 @@ AC_DEFUN([APACHE_APXS], [
       fi
     fi
 
+    HTTPD_EXE="`$APXS -q TARGET`"
     HTTPD_DIR="`$APXS -q SBINDIR`"
-    HTTPD="$HTTPD_DIR/httpd"
+    HTTPD="$HTTPD_DIR/$HTTPD_EXE"
     APXS_CC="`$APXS -q CC`"
     APXS_INCLUDE="`$APXS -q INCLUDEDIR`"
     APXS_CONFDIR="`$APXS -q SYSCONFDIR`"
     APACHE_LIBEXECDIR="`$APXS -q libexecdir`"
 
     if test "$HTTPD" = ""; then
-      AC_MSG_ERROR(["could not find httpd from apxs"])
+      AC_MSG_ERROR(["could not find $HTTPD_EXE (httpd) from apxs"])
     else
       HTTPD_VERSION="`$HTTPD -V | grep 1.3`"
       if test -n "$HTTPD_VERSION"; then
@@ -46,23 +52,30 @@ AC_DEFUN([APACHE_APXS], [
     ],
     [
       for i in /usr/local/apache/bin /usr/local/apache2/bin /usr/sbin ; do
+        if test -f "$i/apxs2"; then
+          APXS="$i/apxs2"
+        fi
+      done
+      for i in /usr/local/apache/bin /usr/local/apache2/bin /usr/sbin ; do
         if test -f "$i/apxs"; then
           APXS="$i/apxs"
         fi
       done
       if test "$APXS" = ""; then
+      if test "$APXS" = ""; then
         AC_MSG_ERROR(["could not find apxs"])
       fi
 
+      HTTPD_EXE="`$APXS -q TARGET`"
       HTTPD_DIR="`$APXS -q SBINDIR`"
-      HTTPD="$HTTPD_DIR/httpd"
+      HTTPD="$HTTPD_DIR/$HTTPD_EXE"
       APXS_CC="`$APXS -q CC`"
       APXS_INCLUDE="`$APXS -q INCLUDEDIR`"
       APXS_CONFDIR="`$APXS -q SYSCONFDIR`"
       APACHE_LIBEXECDIR="`$APXS -q libexecdir`"
 
       if test "$HTTPD" = ""; then
-        AC_MSG_ERROR(["could not find httpd from apxs"])
+        AC_MSG_ERROR(["could not find $HTTPD_EXE (httpd) from apxs"])
       else
         HTTPD_VERSION="`$HTTPD -V | grep 1.3`"
         if test -n "$HTTPD_VERSION"; then
