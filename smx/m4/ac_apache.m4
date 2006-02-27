@@ -13,8 +13,6 @@ AC_DEFUN([APACHE_APXS], [
         if test -f "$i/apxs2"; then
           APXS="$i/apxs2"
         fi
-      done
-      for i in /usr/local/apache/bin /usr/local/apache2/bin /usr/sbin /usr/bin ; do
         if test -f "$i/apxs"; then
           APXS="$i/apxs"
         fi
@@ -38,7 +36,7 @@ AC_DEFUN([APACHE_APXS], [
     APACHE_LIBEXECDIR="`$APXS -q libexecdir`"
 
     if test "$HTTPD" = ""; then
-      AC_MSG_ERROR(["could not find $HTTPD_EXE (httpd) from apxs"])
+      AC_MSG_ERROR(["could not find httpd from apxs"])
     else
       HTTPD_VERSION="`$HTTPD -V | grep 1.3`"
       if test -n "$HTTPD_VERSION"; then
@@ -55,13 +53,10 @@ AC_DEFUN([APACHE_APXS], [
         if test -f "$i/apxs2"; then
           APXS="$i/apxs2"
         fi
-      done
-      for i in /usr/local/apache/bin /usr/local/apache2/bin /usr/sbin ; do
         if test -f "$i/apxs"; then
           APXS="$i/apxs"
         fi
       done
-      if test "$APXS" = ""; then
       if test "$APXS" = ""; then
         AC_MSG_ERROR(["could not find apxs"])
       fi
@@ -75,7 +70,7 @@ AC_DEFUN([APACHE_APXS], [
       APACHE_LIBEXECDIR="`$APXS -q libexecdir`"
 
       if test "$HTTPD" = ""; then
-        AC_MSG_ERROR(["could not find $HTTPD_EXE (httpd) from apxs"])
+        AC_MSG_ERROR(["could not find httpd from apxs"])
       else
         HTTPD_VERSION="`$HTTPD -V | grep 1.3`"
         if test -n "$HTTPD_VERSION"; then

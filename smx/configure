@@ -23385,8 +23385,6 @@ if test "${with_apxs+set}" = set; then
         if test -f "$i/apxs2"; then
           APXS="$i/apxs2"
         fi
-      done
-      for i in /usr/local/apache/bin /usr/local/apache2/bin /usr/sbin /usr/bin ; do
         if test -f "$i/apxs"; then
           APXS="$i/apxs"
         fi
@@ -23414,8 +23412,8 @@ echo "$as_me: error: \"could not find apxs\"" >&2;}
     APACHE_LIBEXECDIR="`$APXS -q libexecdir`"
 
     if test "$HTTPD" = ""; then
-      { { echo "$as_me:$LINENO: error: \"could not find $HTTPD_EXE (httpd) from apxs\"" >&5
-echo "$as_me: error: \"could not find $HTTPD_EXE (httpd) from apxs\"" >&2;}
+      { { echo "$as_me:$LINENO: error: \"could not find httpd from apxs\"" >&5
+echo "$as_me: error: \"could not find httpd from apxs\"" >&2;}
    { (exit 1); exit 1; }; }
     else
       HTTPD_VERSION="`$HTTPD -V | grep 1.3`"
@@ -23440,13 +23438,10 @@ else
         if test -f "$i/apxs2"; then
           APXS="$i/apxs2"
         fi
-      done
-      for i in /usr/local/apache/bin /usr/local/apache2/bin /usr/sbin ; do
         if test -f "$i/apxs"; then
           APXS="$i/apxs"
         fi
       done
-      if test "$APXS" = ""; then
       if test "$APXS" = ""; then
         { { echo "$as_me:$LINENO: error: \"could not find apxs\"" >&5
 echo "$as_me: error: \"could not find apxs\"" >&2;}
@@ -23462,8 +23457,8 @@ echo "$as_me: error: \"could not find apxs\"" >&2;}
       APACHE_LIBEXECDIR="`$APXS -q libexecdir`"
 
       if test "$HTTPD" = ""; then
-        { { echo "$as_me:$LINENO: error: \"could not find $HTTPD_EXE (httpd) from apxs\"" >&5
-echo "$as_me: error: \"could not find $HTTPD_EXE (httpd) from apxs\"" >&2;}
+        { { echo "$as_me:$LINENO: error: \"could not find httpd from apxs\"" >&5
+echo "$as_me: error: \"could not find httpd from apxs\"" >&2;}
    { (exit 1); exit 1; }; }
       else
         HTTPD_VERSION="`$HTTPD -V | grep 1.3`"
