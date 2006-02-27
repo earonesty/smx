@@ -49,7 +49,7 @@ AC_DEFUN([APACHE_APXS], [
     fi
     ],
     [
-      for i in /usr/local/apache/bin /usr/local/apache2/bin /usr/sbin ; do
+      for i in /usr/local/apache/bin /usr/local/apache2/bin /usr/sbin /usr/bin ; do
         if test -f "$i/apxs2"; then
           APXS="$i/apxs2"
         fi
