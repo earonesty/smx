@@ -1,6 +1,7 @@
 #!/usr/local/bin/smx
 %nil(
 
+%set(mandir,%if(%not(%arg(2)),/usr/local/share/man,%arg(2)))
 
 %define(cleanup,%nil(
 	%set(text,%replace(%rxsplit(%replace(%text%,<br>,%lf%),[%cr%]?[%lf%],%token%<br>),<br><br><br><br>,<p>,<br><br><br>,<p>,<br><br>,<p>,<p><br>,<p>))
@@ -18,7 +19,7 @@
 
 %define(manify
 	,%expand(%include(funcs/%func%))
-	 %create-file(/usr/local/share/man/man3/%%%func%.3,
+	 %create-file(%mandir%/man3/%%%func%.3,
 .TH %%%name% 3 "%time(yyyy-mm-dd)" "smx v%script-version%" "SMX Programmers Reference Guide"
 .SH NAME
 %%%name% \- SMX builtin function
