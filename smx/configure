@@ -23382,11 +23382,11 @@ if test "${with_apxs+set}" = set; then
 
     if test "$withval" = "yes"; then
       for i in /usr/local/apache/bin /usr/local/apache2/bin /usr/sbin /usr/bin ; do
-        if test -f "$i/apxs2"; then
-          APXS="$i/apxs2"
-        fi
         if test -f "$i/apxs"; then
           APXS="$i/apxs"
+        fi
+        if test -f "$i/apxs2"; then
+          APXS="$i/apxs2"
         fi
       done
       if test "$APXS" = ""; then
@@ -23435,11 +23435,11 @@ echo "${ECHO_T}\"$APXS Version 2.X\"" >&6
 else
 
       for i in /usr/local/apache/bin /usr/local/apache2/bin /usr/sbin /usr/bin ; do
-        if test -f "$i/apxs2"; then
-          APXS="$i/apxs2"
-        fi
         if test -f "$i/apxs"; then
           APXS="$i/apxs"
+        fi
+        if test -f "$i/apxs2"; then
+          APXS="$i/apxs2"
         fi
       done
       if test "$APXS" = ""; then

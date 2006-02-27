@@ -10,11 +10,11 @@ AC_DEFUN([APACHE_APXS], [
     [
     if test "$withval" = "yes"; then
       for i in /usr/local/apache/bin /usr/local/apache2/bin /usr/sbin /usr/bin ; do
-        if test -f "$i/apxs2"; then
-          APXS="$i/apxs2"
-        fi
         if test -f "$i/apxs"; then
           APXS="$i/apxs"
+        fi
+        if test -f "$i/apxs2"; then
+          APXS="$i/apxs2"
         fi
       done
       if test "$APXS" = ""; then
@@ -50,11 +50,11 @@ AC_DEFUN([APACHE_APXS], [
     ],
     [
       for i in /usr/local/apache/bin /usr/local/apache2/bin /usr/sbin /usr/bin ; do
-        if test -f "$i/apxs2"; then
-          APXS="$i/apxs2"
-        fi
         if test -f "$i/apxs"; then
           APXS="$i/apxs"
+        fi
+        if test -f "$i/apxs2"; then
+          APXS="$i/apxs2"
         fi
       done
       if test "$APXS" = ""; then
