@@ -161,6 +161,10 @@ bool CDBHash::Open()
 	TDB_CONTEXT *t;
 	t = tdb_open(m_path, 0, 0, O_CREAT|O_RDWR, 0666);
 	if (!t) {
+		usleep(100); 
+		t = tdb_open(m_path, 0, 0, O_CREAT|O_RDWR, 0666);
+	}
+	if (!t) {
 		smx_log_pf(SMXLOGLEVEL_WARNING, errno, "TDB Open Failed", m_path, strerror(errno));
 	}
 #else
