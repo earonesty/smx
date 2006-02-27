@@ -57,7 +57,7 @@ And then add
 	AddHandler smx-parsed .htm
 	AddHandler smx-parsed .html
 
-If you want it to magig-mode-parse html files.  You must put 
+If you want it to magic-mode-parse html files.  You must put 
 %expand% at the top of magic-mode files.
 
 Add SMXInit <code-to-run> to your conf, if you want a 
