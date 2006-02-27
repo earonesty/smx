@@ -8,6 +8,6 @@ smx_LDADD   = ../libsmx/libsmx.la
 INCLUDES = -I../libsmx
 
 install-data-local:
-	thisdir=`pwd` && pushd ../docs && $$thisdir/smx doc2man ${mandir} && popd
+	thisdir=`pwd` && pushd ../docs && $$thisdir/smx doc2man $(DESTDIR)${mandir} && popd
 
 TESTS=tests/smxtest
