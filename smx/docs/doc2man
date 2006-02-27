@@ -1,7 +1,12 @@
 #!/usr/local/bin/smx
 %nil(
 
-%set(mandir,%if(%not(%arg(2)),/usr/local/share/man,%arg(2)))
+%set(mandir,%arg(2))
+
+%if(%not(%mandir%)
+	,%out(usage: doc2man <mandir>)
+	 %abort%
+)
 
 %define(cleanup,%nil(
 	%set(text,%replace(%rxsplit(%replace(%text%,<br>,%lf%),[%cr%]?[%lf%],%token%<br>),<br><br><br><br>,<p>,<br><br><br>,<p>,<br><br>,<p>,<p><br>,<p>))
