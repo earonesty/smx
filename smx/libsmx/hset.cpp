@@ -81,20 +81,81 @@ void qObjHCtx::HSet(qCtx *ctx, qStr *out, qArgAry *args)
 	}
 }
 
+void qObjHCtx::HDel(qCtx *ctx, qStr *out, qArgAry *args)
+{
+	if (args->Count() >= 1 && (*args)[0]) {
+		myHash.Del((*args)[0]);
+	}
+}
+
 void qObjHCtx::Eval(qCtx *ctx, qStr *out, qArgAry *args)
 {
 	out->PutS(myHash.GetPath());
 }
 
-qObjHCtx *GetHCtx(qCtx *ctx)
+void qObjHCtx::Counter(qCtx *ctx, qStr *out, qArgAry *args)
+{
+        if (args->Count() >= 1) {
+                int val;
+                CStr var = (*args)[0];
+                if (!var.IsEmpty()) {
+                        var  = "/counters/" << var;
+/*
+      			HTRANS trans = NULL;
+                        trans = myHash.BeginTrans();
+*/
+                        try {
+                                if (args->Count() > 1) {
+                                        val  = ParseInt((*args)[1]);
+                                        switch(val) {
+                                        case 0:
+                                                myHash.Del(var);
+                                                break;
+                                        case -1: {
+                                                CStr was = myHash.Get(var);
+                                                int val;
+
+                                                if (!was.IsEmpty())
+                                                        val = *((int*)was.Data());
+                                                else
+                                                        val = 1;
+                                                break;
+                                                         }
+                                        default:
+                                                myHash.Set(var, (char *) &val, sizeof(val));
+                                        }
+                                } else {
+                                        CStr was = myHash.Get(var);
+
+                                        if (!was.IsEmpty())
+                                                val = *((int*)was.Data()) + 1;
+                                        else
+                                                val = 1;
+                                        myHash.Set(var, (char *) &val, sizeof(val));
+                                }
+                        } catch (...) {
+                                ctx->ThrowF(out, 902, "Unexpected error during counter transaction");
+        			return;
+                        }
+/*
+                        myHash.Commit(trans);
+*/
+                        char tmp[32]; _itoa(val, tmp, 10);
+                        out->PutS(tmp);
+                }
+        }
+}
+
+qObjHCtx *GetHCtx(qCtx *ctx, const void *data)
 {
         qObjHCtx *hCtx=NULL;
+	const char *name=(const char *)data;
 	if (ctx->GetSafeMode()) {
         	if ( ctx->GetEnv() && ctx->GetEnv()->GetSessionCtx() )
                 	ctx=ctx->GetEnv()->GetSessionCtx();
-        	ctx->FindL((qObj **)&hCtx, "<hctx>");
+        	ctx->FindL((qObj **)&hCtx, name);
 	} else {
-        	ctx->Find((qObj **)&hCtx, "<hctx>");
+        	ctx->Find((qObj **)&hCtx, name);
 	}
 	return hCtx;
 }
@@ -113,9 +174,9 @@ void EvalHFile(const void *data, qCtx *ctx, qStr *out, qArgAry *args)
                 }
 		hCtx = new qObjHCtx(ctx);
        		hCtx->SetPath((*args)[0], true);
-		ctx->MapObj(hCtx, "<hctx>");
+		ctx->MapObj(hCtx, (const char *) data);
         } else if (args->Count() == 0) {
-        	if (hCtx=GetHCtx(ctx)) 
+        	if (hCtx=GetHCtx(ctx, data)) 
 			hCtx->Eval(ctx, out, args);
         }
 }
@@ -123,35 +184,34 @@ void EvalHFile(const void *data, qCtx *ctx, qStr *out, qArgAry *args)
 void EvalHGet(const void *data, qCtx *ctx, qStr *out, qArgAry *args)
 {
         qObjHCtx *hCtx;
-        if (hCtx=GetHCtx(ctx)) 
+        if (hCtx=GetHCtx(ctx, data)) 
 		hCtx->HGet(ctx, out, args);
 }
 void EvalHExists(const void *data, qCtx *ctx, qStr *out, qArgAry *args)
 {
         qObjHCtx *hCtx;
-        if (hCtx=GetHCtx(ctx))
+        if (hCtx=GetHCtx(ctx, data))
                 hCtx->HExists(ctx, out, args);
 }
 void EvalHDel(const void *data, qCtx *ctx, qStr *out, qArgAry *args)
 {
         qObjHCtx *hCtx;
-        if (hCtx=GetHCtx(ctx))
+        if (hCtx=GetHCtx(ctx, data))
                 hCtx->HDel(ctx, out, args);
 }
 void EvalHSet(const void *data, qCtx *ctx, qStr *out, qArgAry *args)
 {
         qObjHCtx *hCtx;
-        if (hCtx=GetHCtx(ctx))
+        if (hCtx=GetHCtx(ctx, data))
                 hCtx->HSet(ctx, out, args);
 }
-
-
-void qObjHCtx::HDel(qCtx *ctx, qStr *out, qArgAry *args)
+void EvalCounter(const void *data, qCtx *ctx, qStr *out, qArgAry *args)
 {
-	if (args->Count() >= 1 && (*args)[0]) {
-		myHash.Del((*args)[0]);
-	}
+        qObjHCtx *hCtx;
+        if (hCtx=GetHCtx(ctx, data)) 
+		hCtx->Counter(ctx, out, args);
 }
+
 
 struct LOOPCTX {
 	qCtx *ctx;
@@ -224,7 +284,7 @@ void EvalHEnumValues(const void *data, qCtx *ctx, qStr *out, qArgAry *args)
 {
         qObjHCtx *hCtx;
 	if (args->Count() >= 1) {
-        	if (hCtx=GetHCtx(ctx)) {
+        	if (hCtx=GetHCtx(ctx, data)) {
 			CStr var   = (*args)[0];
 			args->SetAt(2, "V");
 			hCtx->HEnum(ctx, out, args);
@@ -236,7 +296,7 @@ void EvalHEnumKeys(const void *data, qCtx *ctx, qStr *out, qArgAry *args)
 {
         qObjHCtx *hCtx;
         if (args->Count() >= 1) {
-        	if (hCtx=GetHCtx(ctx)) {
+        	if (hCtx=GetHCtx(ctx, data)) {
 			CStr var   = (*args)[0];
 			args->SetAt(2, "K");
 			hCtx->HEnum(ctx, out, args);
@@ -248,7 +308,7 @@ void EvalHEnumTree(const void *data, qCtx *ctx, qStr *out, qArgAry *args)
 {
         qObjHCtx *hCtx;
         if (args->Count() >= 1) {
-        	if (hCtx=GetHCtx(ctx)) {
+        	if (hCtx=GetHCtx(ctx, data)) {
 			CStr var   = (*args)[0];
 			args->SetAt(2, "T");
 			hCtx->HEnum(ctx, out, args);
@@ -256,62 +316,106 @@ void EvalHEnumTree(const void *data, qCtx *ctx, qStr *out, qArgAry *args)
 	}
 }
 
+CStr GetHomePath() {
+	CStr tmpName;
+#ifdef WIN32
+        tmpName = getenv("HOMEDRIVE");
+        if (!tmpName.IsEmpty()) {
+                tmpName += getenv("HOMEPATH");
+                tmpName.RTrim('/');
+		tmpName.RTrim('\\');
+        } else {
+                tmpName = ".";
+        }
+#else
+        tmpName = getenv("HOME");
+#endif
+	return tmpName;
+}
+
+CStr GetTempPath() {
+	CStr tmpName;
+#ifdef WIN32
+        tmpName = getenv("TEMP");
+#else
+        tmpName = "/tmp";
+#endif
+	return tmpName;
+}
+
+
+#ifdef WIN32
+	#define DIRSEP '\\'
+#else
+	#define DIRSEP '/'
+#endif
+
 void LoadHSet(qCtx *ctx) {
-//core
     CStr tmpName;
 
     tmpName = getenv("SMXHOME");
 
     if (tmpName.IsEmpty()) {
-#ifdef WIN32
-	tmpName = getenv("TEMP");
-	if (tmpName.IsEmpty()) {
-		tmpName = getenv("HOMEDRIVE");
-		if (!tmpName.IsEmpty()) {
-			tmpName += getenv("HOMEPATH");
-			tmpName.RTrim('/'); tmpName.RTrim('\\');
-		} else {
-			tmpName = ".";
-		}
-	}
-	tmpName = tmpName + "\\.smx";
-	CreateDirectory(tmpName,NULL);
-	tmpName = tmpName + "\\hset.db";
-#else
-        tmpName = getenv("HOME");
-	if (tmpName.IsEmpty()) 
-		tmpName = "/tmp";
-        mkdir(tmpName,0750);
-        tmpName = tmpName + "/.smx";
-        mkdir(tmpName,0750);
-        tmpName = tmpName + "/hset.db";
-#endif
-    } else {
-#ifdef WIN32
-	tmpName = tmpName + "\\hset.db";
-#else
-	tmpName = tmpName + "/hset.db";
-#endif
+	tmpName = GetHomePath();
+    	if (tmpName.IsEmpty())
+		tmpName = GetTempPath();
+	tmpName = tmpName << DIRSEP << ".smx";
     }
+    tmpName = tmpName << DIRSEP << "hset.db";
 
 #ifdef WIN32
     remove(tmpName);
 #endif
 
-        qObjHCtx *hCtx = new qObjHCtx(ctx);
+    qObjHCtx *hCtx = new qObjHCtx(ctx);
 
-        hCtx->SetPath(tmpName, true);
+    hCtx->SetPath(tmpName, true);
 
-        ctx->MapObj(hCtx, EvalHSet,  "hset");
-        ctx->MapObj(hCtx, EvalHSet,  "hdel");
-        ctx->MapObj(hCtx, EvalHGet,  "hget");
-        ctx->MapObj(hCtx, EvalHExists,  "hexists");
-        ctx->MapObj(hCtx, EvalHFile,  "hdbfile");
+    ctx->MapObj(hCtx, "<hctx>");
 
-        ctx->MapObj(hCtx, EvalHEnumValues,                      "henumvalues");
-        ctx->MapObj(hCtx, EvalHEnumKeys,                        "henumkeys");
-        ctx->MapObj(hCtx, EvalHEnumTree,                        "henumtree");
-        ctx->MapObj(hCtx, "<hctx>");
+    ctx->MapObj("<hctx>", EvalHSet,  "hset");
+    ctx->MapObj("<hctx>", EvalHSet,  "hdel");
+    ctx->MapObj("<hctx>", EvalHGet,  "hget");
+    ctx->MapObj("<hctx>", EvalHExists,  "hexists");
+    ctx->MapObj("<hctx>", EvalHFile,  "hdbfile");
+
+    ctx->MapObj("<hctx>", EvalHEnumValues,                      "henumvalues");
+    ctx->MapObj("<hctx>", EvalHEnumKeys,                        "henumkeys");
+    ctx->MapObj("<hctx>", EvalHEnumTree,                        "henumtree");
 }
+
+
+void LoadPSet(qCtx *ctx) {
+    CStr tmpName;
+
+    tmpName = getenv("SMXHOME");
+
+    if (tmpName.IsEmpty()) {
+        tmpName = GetHomePath();
+        if (tmpName.IsEmpty())
+                tmpName = ".";
+        tmpName = tmpName << DIRSEP << ".smx";
+    }
+    tmpName = tmpName << DIRSEP << "pset.db";
+
+    qObjHCtx *pCtx = new qObjHCtx(ctx);
+
+    pCtx->SetPath(tmpName, false);
+
+    ctx->MapObj(pCtx, "<pctx>");
+
+    ctx->MapObj("<pctx>", EvalHSet,  "pset");
+    ctx->MapObj("<pctx>", EvalHSet,  "pdel");
+    ctx->MapObj("<pctx>", EvalHGet,  "pget");
+    ctx->MapObj("<pctx>", EvalHExists,  "pexists");
+    ctx->MapObj("<pctx>", EvalHFile,  "pdbfile");
+
+    ctx->MapObj("<pctx>", EvalHEnumValues,                      "penumvalues");
+    ctx->MapObj("<pctx>", EvalHEnumKeys,                        "penumkeys");
+    ctx->MapObj("<pctx>", EvalHEnumTree,                        "penumtree");
+    ctx->MapObj("<pctx>", EvalCounter,                        "counter");
+
+}
+
 
 #endif  // HAVE_LIBTDB/SQLITE3

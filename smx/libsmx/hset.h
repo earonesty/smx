@@ -58,6 +58,7 @@ public:
 	void HDel(qCtx *ctx, qStr *out, qArgAry *args);
 	void HEnum(qCtx *ctx, qStr *out, qArgAry *args);
 	void HFile(qCtx *ctx, qStr *out, qArgAry *args);
+	void Counter(qCtx *ctx, qStr *out, qArgAry *args);
 	void Eval(qCtx *ctx, qStr *out, qArgAry *args);
 };
 

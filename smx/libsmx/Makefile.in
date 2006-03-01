@@ -66,10 +66,10 @@ am_libsmx_la_OBJECTS = base64.lo qmail.lo buf_ref.lo pscache.lo \
 	tabfmt.lo string.lo stdafx.lo sqlgrp.lo sql.lo sock.lo sha.lo \
 	regx.lo qthread.lo qstr.lo qsched.lo qpriq.lo qobj-ctx.lo \
 	qobj.lo qfopen.lo qenv.lo qctx.lo qctx-comp.lo psxutil.lo \
-	psximpl.lo pstable.lo pset.lo proto.lo process.lo opt.lo \
-	open-enc.lo map.lo hset.lo file.lo fbuf.lo ex.lo dparse.lo \
-	dbpset.lo crit_unix.lo core.lo cgi.lo card.lo hash.lo \
-	mapstr.lo smx_sqlite.lo
+	psximpl.lo pstable.lo proto.lo process.lo opt.lo open-enc.lo \
+	map.lo hset.lo file.lo fbuf.lo ex.lo dparse.lo dbpset.lo \
+	crit_unix.lo core.lo cgi.lo card.lo hash.lo mapstr.lo \
+	smx_sqlite.lo
 libsmx_la_OBJECTS = $(am_libsmx_la_OBJECTS)
 am_test_eval_OBJECTS = test_eval.$(OBJEXT)
 test_eval_OBJECTS = $(am_test_eval_OBJECTS)
@@ -211,7 +211,7 @@ target_alias = @target_alias@
 
 ####### kdevelop will overwrite this part!!! (begin)##########
 lib_LTLIBRARIES = libsmx.la
-libsmx_la_SOURCES = base64.cpp qmail.cpp buf_ref.cpp pscache.cpp math.cpp strx.cpp util.cpp unix.cpp time.cpp tabtd.cpp tabpre.cpp tabfmt.cpp string.cpp stdafx.cpp sqlgrp.cpp sql.cpp sock.cpp sha.cpp regx.cpp qthread.cpp qstr.cpp qsched.cpp qpriq.cpp qobj-ctx.cpp qobj.cpp qfopen.cpp qenv.cpp qctx.cpp qctx-comp.cpp psxutil.cpp psximpl.cpp pstable.cpp pset.cpp proto.cpp process.cpp opt.cpp open-enc.cpp map.cpp hset.cpp file.cpp fbuf.cpp ex.cpp dparse.cpp dbpset.cpp crit_unix.cpp core.cpp cgi.cpp card.cpp hash.c mapstr.cpp smx_sqlite.cpp
+libsmx_la_SOURCES = base64.cpp qmail.cpp buf_ref.cpp pscache.cpp math.cpp strx.cpp util.cpp unix.cpp time.cpp tabtd.cpp tabpre.cpp tabfmt.cpp string.cpp stdafx.cpp sqlgrp.cpp sql.cpp sock.cpp sha.cpp regx.cpp qthread.cpp qstr.cpp qsched.cpp qpriq.cpp qobj-ctx.cpp qobj.cpp qfopen.cpp qenv.cpp qctx.cpp qctx-comp.cpp psxutil.cpp psximpl.cpp pstable.cpp proto.cpp process.cpp opt.cpp open-enc.cpp map.cpp hset.cpp file.cpp fbuf.cpp ex.cpp dparse.cpp dbpset.cpp crit_unix.cpp core.cpp cgi.cpp card.cpp hash.c mapstr.cpp smx_sqlite.cpp
 test_map_SOURCES = test_map.cpp
 test_map_LDADD = libsmx.la
 test_str_SOURCES = test_str.cpp
@@ -325,7 +325,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/process.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/proto.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/pscache.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/pset.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/pstable.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/psximpl.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/psxutil.Plo@am__quote@
