@@ -1197,6 +1197,8 @@ void EvalSql(const void *data, qCtx *ctx, qStr *out, qArgAry *args)
             CStr sql = (*args)[1];
             sql.Trim();
 
+	    ctx->MapObj(sql, "sql-lastquery");
+
             handler->Execute(&loopCtx, out, sql, args->GetAt(2), args->GetAt(3), args->GetAt(4));
 	    delete handler;
 	} catch(qCtxEx ex) {

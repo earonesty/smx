@@ -1269,10 +1269,13 @@ void qObjCGI::EvalHtmlClean(qCtx *ctx, qStr *out, qArgAry *args)
 				while (isspace(*p)) 
 					++p;
 
-				if (cl = ((*p) == '/'))
+				++p;
+				if (cl = ((*p) == '/')) {
 					while (isspace(*++p)) {}
+					n = p;
+				}
+				n=p;
 
-				n = p+1;
 				while (!isspace(*p) && *p != '>')
 					++p;
 
@@ -1290,10 +1293,12 @@ void qObjCGI::EvalHtmlClean(qCtx *ctx, qStr *out, qArgAry *args)
 					if (*p)
 						out->PutC(*p++);
 					if (st) {
-						if (cl)
-							--((int &)state.Add(tmp));
-						else
-							++((int &)state.Add(tmp));
+						int *i;
+						if (!state.Find(tmp, &i)) {
+							state.Add(tmp)=cl?-1:1;
+						} else {
+							*i+=(cl?-1:1);
+						}
 					}
 				}
 			} else {
@@ -1302,7 +1307,7 @@ void qObjCGI::EvalHtmlClean(qCtx *ctx, qStr *out, qArgAry *args)
 		}
 
 		MAPPOS pos;
-		int left;
+		int left=0;
 		const char *tc;
 		for (pos = state.First(); state.Next(&pos, &tc, &left);) {
 			while (left-- > 0) {

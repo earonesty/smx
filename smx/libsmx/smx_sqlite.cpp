@@ -94,6 +94,7 @@ void qObjSqlite::Execute(qCtx *ctx, qStr *out, const char *sql, CStr &body, CStr
 	myOut = out;
 	myBody=body;
 	myHead=head;
+	myRow=0;
 	myOK=true;
 	ctx->MapObj(&myOK, (QOBJFUNC) EvalBreak, "break");
 	int rc = sqlite3_exec(myDB, sql, my_Callback, (void *) this, &zErrMsg);
@@ -146,12 +147,14 @@ void qObjSqlite::EvalCol(qCtx *ctx, qStr *out, qArgAry *args)
 	}
 	if (col >= 0 && col < myArgC) {
 		char *p = myArgV[col];
+		if (p) {
 		while (isspace(*p)) ++p;
 		char *r = p + strlen(p) - 1;
 		while (r >= p && isspace(*r)) 
 			--r;
 		r[1]='\0';
 		out->PutS(p);
+		}
 	}
 }
 
