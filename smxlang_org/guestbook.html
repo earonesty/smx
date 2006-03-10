@@ -1,0 +1,41 @@
+%expand%
+%expand(%include(%fqppath(header.htx)))
+%expand(%include(%fqppath(guestbook.htx)))
+
+%set(gb-max-comment,512)
+%set(gb-require-email,T)
+%set(gb-require-url,%null%)
+%set(gb-header,header.htx)
+%set(gb-footer,footer.htx)
+
+<h2>SMX Example Application: Customizable Guestbook</h2>
+
+Currently: %gb-count% Entries
+
+%if(%gb-errors%, <p><font color=red>%gb-errors%</font>)
+
+%gb-recent-entry(
+	<P> Most Recent: %if(%gb-url%,<a href="%gb-url%">)%gb-name%</a> - %gb-comment%
+,0)
+
+<p>
+
+<form action="%client-url%" method=post>
+<table>
+<tr><td>Name:</td><td><input type=text value="%form(gb_name)" name=gb_name></td></tr>
+<tr><td>Email:</td><td> <input type=text value="%form(gb_email)" name=gb_email></td></tr>
+<tr><td>Url:</td><td> <input type=text value="%form(gb_url)" name=gb_url></td></tr>
+<tr><td colspan=2>Comment:</td></tr>
+<tr><td colspan=2><textarea rows=4 cols=40 name=gb_comment>%form(gb_comment)</textarea></td></tr>
+</table>
+<input type=submit value="Sign Guestbook" name=gb_submit>
+</form>
+
+<table>
+%gb-entries(
+	<tr><td>%gb-date%</td><td>%if(%gb-url%,<a href="%gb-url%">)%gb-name%</a></td><td>%gb-email%</td></tr>
+	<tr><td colspan=3>%gb-comment%<br><hr size=1></td></tr>
+)
+</table>
+
+%expand(%include(%fqppath(footer.htx)))
