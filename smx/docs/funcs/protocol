@@ -1,6 +1,0 @@
-%set(name,protocol)
-%set(syntax,%%protocol%%)
-%set(description,Expands to the protocol used to access the document.)
-%set(author,)
-%set(example,)
-%set(seealso,)

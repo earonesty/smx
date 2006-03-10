@@ -1,6 +1,0 @@
-%set(name,client-authname)
-%set(syntax,%%client-authname%%)
-%set(description,Authenticated name of the user.)
-%set(author,)
-%set(example,)
-%set(seealso,)

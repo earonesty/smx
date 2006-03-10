@@ -1,6 +1,0 @@
-%set(name,hget)
-%set(syntax,%%hget(name))
-%set(description,Returns a string associated with name using %%hset(name\,string))
-%set(author,)
-%set(example,)
-%set(seealso,)
