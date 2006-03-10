@@ -1,0 +1,84 @@
+%expand%
+%expand(%include(%fqppath(header.htx)))
+
+<h2>SMX Installation</h2>
+
+<p class="subHeader">Installing the RPM:</p>
+
+Download rpms from <A href="https://developer.berlios.de/project/showfiles.php?group_id=3693">BerliOS</A>.
+<P>
+Prerequisites are unixODBC-2, openssl-0.9, and and httpd-2.
+<P>
+We highly recommend getting the source from CVS and building it yourself.
+
+<p class="subHeader">Getting the source from CVS:</p>
+
+<pre>cvs -d:pserver:anonymous@cvs.smx.berlios.de:/cvsroot/smx login
+cvs -z3 -d:pserver:anonymous@cvs.smx.berlios.de:/cvsroot/smx co</pre>
+
+That should get all the code.
+
+<p class="subHeader">Prerequisites for Linux:</p>
+
+<p>You can install all of these as RPM's from www.rpmfind.net, or using apt-get, or yum:</p>
+
+<dl>
+<dt>Required for Crypto support: 
+<dd>openssl, openssl-devel
+
+<dt>Required for ODBC support: 
+<dd>unixODBC, unixODBC-devel (fedora) OR unixodbc-dev (debian)
+
+<dt>Required for Apache 2.0 module support:
+<dd>httpd-devel (fedora)  OR apache2-dev (debian)
+</dl>
+ 
+<p>Since BerkelyDB tends to get corrupted when there's lots of processes writing simultaneously to it, you're better off with 
+<a href="https://sourceforge.net/projects/tdb/">TDB</a> - which is faster and performs better under the mixed/unstable conditions typical of web serving.
+</p>
+<p> Download from <a href="https://sourceforge.net/projects/tdb">https://sourceforge.net/projects/tdb</a> OR <a href="https://developer.berlios.de/project/showfiles.php?group_id=3693">download an RPM which we built.</a>
+
+Once all the prerequisites are installed, you should be able to run:
+
+<pre>./configure
+./make
+./make install
+</pre>
+
+<p>Go to the <a href="#apache">Configuring Apache</a> section.</p>
+
+<p class="subHeader">Prerequisites for Windows:</p>
+
+<P>Download and compile the latest versions of apache and openssl from apache.org and openssl.org.</P>
+
+<p>Windows compilation requires that you add all the .cpp and .h files for each directory to a separate project.</p>
+
+<p>Make libsmx and modsmx DLL projects, and SMX an EXE project.</p>
+
+<p>You will need to adjust paths so that apache, apr, openssl and libsmx are all in your project's path.</p>
+
+<p class="subHeader"><a name=apache>Configuring Apache:</a></p>
+
+<p>
+ The httpd.conf should have lines like this in it:
+ </p>
+<pre> LoadModule smx_module /usr/lib/libmodsmx.so
+ AddHandler smx-parsed .htm
+ AddHandler smx-parsed .html
+ AddHandler smx-parsed .hmx
+</pre>
+
+<p> and in the individual VirtualHost sections, you may want to have 
+ something
+ like:
+ </p>
+
+<pre> SMXInit %%module(/var/www/html/global.htx) </pre>
+
+<p>
+ That should do it -- please email with any steps that were different 
+ in
+ your configuration, or if you find any steps that were left out.
+</p>
+
+%expand(%include(%fqppath(footer.htx)))

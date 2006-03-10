@@ -1,6 +1,0 @@
-%set(name,dup)
-%set(syntax,%%dup(text\,n))
-%set(description,Outputs text n number of times.)
-%set(author,)
-%set(example,)
-%set(seealso,)

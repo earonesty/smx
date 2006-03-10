@@ -1,9 +1,0 @@
-smx
-.deps
-.libs
-Makefile
-*.lo
-.libs
-libmodsmx.la
-*.log
-*.plg

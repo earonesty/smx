@@ -1,0 +1,77 @@
+%set(gb-count,%iadd(%include(%data-dir%/gb-count),0))
+%set(gb-last-ip,%include(%data-dir%/gb-ip))
+%set(gb-last-time,%gettoken(%gb-last-ip%,:,0))
+%set(gb-last-ip,%gettoken(%gb-last-ip%,:,1))
+
+%set(gb-require-email,T)
+%set(gb-require-name,T)
+
+%set(gb-errors,%null%)
+
+%set(gb-header,gbheader.htx)
+%set(gb-footer,gbfooter.htx)
+
+%if(%form(gb_submit)
+	,
+	%if(%and(%invoke(gb-require-email),%not(%wcmatch(%form(gb_email),*@*.*)))
+		,%gset(gb-errors,%gb-errors%Please specify a valid email address<br>)
+	)
+	%if(%and(%invoke(gb-require-url),%not(%wcmatch(%form(gb_url),*.*)))
+		,%gset(gb-errors,%gb-errors%Please specify a valid www url<br>)
+	)
+	%if(%and(%invoke(gb-require-name),%not(%trim(%form(gb_name))))
+		,%gset(gb-errors,%gb-errors%Please specify your name<br>)
+	)
+	%if(%and(%invoke(gb-require-name),%not(%trim(%form(gb_comment))))
+		,%gset(gb-errors,%gb-errors%Please specify a comment<br>)
+	)
+
+	%if(%not(%gb-errors%)
+	,
+	%++(gb-count)
+	%create-file(%data-dir%/gb-count,%gb-count%)
+	%create-file(%data-dir%/gb-ip,%time%:%client-ip%)
+	%create-file(%data-dir%/gb-%lpad(%gb-count%,9,0).entry
+		,%%set(gb-name,%macro-quote(%form(gb_name)))
+		 %%set(gb-email,%macro-quote(%form(gb_email)))
+		 %%set(gb-url,%macro-quote(%html-quote(%form(gb_url))))
+		 %%set(gb-comment,%macro-quote(%html-quote(%form(gb_comment))))
+		 %%set(gb-time,%time%)
+	)
+	%fset(gb_name,)
+	%fset(gb_email,)
+	%fset(gb_url,)
+	%fset(gb_comment,)
+	)
+)
+
+%define(gb-entry,
+	%set(num,%lpad(%num%,9,0))
+        %if(%gte(%gb-count%,%num%)
+                ,%set(gb-name,)
+		 %set(gb-email,)
+		 %set(gb-url,)
+		 %set(gb-comment,)
+                 %expand(%include(%data-dir%/gb-%num%.entry))
+		 %set(gb-date,%fmtltime(%gb-time%,yyyy-mm-dd hh:nn))
+		 %expand(%body%)
+        )
+,num, body)
+
+%define(gb-recent-entry,
+	%if(%gt(%gb-count%,0)
+		,%gb-entry(%isub(%gb-count%,%offset%),%body%)
+	)
+,'body, offset)
+
+%define(gb-entries,
+%set(count,0)
+%if(%lte(%max%,0),%let(max,9999999))
+%try(%dir(%data-dir%/gb-*.entry,
+	 %++(count)
+	 %if(%and(%lt(%count%,%max%),%gt(%count%,%start%))
+		,%gb-entry(%replace(%fname%,gb-,,.entry,),%body%)
+	 )
+),%exception-msg%)
+,'body,start,max)
+

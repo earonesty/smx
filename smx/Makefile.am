@@ -1,1 +1,0 @@
-SUBDIRS = libsmx smx modsmx
