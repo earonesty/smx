@@ -96,6 +96,7 @@ public:
 		} catch (...) {
 		}
 	}
+};
 
 static DestroyableDBEnv gEnv(0, true);
 
