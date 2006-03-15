@@ -82,9 +82,9 @@ void qObjSqlite::Execute(qCtx *ctx, qStr *out, const char *sql, CStr &body, CStr
 {
 	if (!myDBOpen) {
 		if (myDB) {
-			ctx->Throw(out, 0, sqlite3_errmsg(myDB));
+			ctx->Throw(out, -1, sqlite3_errmsg(myDB));
 		} else {
-			ctx->Throw(out, 0, "database could not be opened");
+			ctx->Throw(out, -1, "database could not be opened");
 		}
 		return;
 	}
@@ -99,7 +99,7 @@ void qObjSqlite::Execute(qCtx *ctx, qStr *out, const char *sql, CStr &body, CStr
 	ctx->MapObj(&myOK, (QOBJFUNC) EvalBreak, "break");
 	int rc = sqlite3_exec(myDB, sql, my_Callback, (void *) this, &zErrMsg);
 	if (rc!=SQLITE_OK) {
-		ctx->Throw(out, 0, zErrMsg);
+		ctx->Throw(out, -1, zErrMsg);
 		return;
 	}
 }
