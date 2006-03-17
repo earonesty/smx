@@ -786,7 +786,7 @@ bool CDBHash::Set(const char *path, const char *val, int vlen, HTRANS txn) {
                 if (tdb_error(m_db) == TDB_ERR_CORRUPT) {
                         CMutexLock lock(gEnvLock);
                         rename(m_path, CStr(m_path) + ".bak");
-			//Close();
+			//m_db = NULL;  // i think this is right
                         if (Open()) {++retry;}
                 }
 
