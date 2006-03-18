@@ -1,0 +1,18 @@
+%set(name,invoke)
+%set(description,"%%invoke calls the function named by the first argument with the parameters specified in the rest of the arguments.
+
+The purpose of this is to invoke a function whose name is variably defined.
+
+Another use is to call functions whose arguments are normally autoquoted in a nonquoted \(variably defined\) form.
+")
+%set(syntax,"%%invoke\(funcname[,arg1[,arg2[...]]]\)")
+%set(example,"%%set\(func,add\)
+%%invoke\(%%func%%,1,1\)
+
+----
+
+2")
+%set(seealso,expand)
+%set(authorip,64.131.154.83)
+%set(authorlogin,erik)
+%set(author,Erik Aronesty <erik@q32.com>)

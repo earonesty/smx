@@ -1,0 +1,22 @@
+%set(name,safe-mode)
+%set(description,"%%safe-mode allows multiple users sharing an apache server to swite scripts that modify data on the server to coexist without being able to modify each other's data.
+
+SMX checks the owner of the script and won't allow the script to read or modify a file unless it is in a directory owned by the same user.
+
+SMX also disables %%exec and other macros that are potentially dangerous in a shared-user environment.
+
+%%safe-mode cannot be turned off.
+
+In order to be effective, %%safe-mode should be set in the serverwide \"http-init\" macro \(See example below\).
+")
+%set(syntax,"%%safe-mode\(T\) - enable safe mode
+%%safe-mode%% - return current safe-mode value
+")
+%set(example,"Put this in Apache's conf:
+
+SMXInit %%gset\(http-init,'%%safe-mode\(t\)\)
+")
+%set(seealso,safe-expand)
+%set(authorip,64.131.154.83)
+%set(authorlogin,erik)
+%set(author,Erik Aronesty <erik@q32.com>)

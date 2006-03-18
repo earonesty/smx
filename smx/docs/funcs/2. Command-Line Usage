@@ -1,11 +1,22 @@
 %set(name,2. Command-Line Usage)
-			%set(description,"PSX can be an excellent embedded expression application for your software.  Use it to add inline expression evaluation to your batch files, and process control, or to include within an application.
+%set(description,"SMX can be an excellent embedded expression application for your software.  Use it to add inline expression evaluation to your batch files, and process control, or to include within an application.
 
 Command-line arguments can be retrieved with %%arg\(<integer>\), the number of arguments is in %%num-args%%.")
-			%set(syntax,"smx -e expression : Evaluate expression as an SMX function
+%set(syntax,"smx -e expression : Evaluate expression as an SMX function
 smx [-c] filename : Open file and parse, optionally add CGI headers [-c].")
-			%set(example,"psx -e %%include\(http://www.smxlang.org/\)
+%set(example,"
+-- return the contents of the SMX language main web site
 
-Returns the contents of the SMX language main web site.")
-			%set(seealso,)
-			%set(authorip,209.21.110.205)
+smx -e '%%include\(http://www.smxlang.org/\)'
+
+-- as a cgi, display all browser headers
+
+#!/usr/bin/smx -c
+<pre>
+%%enumheader\(%%header%% %%value%% %%lf%%\)
+</pre>
+")
+%set(seealso,)
+%set(authorip,64.131.154.83)
+%set(authorlogin,erik)
+%set(author,Erik Aronesty <erik@q32.com>)

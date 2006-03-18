@@ -1,0 +1,12 @@
+%set(name,avg)
+%set(description,"Returns the sum of zero or more integer or floating-point integers divided by the number of arguments
+Invalid arguments default to zero.
+Integer arguments to %%add\(\) are promoted to floating point.
+")
+%set(syntax,"%%avg\([a[,b[,...]]]\)
+")
+%set(example,)
+%set(seealso,)
+%set(authorip,64.131.154.83)
+%set(authorlogin,erik)
+%set(author,Erik Aronesty <erik@q32.com>)

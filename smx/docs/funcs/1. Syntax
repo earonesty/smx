@@ -1,6 +1,6 @@
 %set(name,1. Syntax)
 %set(syntax,At the beginning of every page that you want to have "expanded" or made
-"dynamic" by PSX put "%%expand%%" or &lt;!--%%expand%%--&gt;.  
+"dynamic" by SMX put "%%expand%%" or &lt;!--%%expand%%--&gt;.  
 This is required to tell the parser that the page may contain code.
 
 <B>Basic Syntax:</B>
