@@ -59,14 +59,14 @@ rm -rf %{buildroot}
 
 %files
 %defattr(-,root,root)
-%doc AUTHORS ChangeLog COPYING INSTALL NEWS README TODO
+%doc AUTHORS ChangeLog COPYING INSTALL README TODO
 %{_prefix}/bin/smx
 %{_prefix}/lib/lib*smx.*
 %{_prefix}/share/man/man3/%*
 
 %files devel
 %defattr(-,root,root)
-%doc AUTHORS ChangeLog COPYING INSTALL NEWS README TODO
+%doc AUTHORS ChangeLog COPYING INSTALL README TODO
 %{_prefix}/lib/libsmx*.so.*
 
 %changelog
