@@ -22,12 +22,19 @@ AM_MAINTAINER_MODE
 # Checks for libraries.
 AC_CHECK_LIB([crypt], [crypt])
 AC_CHECK_LIB([crypto], [EVP_EncodeBlock])
-AC_CHECK_LIB([odbc], [SQLConnect])
-AC_CHECK_LIB([sqlite3], [sqlite3_open],,[])
+AC_CHECK_LIB([odbc], [SQLConnect],[],[
+        echo "Error! libodbc is required"
+        exit -1
+])
+AC_CHECK_LIB([sqlite3], [sqlite3_open])
 AC_CHECK_LIB([pthread], [pthread_create])
-AC_CHECK_LIB([stdc++], [main])
-AC_CHECK_LIB([tdb], [tdb_fetch],,[
+AC_CHECK_LIB([stdc++], [main],[],[
+        echo "Error! libstdc++ is required"
+        exit -1
+])
+AC_CHECK_LIB([tdb], [tdb_fetch],[],[
 AX_PATH_BDB([3],[
+        echo "Warning! BerkeleyDB is not stable running insider an apache module"
         LIBS="$BDB_LIBS $LIBS"
         LDFLAGS="$BDB_LDFLAGS -ldb_cxx $LDFLAGS"
         CPPFLAGS="$CPPFLAGS $BDB_CPPFLAGS"

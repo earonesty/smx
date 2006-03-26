@@ -19987,6 +19987,11 @@ _ACEOF
 
   LIBS="-lodbc $LIBS"
 
+else
+
+        echo "Error! libodbc is required"
+        exit -1
+
 fi
 
 
@@ -20202,6 +20207,11 @@ if test $ac_cv_lib_stdcpp_main = yes; then
 _ACEOF
 
   LIBS="-lstdc++ $LIBS"
+
+else
+
+        echo "Error! libstdc++ is required"
+        exit -1
 
 fi
 
@@ -23361,6 +23371,7 @@ echo "$as_me: no usable Berkeley DB not found" >&6;}
 
     if test "$ax_path_bdb_ok" = "yes" ; then
 
+        echo "Warning! BerkeleyDB is not stable running insider an apache module"
         LIBS="$BDB_LIBS $LIBS"
         LDFLAGS="$BDB_LDFLAGS -ldb_cxx $LDFLAGS"
         CPPFLAGS="$CPPFLAGS $BDB_CPPFLAGS"
