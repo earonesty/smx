@@ -60,14 +60,14 @@ rm -rf %{buildroot}
 %files
 %defattr(-,root,root)
 %doc AUTHORS ChangeLog COPYING INSTALL README TODO
-%{_prefix}/bin/smx
-%{_prefix}/lib/lib*smx.*
+%{_bindir}/smx
+%{_libdir}/lib*smx.*
 %{_prefix}/share/man/man3/%*
 
 %files devel
 %defattr(-,root,root)
 %doc AUTHORS ChangeLog COPYING INSTALL README TODO
-%{_prefix}/lib/libsmx*.so.*
+%{_libdir}/lib*smx*.*
 
 %changelog
 * Mon Feb 27 2006 Erik Aronesty <erik@q32.com>
