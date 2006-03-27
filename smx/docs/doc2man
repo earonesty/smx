@@ -8,8 +8,7 @@
 	 %abort%
 )
 
-%mkdir(%mandir%)
-%mkdir(%mandir%/man3)
+%mkpath(%mandir%/man3)
 
 %define(cleanup,%nil(
 	%set(text,%replace(%rxsplit(%replace(%text%,<br>,%lf%),[%cr%]?[%lf%],%token%<br>),<br><br><br><br>,<p>,<br><br><br>,<p>,<br><br>,<p>,<p><br>,<p>))

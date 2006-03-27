@@ -65,11 +65,10 @@ am_libsmx_la_OBJECTS = base64.lo qmail.lo buf_ref.lo pscache.lo \
 	math.lo strx.lo util.lo unix.lo time.lo tabtd.lo tabpre.lo \
 	tabfmt.lo string.lo stdafx.lo sqlgrp.lo sql.lo sock.lo sha.lo \
 	regx.lo qthread.lo qstr.lo qsched.lo qpriq.lo qobj-ctx.lo \
-	qobj.lo qfopen.lo qenv.lo qctx.lo qctx-comp.lo psxutil.lo \
-	psximpl.lo pstable.lo proto.lo process.lo opt.lo open-enc.lo \
-	map.lo hset.lo file.lo fbuf.lo ex.lo dparse.lo dbpset.lo \
-	crit_unix.lo core.lo cgi.lo card.lo hash.lo mapstr.lo \
-	smx_sqlite.lo
+	qobj.lo qfopen.lo qenv.lo qctx.lo qctx-comp.lo psximpl.lo \
+	pstable.lo proto.lo process.lo opt.lo open-enc.lo map.lo \
+	hset.lo file.lo ex.lo dparse.lo dbpset.lo crit_unix.lo core.lo \
+	cgi.lo card.lo hash.lo mapstr.lo smx_sqlite.lo psxutil.lo
 libsmx_la_OBJECTS = $(am_libsmx_la_OBJECTS)
 am_test_eval_OBJECTS = test_eval.$(OBJEXT)
 test_eval_OBJECTS = $(am_test_eval_OBJECTS)
@@ -211,7 +210,28 @@ target_alias = @target_alias@
 
 ####### kdevelop will overwrite this part!!! (begin)##########
 lib_LTLIBRARIES = libsmx.la
-libsmx_la_SOURCES = base64.cpp qmail.cpp buf_ref.cpp pscache.cpp math.cpp strx.cpp util.cpp unix.cpp time.cpp tabtd.cpp tabpre.cpp tabfmt.cpp string.cpp stdafx.cpp sqlgrp.cpp sql.cpp sock.cpp sha.cpp regx.cpp qthread.cpp qstr.cpp qsched.cpp qpriq.cpp qobj-ctx.cpp qobj.cpp qfopen.cpp qenv.cpp qctx.cpp qctx-comp.cpp psxutil.cpp psximpl.cpp pstable.cpp proto.cpp process.cpp opt.cpp open-enc.cpp map.cpp hset.cpp file.cpp fbuf.cpp ex.cpp dparse.cpp dbpset.cpp crit_unix.cpp core.cpp cgi.cpp card.cpp hash.c mapstr.cpp smx_sqlite.cpp
+
+# include_HEADERS = crit.h qctx.h qobj-cache.h unix.h qmail_resource.h qobj-ctx.h pstime.h qobj.h qenv.h ary.h qarg.h str.h buf.h buf_ref.h qlib.h unix_interlock.h opt.h libs.h stdafx.h map.h lst.h hash.h crit_win.h crit_unix.h qstr.h psximpl.h psxext.h psxutil.h
+libsmx_la_SOURCES = base64.cpp qmail.cpp buf_ref.cpp pscache.cpp \
+	math.cpp strx.cpp util.cpp unix.cpp time.cpp tabtd.cpp \
+	tabpre.cpp tabfmt.cpp string.cpp stdafx.cpp sqlgrp.cpp sql.cpp \
+	sock.cpp sha.cpp regx.cpp qthread.cpp qstr.cpp qsched.cpp \
+	qpriq.cpp qobj-ctx.cpp qobj.cpp qfopen.cpp qenv.cpp qctx.cpp \
+	qctx-comp.cpp psximpl.cpp pstable.cpp proto.cpp process.cpp \
+	opt.cpp open-enc.cpp map.cpp hset.cpp file.cpp ex.cpp \
+	dparse.cpp dbpset.cpp crit_unix.cpp core.cpp cgi.cpp card.cpp \
+	hash.c mapstr.cpp smx_sqlite.cpp psxutil.cpp ary.h open-enc.h \
+	qctx-based.h qmail_resource.h qstr-pipe.h sha.h tabpre.h \
+	base64.h ex.h optex.h qctx-comp.h qnag.h qstrsock.h smx_sql.h \
+	tabtd.h buf.h fbuf.h opt.h qctx.h qobj-cache.h qthread.h \
+	smx_sqlite.h tset.h buf_ref.h hash.h pstime.h qenv.h \
+	qobj-ctx.h qthread-unix.h sock.h unix.h core.h hset.h psxext.h \
+	qobj.h qthread-win.h sqlgrp.h unix_interlock.h crit.h \
+	psximpl.h qpriq.h stdafx.h unixsock.h crit_unix.h libs.h \
+	qfopen.h qpriqx.h rcex.h strary.h util.h crit_win.h lst.h \
+	qgargs.h qsched.h regx.h strex.h dbpset.h lstx.h qarg.h qgif.h \
+	qstr.h res.h str.h debug.h map.h qlib.h dparse.h mapstr.h \
+	qmail.h tabfmt.h psxutil.h
 test_map_SOURCES = test_map.cpp
 test_map_LDADD = libsmx.la
 test_str_SOURCES = test_str.cpp
@@ -313,7 +333,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dbpset.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dparse.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ex.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fbuf.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/file.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hash.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hset.Plo@am__quote@

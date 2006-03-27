@@ -586,16 +586,37 @@ void EvalFileExists(const void *mode, qCtx *ctx, qStr *out, qArgAry *args)
 #endif
 }
 
+#ifdef WIN32
+        #define mkdir(a,b) _mkdir(a)
+#endif
+
 void EvalDirMake(const void *mode, qCtx *ctx, qStr *out, qArgAry *args)
 {
 	VALID_ARGC("mkdir", 1, 1);
 	char * path = (*args)[0].SafeP();
-#ifdef WIN32
-	_mkdir(path);
-#else
- 	 mkdir(path, 0777);
-#endif
+	if (!path) return;
+ 	mkdir(path, 0777);
 }
+
+void EvalDirMakePath(const void *mode, qCtx *ctx, qStr *out, qArgAry *args)
+{
+        VALID_ARGC("mkpath", 1, 1);
+        char * path = (*args)[0].SafeP();
+	if (!path) return;
+
+	
+	char *p = path;
+	while (*p) {
+	  while (*p && !ISDIRSEP(*p)) {
+		++p;
+	  }
+	  CStr tmp(path, p-path);
+          if (!tmp.IsEmpty())
+		mkdir(tmp, 0777);
+	  ++p;
+	}
+}
+
 
 void EvalDirRemove(const void *mode, qCtx *ctx, qStr *out, qArgAry *args)
 {
@@ -663,6 +684,7 @@ void LoadFile(qCtx *ctx) {
 
 	ctx->MapObj(EvalDir,		"dir","01");
 	ctx->MapObj(EvalDirMake,   "mkdir");
+	ctx->MapObj(EvalDirMakePath,   "mkpath");
 	ctx->MapObj(EvalDirRemove, "rmdir");
 
 #ifdef WIN32

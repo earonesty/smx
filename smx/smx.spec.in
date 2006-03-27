@@ -1,6 +1,6 @@
 %define name smx
 %define ver @VERSION@
-%define rel 1
+%define rel 2
 
 Summary: 	Server Macro eXpansion Language
 Name: 		%{name}
@@ -70,6 +70,8 @@ rm -rf %{buildroot}
 %{_libdir}/lib*smx*.*
 
 %changelog
+* Sun Mar 26 2006 Erik Aronesty <erik@q32.com>
+- Made spec.in autoconf'ed
+
 * Mon Feb 27 2006 Erik Aronesty <erik@q32.com>
 - First draft of the spec file
-

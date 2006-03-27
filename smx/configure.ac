@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.57)
-AC_INIT(smx, 1.1.3, bugs@smxlang.org)
+AC_INIT(smx, 1.1.2, bugs@smxlang.org)
 AC_CONFIG_SRCDIR([config.h.in])
 AM_CONFIG_HEADER([config.h])
 AM_INIT_AUTOMAKE
@@ -34,7 +34,7 @@ AC_CHECK_LIB([stdc++], [main],[],[
 ])
 AC_CHECK_LIB([tdb], [tdb_fetch],[],[
 AX_PATH_BDB([3],[
-        echo "Warning! BerkeleyDB is not stable running insider an apache module"
+        echo "Warning! BerkeleyDB is not stable running inside an apache module"
         LIBS="$BDB_LIBS $LIBS"
         LDFLAGS="$BDB_LDFLAGS -ldb_cxx $LDFLAGS"
         CPPFLAGS="$CPPFLAGS $BDB_CPPFLAGS"
@@ -73,5 +73,5 @@ AC_FUNC_STRTOD
 AC_FUNC_VPRINTF
 AC_CHECK_FUNCS([bzero dup2 gethostbyname gettimeofday inet_ntoa memchr memmove memset mkdir pow putenv rmdir select setenv socket sqrt strchr strerror strpbrk strrchr strspn strstr strtol strtoul tzset])
 
-AC_CONFIG_FILES([Makefile smx/Makefile libsmx/Makefile modsmx/Makefile])
+AC_CONFIG_FILES([Makefile smx/Makefile libsmx/Makefile modsmx/Makefile smx.spec])
 AC_OUTPUT

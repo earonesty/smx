@@ -989,6 +989,6 @@ void LoadCore(qCtx *ctx) {
 	ctx->MapObj(EvalPriorityExpand,  "priority-expand", "01");
 #endif
 
-	ctx->MapObj("1.1.3",  "script-version");
+	ctx->MapObj(PACKAGE_VERSION,  "script-version");
 }
 
