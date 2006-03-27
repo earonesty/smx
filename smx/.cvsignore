@@ -8,3 +8,4 @@ config.h
 *.local
 libtool
 smx.spec
+*.tar.gz
