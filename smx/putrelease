@@ -1,0 +1,4 @@
+#!/bin/sh
+ver=1.1.2
+rel=2
+ncftpput ftp.berlios.de incoming /usr/src/smx/smx-$ver.tar.gz /usr/src/redhat/SRPMS/smx-$ver-$rel.src.rpm /usr/src/redhat/RPMS/i386/smx-$ver-$rel.i386.rpm
