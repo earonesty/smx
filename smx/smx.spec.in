@@ -14,12 +14,10 @@ License: 	GPL
 Group: 		Development/Languages
 Prefix: 	%{_prefix}
 BuildRoot: 	%{_tmppath}/%{name}-%{ver}-root
-BuildPrereq:	unixODBC-devel >= 2.0
-BuildPrereq:	httpd-devel >= 2.0
-BuildPrereq:	openssl-devel >= 0.9
-%if "%{enable_sqlite}" == "yes"
-BuildPrereq:	sqlite-devel >= 3.0
-%endif
+
+BuildRequires:	unixODBC-devel >= 2.0
+BuildRequires:	httpd-devel >= 2.0
+BuildRequires:	openssl-devel >= 0.9
 
 %description
 SMX is a simple macro language that can be used to parse text files

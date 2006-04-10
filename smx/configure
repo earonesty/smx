@@ -23371,7 +23371,7 @@ echo "$as_me: no usable Berkeley DB not found" >&6;}
 
     if test "$ax_path_bdb_ok" = "yes" ; then
 
-        echo "Warning! BerkeleyDB is not stable running insider an apache module"
+        echo "Warning! BerkeleyDB is not stable running inside an apache module"
         LIBS="$BDB_LIBS $LIBS"
         LDFLAGS="$BDB_LDFLAGS -ldb_cxx $LDFLAGS"
         CPPFLAGS="$CPPFLAGS $BDB_CPPFLAGS"
