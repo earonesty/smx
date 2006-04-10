@@ -3,11 +3,15 @@ cr2 %create-file(test-mod2.tmp,%%define(y,9))
 mo1 %module(test-mod.tmp)
 mo2 %module(test-mod2.tmp)
 9 = %y%
-sl %sleep(1)
+cr1 %create-file(test-mod.tmp,%%define(x,4))
+mo1 %module(test-mod.tmp)
+2 = %x%
+sl %sleep(1000)
 dl %delete(test-mod.tmp)
 cr %create-file(test-mod.tmp,%%define(x,3))
-dl %sleep(1)
 9 = %y%
 mo %module(test-mod.tmp)
 3 = %x%
 9 = %y%
+dl %delete(test-mod2.tmp)
+dl %delete(test-mod.tmp)
