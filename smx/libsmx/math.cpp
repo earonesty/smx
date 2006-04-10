@@ -490,7 +490,9 @@ void EvalRand(const void *data, qCtx *ctx, qStr *out, qArgAry *args) {
 	unsigned int range;
 	if (args->Count() > 0) {
 		range = (unsigned int) ParseInt((*args)[0]);
-		out->PutN((unsigned int) ((((unsigned long)rand())<<16)|(((unsigned long)rand()))) % range);
+		if (range > 0) {
+			out->PutN((unsigned int) ((((unsigned long)rand())<<16)|(((unsigned long)rand()))) % range);
+		}
 	} else {
 		out->PutN(rand());
 	}

@@ -190,7 +190,7 @@ class qObjModule : public qObjClass
 #ifdef WIN32 
 	HMODULE myHMod;
 #else
-//	!!!!! TODO: SUPPORT SHARED OBJECTS ON YOUR PLATFORM (JUST THE BASICS) !!!!!
+	void *myHMod;
 #endif
 
 public:
@@ -207,7 +207,10 @@ public:
 			psx->pTermLib();
 		FreeLibrary(myHMod);
 #else
-//	!!!!! TODO: FREE YOUR SHARED OBJECTS !!!!!
+		PPSXEXTLIB psx = (PPSXEXTLIB) dlsym(myHMod, "PSXLibrary");
+		if(psx)
+			psx->pTermLib();
+		dlclose(myHMod);
 #endif
 	}
 };
@@ -254,8 +257,14 @@ void qObjCache::EvalModule(qCtx *ctx, qStr *out, qArgAry *args)
 			}
 
 	#else
-			//!!!!
-			void * hM;
+			void * hM = dlopen(path, RTLD_LAZY);
+			psx = (PPSXEXTLIB) dlsym(hM, "PSXLibrary");
+
+			if (!psx) {
+				ctx->ThrowF(out, 551, "PSXLibrary not found in module.");
+				dlclose(hM);
+				return;
+			}
 	#endif
 
 			if (psx->dwSize != sizeof(*psx) || !psx->pLoadLib) {
@@ -263,7 +272,7 @@ void qObjCache::EvalModule(qCtx *ctx, qStr *out, qArgAry *args)
 	#ifdef WIN32
 				FreeLibrary(hM);
 	#else
-				//!!!!
+				dlclose(hM);
 	#endif
 				return;
 			}
@@ -273,7 +282,6 @@ void qObjCache::EvalModule(qCtx *ctx, qStr *out, qArgAry *args)
 			psxExContextImpl extCtx(module->GetCtx(), false);
 			psx->pLoadLib(&extCtx);
 			module->GetCtx()->SetParent(NULL);
-
 		} else { //! SHARED_LIB_EXT
 			qStrNull  null;
 			module = new qObjClass();
