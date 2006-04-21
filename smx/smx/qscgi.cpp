@@ -116,13 +116,13 @@ int main(int argc, char* argv[], char* envp[])
 
 
 				if (cgi) {
-					// ctx.ParseTry(&env, env.GetBuf());
-					//env.PutS("Content-Length: ");
-					//env.PutN(env.GetBuf()->Length());
-					//env.PutC('\n');
+					ctx.ParseTry(&env, env.GetBuf());
+					env.PutS("Content-Length: ");
+					env.PutN(env.GetBuf()->Length());
+					env.PutC('\n');
 					env.PrintHeaders();
 					env.PutC('\n');
-					//env.PutS(*env.GetBuf());
+					env.PutS(*env.GetBuf());
 					ctx.ParseTry(&env, &env);
 				} else {
 					ctx.ParseTry(&env, &env);
