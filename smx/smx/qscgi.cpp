@@ -77,7 +77,8 @@ int main(int argc, char* argv[], char* envp[])
 			bool path = getoptbool("p*ath") != 0;
 			CStr file = argv[1];
 
-			if (path) {
+			#ifdef WIN32
+			if (!cgi && path) {
 				char *fp;
 				SearchPath(
 				  NULL,      // search path
@@ -88,8 +89,10 @@ int main(int argc, char* argv[], char* envp[])
 				  &fp   // file component
 				);
 			}
+			#endif
 
-			setenv("PATH_TRANSLATED",file,0);
+			if (cgi && !getenv("PATH_TRANSLATED"))
+				setenv("PATH_TRANSLATED",file,0);
 
 			FILE *fp = fopen(file, "r");
 			if (fp) {
@@ -113,13 +116,14 @@ int main(int argc, char* argv[], char* envp[])
 
 
 				if (cgi) {
-					ctx.ParseTry(&env, env.GetBuf());
-					env.PutS("Content-Length: ");
-					env.PutN(env.GetBuf()->Length());
-					env.PutC('\n');
+					// ctx.ParseTry(&env, env.GetBuf());
+					//env.PutS("Content-Length: ");
+					//env.PutN(env.GetBuf()->Length());
+					//env.PutC('\n');
 					env.PrintHeaders();
 					env.PutC('\n');
-					env.PutS(*env.GetBuf());
+					//env.PutS(*env.GetBuf());
+					ctx.ParseTry(&env, &env);
 				} else {
 					ctx.ParseTry(&env, &env);
 				}
@@ -185,7 +189,7 @@ CStr qEnvCGI::MapFullPath(const char *path)
 	if (!path1.IsEmpty()) {
 		CStr strip = GetHeader("PATH_INFO");
 		if (strip.IsEmpty()) strip = GetHeader("SCRIPT_NAME");
-
+		if (!strip.IsEmpty()){
 		int i = strip.Length();
 		int j = path1.Length();
 
@@ -194,6 +198,7 @@ CStr qEnvCGI::MapFullPath(const char *path)
 
 		if ((j + 1) < path1.Length() && ISPATHSEP(path1.Data()[j+1])) {
 			path1.Grow(j+1);
+		}
 		}
 	} else {
 		path = GetHeader("SCRIPT_NAME");
