@@ -195,11 +195,17 @@ char *PathCanonicalize(char *dest, char *src)
 			prevpos=dotpos-2;
 			while ((prevpos>=dest) && (*prevpos != '/') && (*prevpos != '\\'))
 				--prevpos;
-			strcpy(prevpos+1, dotpos+3);
+			if (*(dotpos+2) == '\0')
+				prevpos[1] = '\0';
+			else
+				strcpy(prevpos+1, dotpos+3);
 			}
 		while((dotpos = PathGetDot(dest)))
 			{
-			strcpy(dotpos,dotpos+2);
+			if (*(dotpos+1) == '\0')
+				*dotpos  = '\0';
+			else
+				strcpy(dotpos,dotpos+2);
 			}
 		return (dest);
 		}
