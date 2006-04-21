@@ -93,6 +93,7 @@ public:
 	CStr GetS()  {CStr tmp(myBufSize); tmp.Grow(fread(tmp.GetBuffer(), 1, myBufSize, myIn)); return tmp;}
 
 	void PutS(const char *s)		{if(s) fputs(s, myOut);}
+	void PutS(CStr &s)			{fwrite(s.Data(), 1, s.Length(), myOut);}
 	void PutS(const char *s, int n)	{if (s) fwrite(s, 1, n, myOut);}
 	void PutC(char c)		     	{fputc(c, myOut);}
 };

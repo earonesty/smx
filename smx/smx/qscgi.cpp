@@ -122,8 +122,7 @@ int main(int argc, char* argv[], char* envp[])
 					env.PutC('\n');
 					env.PrintHeaders();
 					env.PutC('\n');
-					env.PutS(*env.GetBuf());
-					ctx.ParseTry(&env, &env);
+					env.PutS((CStr &)*env.GetBuf());
 				} else {
 					ctx.ParseTry(&env, &env);
 				}

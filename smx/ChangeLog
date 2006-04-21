@@ -1,4 +1,8 @@
 2005-05-09 : EA : Completely reorganized project
 2005-06-22 : EA : Removed STL hash stuff
 2006-02-22 : EA : Reworked SQL libs & hsets, adding sqlite3 and allowing safe-mode hset
+2006-03-03 : EA : Fixed html-clean, created test for it 
+2006-03-08 : EA : Added %sql-lastquery%
 2006-03-19 : EA : Several sqlite fixes since ver 1.1.2.  New release should replace.
+2006-03-26 : EA : Created test for null args to functions. smx.spec.in file used 
+2006-04-21 : EA : CGI fix for image generation.  Also fixed edge-case for PathCanonicalize.  

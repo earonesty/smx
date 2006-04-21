@@ -1,6 +1,7 @@
 #!/bin/sh
 ver=1.1.2
-rel=2
-rm /home/memebot/inst/smx-*.rpm
+rel=3
+mbssh rm /home/memebot/inst/smx-*.rpm
 cp /usr/src/redhat/RPMS/i386/smx-$ver-$rel.i386.rpm /home/memebot/inst/
+mbscp /home/memebot/inst/smx-$ver-$rel.i386.rpm
 ncftpput ftp.berlios.de incoming /usr/src/smx/smx-$ver.tar.gz /usr/src/redhat/SRPMS/smx-$ver-$rel.src.rpm /usr/src/redhat/RPMS/i386/smx-$ver-$rel.i386.rpm
