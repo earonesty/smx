@@ -1,3 +1,5 @@
+2006-04-27 : EA : rewrite noncompiled parser to resemble compiled parser (less recursion)?
+2006-04-27 : EA : document all macros, mark experimental ones as experimental
 2006-03-19 : EA : put code into qObjHttp, and remove code from the modsmx apache module - for new IIS build
 2006-03-19 : EA : cwd at session start to the script path, so you can %include without %fqppath
 2006-03-19 : EA : apache 2 stuff caused apache 1.X to fail, figure that out
