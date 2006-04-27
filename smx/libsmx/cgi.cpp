@@ -1260,6 +1260,7 @@ void qObjCGI::EvalHtmlClean(qCtx *ctx, qStr *out, qArgAry *args)
 		char *b;
 		char *n;
 		char *p = html.GetBuffer();
+		if (!p)	return;
 		bool cl;
 		bool st;
 

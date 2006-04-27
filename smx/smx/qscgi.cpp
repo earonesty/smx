@@ -109,12 +109,6 @@ int main(int argc, char* argv[], char* envp[])
 				ctx.SetEnv(&env);
 				env.SetSessionCtx(&ctx);
 
-				char *p_opt;
-				while ((p_opt =  getopt("m*odule"))) {
-					ctx.Eval("module", p_opt);
-				}
-
-
 				if (cgi) {
 					ctx.ParseTry(&env, env.GetBuf());
 					env.PutS("Content-Length: ");

@@ -286,7 +286,7 @@ static int psx_handler(request_rec *r)
 #endif
 
 #ifdef APACHE2
-	if (!r->handler || (strcmp("psx-parsed",r->handler) && strcmp("smx-parsed",r->handler)))
+	if (!r->handler || (strcmp("smx-parsed",r->handler)))
 		return DECLINED;
 #endif
 
@@ -352,7 +352,10 @@ static int psx_handler(request_rec *r)
 			}
 			if (ok) {
 				qStrBuf pageTmp(senv->GetPageMacro());
-				renv->GetCtx()->ParseTry(&pageTmp, renv);
+				qStrBuf outTmp;
+				renv->GetCtx()->ParseTry(&pageTmp, &outTmp);
+				outTmp.Trim();
+				if (!outTmp.IsEmpty()) renv->PutS(outTmp);
 			}
 		}
 

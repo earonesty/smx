@@ -29,6 +29,7 @@ void LoadIO(qCtx *ctx);
 void LoadCard(qCtx *ctx);
 void LoadSched(qCtx *ctx);
 void LoadTSet(qCtx *ctx);
+void LoadImage(qCtx *ctx);
 
 static void LoadAllLibs(qCtx *ctx)
 { 
@@ -37,6 +38,9 @@ static void LoadAllLibs(qCtx *ctx)
 	LoadString(ctx);
 	LoadTime(ctx);
 	LoadHSet(ctx);
+#ifndef NO_LOAD_IMAGE
+	LoadImage(ctx);
+#endif
 #ifndef NO_LOAD_PSET
 	LoadPSet(ctx);
 #endif

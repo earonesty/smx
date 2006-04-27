@@ -68,7 +68,8 @@ am_libsmx_la_OBJECTS = base64.lo qmail.lo buf_ref.lo pscache.lo \
 	qobj.lo qfopen.lo qenv.lo qctx.lo qctx-comp.lo psximpl.lo \
 	pstable.lo proto.lo process.lo opt.lo open-enc.lo map.lo \
 	hset.lo file.lo ex.lo dparse.lo dbpset.lo crit_unix.lo core.lo \
-	cgi.lo card.lo hash.lo mapstr.lo smx_sqlite.lo psxutil.lo
+	cgi.lo card.lo hash.lo mapstr.lo smx_sqlite.lo psxutil.lo \
+	gd.lo
 libsmx_la_OBJECTS = $(am_libsmx_la_OBJECTS)
 am_test_eval_OBJECTS = test_eval.$(OBJEXT)
 test_eval_OBJECTS = $(am_test_eval_OBJECTS)
@@ -231,7 +232,7 @@ libsmx_la_SOURCES = base64.cpp qmail.cpp buf_ref.cpp pscache.cpp \
 	qfopen.h qpriqx.h rcex.h strary.h util.h crit_win.h lst.h \
 	qgargs.h qsched.h regx.h strex.h dbpset.h lstx.h qarg.h qgif.h \
 	qstr.h res.h str.h debug.h map.h qlib.h dparse.h mapstr.h \
-	qmail.h tabfmt.h psxutil.h
+	qmail.h tabfmt.h psxutil.h gd.cpp
 test_map_SOURCES = test_map.cpp
 test_map_LDADD = libsmx.la
 test_str_SOURCES = test_str.cpp
@@ -334,6 +335,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dparse.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ex.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/file.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gd.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hash.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hset.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/map.Plo@am__quote@

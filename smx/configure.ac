@@ -28,6 +28,7 @@ AC_CHECK_LIB([odbc], [SQLConnect],[],[
 ])
 AC_CHECK_LIB([sqlite3], [sqlite3_open])
 AC_CHECK_LIB([pthread], [pthread_create])
+AC_CHECK_LIB([gd], [gdImageCreate])
 AC_CHECK_LIB([stdc++], [main],[],[
         echo "Error! libstdc++ is required"
         exit -1

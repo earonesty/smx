@@ -486,12 +486,19 @@ void EvalExpr(const void *data, qCtx *ctx, qStr *out, qArgAry *args) {
 }
 
 void EvalRand(const void *data, qCtx *ctx, qStr *out, qArgAry *args) {
-	VALID_ARGC("rand", 0, 1);
-	unsigned int range;
+	VALID_ARGC("rand", 0, 2);
 	if (args->Count() > 0) {
-		range = (unsigned int) ParseInt((*args)[0]);
-		if (range > 0) {
-			out->PutN((unsigned int) ((((unsigned long)rand())<<16)|(((unsigned long)rand()))) % range);
+		if (args->Count() > 1) { 
+			int a =  ParseInt((*args)[0]);
+			int b =  ParseInt((*args)[1]);
+			if (b>=a) {
+				unsigned int range = 1 + (unsigned int) (b-a);
+				out->PutN(a + (int) (((((unsigned int)rand())<<16)|(((unsigned int)rand()))) % range));
+			}
+		} else {
+			unsigned int range =  ParseInt((*args)[0]);
+			if (range > 0) 
+				out->PutN(((((unsigned int)rand())<<16)|(((unsigned int)rand()))) % range);
 		}
 	} else {
 		out->PutN(rand());
