@@ -668,10 +668,20 @@ CStr qEnvApache::GetMimeType(const char *ext)
 /* Translate the URL into a 'filename' */
 CStr qEnvApache::MapFullPath(const char *path)
 {
+	char *p;
+	if (path && (*path != '/') && (p = strrchr(myReq->filename,DIRSEP))) {
+		// relative path map should be easy
+		int len = p - myReq->filename;
+		CStr mapped(myReq->filename,len+1);
+		mapped << path;
+		return mapped;
+	} else  {
+		// root path map is complex, easier way in API?
 	int was = IsAuth;
 
 	IsAuth = 1;
-  
+ 
+ 
 #ifdef APACHE2
 	request_rec *r = ap_sub_req_lookup_uri(path, myReq, NULL);
 #else
@@ -684,6 +694,7 @@ CStr qEnvApache::MapFullPath(const char *path)
 	ap_destroy_sub_req(r);
 
 	return mapped;
+	}
 }
 
 CStr qEnvApache::MapURL(const char *path)

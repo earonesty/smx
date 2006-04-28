@@ -225,7 +225,7 @@ bool imgOpts::Parse(char *str)
 			int l = strtol(p, &e, 10);
 			while(isspace(*e)) ++e;
 			p = e;
-			if (*p == 'x' || *p == ',' || *p == '.') {
+			if (*p == 'x') {
 				if (pcnt < MAXVERT)
 					pts[pcnt].x=l;
 				++p;

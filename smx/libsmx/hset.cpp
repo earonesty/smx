@@ -344,12 +344,6 @@ CStr GetTempPath() {
 }
 
 
-#ifdef WIN32
-	#define DIRSEP '\\'
-#else
-	#define DIRSEP '/'
-#endif
-
 void LoadHSet(qCtx *ctx) {
     CStr tmpName;
 

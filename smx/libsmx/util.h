@@ -74,5 +74,11 @@ bool safe_fcheck(qCtx *ctx, const char *path);
 int setenv(const char *name, const char *value, int overwrite);
 #endif
 
+#ifdef WIN32
+#define DIRSEP ((char)'\\')
+#else
+#define DIRSEP ((char)'/')
+#endif
+
 #endif // #ifndef _UTIL_H
 

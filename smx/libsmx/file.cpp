@@ -56,12 +56,6 @@ struct DIRSTATE {
 };
 #endif
 
-#ifdef WIN32
-#define DIRSEP ((char) '\\')
-#else
-#define DIRSEP ((char) '/')
-#endif
-
 #define ISDIRSEP(c) ((c)=='/'||(c) =='\\')
 #define ISPATHSEP(c) ((c)=='/'||(c) =='\\'||(c) ==':')
 
