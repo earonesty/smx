@@ -1,0 +1,6 @@
+%set(name,counter)
+%set(syntax,%%counter(name[\,init]))
+%set(description,"Increments and stores a global counter.  Uses the pdbfile database.  If [init] is a number greater than zero, sets the counter to that number.")
+%set(author,)
+%set(example,)
+%set(seealso,pdbfile)
