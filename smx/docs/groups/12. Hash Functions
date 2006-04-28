@@ -1,1 +1,1 @@
-|hset|hget|pset|pget
+|hset|hget|pset|pget|pdbfile|hdbfile

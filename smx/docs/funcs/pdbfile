@@ -1,6 +1,12 @@
-%set(name,pset)
-%set(syntax,%%pdbfile(full-path))
-%set(description,"Sets the location of the persistent database file.  Default location is <HOMEPATH>/.smx/pset.db.  NOTE: This must be done in the http-init, per page macro, if mass virtual hosting/safe-mode is used.  (Or you can disable it)")
-%set(author,)
+%set(name,pdbfile)
+%set(description,"Sets the location of the persistent database file.
+
+Default location is <HOMEPATH>/.smx/pset.db
+
+NOTE: Can be done at server-init \(globally\).  This must be done in the http-init, per page macro, if mass virtual hosting/safe-mode is used.")
+%set(syntax,"%%pdbfile\(full-path\)")
 %set(example,)
-%set(seealso,http-init)
+%set(seealso,http-init|hdbfile|pset)
+%set(authorip,64.131.154.83)
+%set(authorlogin,admin)
+%set(author,)
