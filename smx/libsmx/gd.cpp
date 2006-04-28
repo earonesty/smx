@@ -1,10 +1,4 @@
 #include "unix.h"
-
-#ifdef HAVE_GD_H
-
-#include <gd.h>
-#include <math.h>
-
 #include "crit.h"
 
 #include "qstr.h"
@@ -12,6 +6,11 @@
 #include "qctx.h"
 
 #include "util.h"
+
+#ifdef HAVE_GD_H
+#include <gd.h>
+#include <math.h>
+
 
 typedef struct
 {
@@ -593,6 +592,6 @@ void LoadImage(qCtx *ctx) {
 }
 
 #else
-void LoadImage(void *ctx) {
+void LoadImage(qCtx *ctx) {
 }
 #endif
