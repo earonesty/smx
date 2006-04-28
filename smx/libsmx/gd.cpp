@@ -1,6 +1,6 @@
 #include "unix.h"
 
-#ifdef HAVE_LIBGD
+#ifdef HAVE_GD_H
 
 #include <gd.h>
 #include <math.h>
@@ -586,13 +586,13 @@ void EvalCreateImage(const void *data, qCtx *ctx, qStr *out, qArgAry *args)
 	}
 }
 
-#endif
-
 void LoadImage(qCtx *ctx) {
 //sql
-#ifdef HAVE_LIBGD
         ctx->MapObj(EvalCreateImage,    "create-image");
 	gdFTUseFontConfig(1);
-#endif
 }
 
+#else
+void LoadImage(void *ctx) {
+}
+#endif
