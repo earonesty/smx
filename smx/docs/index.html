@@ -62,7 +62,8 @@
 ,
 %set(prevdl,)
 <p class="subHeader">Description</p>
-<TT>%replace(%rxsplit(%html-quote(%replace(%description%,<br>,%lf%)),[%cr%]?[%lf%]
+%define(href,<a href="%url%">%name%</a>,url,name)
+<TT>%replace(%rxsplit(%safe-expand(%html-quote(%replace(%description%,<br>,%lf%)),href),[%cr%]?[%lf%]
 			,%if(%equal(%left(%token%,2),"  ")
 				 ,&nbsp;&nbsp;&nbsp;%token%<br>
 			 	 ,%token%<br>

@@ -1,1 +1,1 @@
-|set|define|gdefine|gset|let|expand|invoke|safe-expand|safe-mode
+|set|define|gdefine|gset|let|expand|invoke|safe-expand|safe-mode|macro-quote
