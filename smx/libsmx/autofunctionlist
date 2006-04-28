@@ -1,0 +1,41 @@
+#!/usr/bin/perl
+
+open L, "libs.h";
+while(<L>) {
+	next unless /^void (\w+)/;
+	$libs{$1}=1;
+}
+close L;
+
+for $lib (keys(%libs)) {
+	$cpp = `grep -l $lib *.cpp`;
+	open SRC, $cpp;
+	while (<SRC>) {
+		$os = 'WIN32' if /#ifdef WIN32/;
+		$os = 'UNIX' if /#ifdef unix/ || /#ifndef WIN32/;
+		$os = '' if /#endif/;
+		last if /void $lib/;
+	}
+
+	$lib =~ s/^Load//;
+
+	while (<SRC>) {
+		next if /^\s*\/\//;
+		$os = 'WIN32' if /#ifdef WIN32/;
+		$os = 'UNIX' if /#ifdef unix/ || /#ifndef WIN32/;
+		$os = '' if /#endif/;
+
+		next unless /MapObj\((.*)\);/;
+		(@args) = split(/\,/,$1);
+		$int = shift @args;
+		for (@args) {
+			next unless /\"/;
+			$name = $_;
+			last;
+		}
+		$name =~ s/.*"(.*)".*/$1/;
+		next if $name =~ /^</;
+		print "$lib\t$name\t$os\n";
+	}
+	close SRC;
+}
