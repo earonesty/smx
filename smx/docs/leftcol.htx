@@ -15,6 +15,7 @@
 
 %enumsort(%dirs%,|,
 			%set(gname,%token%)
+			%if(%not(%equal(%gname%,CVS)),
 			<li %if(%equal(%form(group),%gname%),id="active")>
 				<a href="%client-url%?group=%url-encode(%gname%)&func=%url-encode(%form(func))" %if(%equal(%form(group),%gname%),id="active")>
 				%gname%
@@ -36,6 +37,7 @@
 					
 				)
 			</li>
+			)
 )
 		</ul>
 	</div> 
