@@ -1,30 +1,35 @@
 %set(name,define)
-%set(syntax,%%define(macro
-    \,body
-[\,name-1][\,name-2][\,...])
+%set(description,"%%define creates a new macro
+
+Use %%define to group together or simplify macros that you use a lot.  The macro you create is used just like any other macro, you can pass it arguments, etc.
+
+The first parameter is the macro name.  The next parameter is the string of macros that you want to execute.  The third, fourth and parameters are the names of the arguments that you will accept from the user.
+
+Be careful with commas when making long macros.  If you want a comma to show up in the body, remember to put the body in quotes : \",\" or to excape your commas: \\,.  Smx tries to figure out what you meant, but these really help.
+
+You can make an \"autoquoted\" argument by putting a quote before the variable name.  The argument must then be explicitly expanded by the function.
+")
+%set(syntax,"%%define\(macro
+    ,body
+[,name-1][,name-2][,...]\)
 
 OR 
 
-%%gdefine(macro
-    \,body
-[\,name-1][\,name-2][\,...]))
-%set(description,%%define creates a new macro
+%%gdefine\(macro
+    ,body
+[,name-1][,name-2][,...]\)")
+%set(example,"a nice login macro...
 
-Use %%define to group together or simplify macros that you use a lot.  The macro you create is used just like any other macro\, you can pass it arguments\, etc.
-
-The first parameter is the macro name.  The next parameter is the string of macros that you want to execute.  The third\, fourth and parameters are the names of the arguments that you will accept from the user.
-
-Be careful with commas when making long macros.  If you want a comma to show up in the body\, remember to put the body in quotes : "\," or to excape your commas: \\\,.  PSX tries to figure out what you meant\, but these really help.)
-%set(author,)
-%set(example,a nice login macro...
-
-%%define(login-user
-    \,%%try(%%sql(dsn;sa;
-              \,"select access from users 
-                 where user=%%sql-quote(%%username%%)
-                   and pass=%%sha(%%sql-quote(%%password%%))"
-              \,%%column(1)
-          )
-     )
-))
+%%define\(login-user
+    ,%%try\(%%sql\(dsn;sa;
+              ,\"select access from users 
+                 where user=%%sql-quote\(%%username%%\)
+                   and pass=%%sha\(%%sql-quote\(%%password%%\)\)\"
+              ,%%column\(1\)
+          \)
+     \)
+\)")
 %set(seealso,)
+%set(authorip,64.131.154.83)
+%set(authorlogin,admin)
+%set(author,)

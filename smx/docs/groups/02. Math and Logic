@@ -1,1 +1,1 @@
-|iabs|iadd|iand|isub|sub|add|abs|and|bin|equ|rand|expr|or|max|min|avg|mod|imod|ixor|lshift|rshift|round|trunc|radix|hex|oct|bin
+|iabs|iadd|iand|isub|sub|add|abs|and|bin|equ|rand|expr|or|max|min|avg|mod|imod|ixor|lshift|rshift|round|trunc|radix|hex|oct|bin|not|div|mult|idiv|imult|imod|ior|mod|inot|ixor|lshift|rshift|++|--|hex|radix|oct|round|trunc|+=|-=|asc|ord

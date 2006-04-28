@@ -1,0 +1,12 @@
+%set(name,ord)
+%set(description,"Returns the ordinal value of the first character supplied.")
+%set(syntax,"%%ord\(<character>\)")
+%set(example,"%%ord\(A\)
+
+Outputs:
+
+65")
+%set(seealso,)
+%set(authorip,64.131.154.83)
+%set(authorlogin,admin)
+%set(author,)

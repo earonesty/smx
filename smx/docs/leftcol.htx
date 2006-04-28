@@ -5,7 +5,6 @@
 				<li><a href="/index.html">Home</a></li>
 				<li><a href="edit.html?func=%form(func)">Edit</a></li>
 				<li><a href="#">Function: <input size=10 name=func></a></li>
-				<li><a href="#">Search: <input size=10 name=search></a></li>
 		</ul>
 	</form>
 	</div>

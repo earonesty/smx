@@ -25,6 +25,16 @@
 	 )
 	
 	 %if(%equ(%count%,0)
+		,
+	    %set(results,
+           	%try(%dir(%fqppath(funcs)/*
+			,%if(%wcmatch(%include(%fqppath(funcs)/%fname%),*%func%*)
+				,<li><a href="index.html?group=%form(group)&func=%fname%">%fname%</a>%++(count)%fset(func,%fname%)
+			 )
+	   	))
+	    )
+	 )
+	 %if(%equ(%count%,0)
 		 ,<h2>Function '%form(func)' not found</h2>
 	    ,%equ(%count%,1)
 		 ,%redirect(index.html?group=%url-encode(%form(group))&func=%url-encode(%form(func)))

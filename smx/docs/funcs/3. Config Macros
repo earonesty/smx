@@ -1,0 +1,37 @@
+%set(name,3. Config Macros)
+%set(description,"There are a number of meta-macros used to alter the way smx works when running under a webserver.  
+
+These must be set in a webserver-init script.  Under Apache, use the SMXInit configuration variable.
+
+
+%%set\(http-init,'macro\) - expands this string for each web page.  trimmed results are included at the top of each page
+
+%%set\(http-wrap,'macro\) - expanded *instead* of each web page.  results of actual page can be included via the %%page%% macro
+
+%%set\(http-user,'macro\) - this macro, if set, is expanded when authentication is required via the apache configuration or an .htaccess file.  %%username%% and %%password%% variables are available.  non null results allows access. a %%redirect response is allowed \(useful!\).
+
+%%set\(http-badurl,'macro\) - this macro, if set will be expanded if a page is not found.")
+%set(syntax,"%%set\(http-init,'macro\)
+%%set\(http-wrap,'macro\)
+%%set\(http-user,'macro\)
+%%set\(http-badurl,'macro\)")
+%set(example,"SMXInit %%expand\(%%include\(/etc/smx.init\)\)
+
+--- contents of /etc/smx.init ---
+
+%%pdbfile\(/etc/smx.passwds\)
+
+%%set\(http-user,
+  '%%equal\(%%password%%,%%pget\(/%%username%%/pass\)\)
+\)
+
+--- contents of /usr/bin/smxsetpass
+
+#!/usr/bin/smx
+%%pdbfile\(/etc/smx.passwds\)
+%%pset\(/%%arg\(1\)/pass,%%arg\(2\)\)
+")
+%set(seealso,)
+%set(authorip,64.131.154.83)
+%set(authorlogin,admin)
+%set(author,)
