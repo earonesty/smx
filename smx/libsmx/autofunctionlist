@@ -1,5 +1,9 @@
 #!/usr/bin/perl
 
+use Getopt::Long;
+
+GetOptions("undoc");
+
 open L, "libs.h";
 while(<L>) {
 	next unless /^void (\w+)/;
@@ -35,6 +39,10 @@ for $lib (keys(%libs)) {
 		}
 		$name =~ s/.*"(.*)".*/$1/;
 		next if $name =~ /^</;
+		if ($opt_undoc) {
+			next if -e "../docs/funcs/$name";
+			next if -e "/var/www/hosts/smxlang.org/public_html/docs/funcs/$name";
+		}
 		print "$lib\t$name\t$os\n";
 	}
 	close SRC;

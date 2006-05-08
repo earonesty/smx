@@ -411,7 +411,6 @@ void qObjCGI::EvalFormSaveAs(qCtx *ctx, qStr *out, qArgAry *args)
 void qObjCGI::EvalFormSaveAsP(qCtx *ctx, qStr *out, qArgAry *args) 
 {
 	CStrLst *val;
-
 	if (args->Count() > 1) {
 		CStr name = (*args)[1];
 		if (myFileMap.Find(name, val)) {
@@ -427,8 +426,14 @@ void qObjCGI::EvalFormSaveAsP(qCtx *ctx, qStr *out, qArgAry *args)
 				if (fp) {
 					fwrite((void *)val->Data().Data(), 1, val->Data().Length(), fp);
 					fclose(fp);
+				} else {
+                			ctx->ThrowF(out, 601, "Failed to open file for writing. %y", GetLastError());
 				}
+			} else {
+				smx_log(SMXLOGLEVEL_DEBUG, "no data in form-saveas, %s", name.Data());	
 			}
+		} else {
+			smx_log(SMXLOGLEVEL_DEBUG, "form-saves name not found, %s", name.Data());	
 		}
 	}
 }

@@ -314,7 +314,7 @@ bool safe_fcheck(qCtx *ctx, const char *path)
 
 #ifdef unix
         struct stat s;
-        if (!stat(dir, &s) && ((unsigned int) uid == s.st_uid))
+        if (!stat(dir, &s) &&( ((s.st_mode & S_IROTH) && (s.st_mode & S_IXOTH)) || ((unsigned int) uid == s.st_uid)))
                 return true;
 
         errno = EPERM;
