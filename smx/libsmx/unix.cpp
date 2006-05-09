@@ -181,6 +181,7 @@ char *PathCombine(char *dest, const char *abs, const char *rel)
 		}
 	}
 
+/*
 char *PathCanonicalize(char *dest, char *src)
 	{
 //	int srcpos=0;
@@ -207,6 +208,10 @@ char *PathCanonicalize(char *dest, char *src)
 			else
 				strcpy(dotpos,dotpos+2);
 			}
+                while((dotpos = strstr(dest, "//")))
+                        {
+                        	strcpy(dotpos,dotpos+1);
+                        }
 		return (dest);
 		}
 	else
@@ -215,6 +220,12 @@ char *PathCanonicalize(char *dest, char *src)
 		}
 	
 	}
+*/
+
+char *PathCanonicalize(char *dest, char *src)
+{
+	return realpath(src, dest);
+}
 
 inline char *PathGetDotDot(char *str)
 	{

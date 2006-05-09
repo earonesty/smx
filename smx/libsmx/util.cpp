@@ -182,7 +182,13 @@ void _log_debug(const char *msg) {
 
   if (gDebugLog == NULL) {
         CLock lock(&gDebugLogCrit);
+#ifdef unix
+  	int um = umask(0027);
+#endif
 	gDebugLog = fopen(gDebugLogFile,"a");
+#ifdef unix
+  	umask(um);
+#endif
   }
 
   if (gDebugLog) {
@@ -280,6 +286,10 @@ bool safe_dcheck(qCtx *ctx, const char *path)
 	if (uid == -1) return false;
 
 #ifdef unix
+        if (!strnicmp(path,"/tmp",4)) {
+                errno = EPERM;
+                return false;
+        }
 	struct stat s;
 	if (!stat(path, &s) && ((unsigned int) uid == s.st_uid))
                 return true;
@@ -313,6 +323,13 @@ bool safe_fcheck(qCtx *ctx, const char *path)
 		dir = ".";
 
 #ifdef unix
+	char *fullp = (char *) malloc(PATH_MAX);
+	realpath(path, fullp);
+	if (!strnicmp(fullp,"/tmp",4)) {
+		errno = EPERM;
+		return false;
+	}
+	free(fullp);
         struct stat s;
         if (!stat(dir, &s) &&( ((s.st_mode & S_IROTH) && (s.st_mode & S_IXOTH)) || ((unsigned int) uid == s.st_uid)))
                 return true;

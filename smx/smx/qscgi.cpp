@@ -209,6 +209,7 @@ CStr qEnvCGI::MapFullPath(const char *path)
 
 	path1.RTrim();
 	CStr path2 = path;
+//	CStr path3(MAX_PATH);
 	CStr path3(path1.Length()+path2.Length()+1);
 	PathCombine(path3.GetBuffer(),path1,path2);
 	path1.Grow(path3.Length());

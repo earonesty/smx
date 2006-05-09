@@ -139,6 +139,20 @@ typedef void * HINSTANCE;
 
 #define _timezone timezone
 
+/* 
+#ifndef MAX_PATH
+ #ifdef PATH_MAX
+  #define MAX_PATH PATH_MAX
+ #else
+  #ifdef MAXPATHLEN
+   #define MAX_PATH MAXPATHLEN
+  #else
+   #define MAX_PATH 1024
+  #endif
+ #endif
+#endif
+*/
+
 #define MAX_PATH 1024
 
 #define STDCALL

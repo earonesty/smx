@@ -152,6 +152,25 @@ void EvalFilePath(const void *data, qCtx *ctx, qStr *out, qArgAry *args)
 	}
 }
 
+void EvalRealPath(const void *mode, qCtx *ctx, qStr *out, qArgAry *args)
+{
+        VALID_ARGC("realpath", 1, 1);
+        CStr src = (*args)[0];
+        if (!src.Length()) return;
+
+        CStr dest;
+        dest.Grow(MAX_PATH);
+
+#ifdef WIN32
+        PathCanonicalize(dest.Data(), src.Data());
+#else
+	realpath(src.Data(), dest.Data());
+#endif
+	dest.Grow(strlen(dest.Data()));
+
+	out->PutS(dest);
+}
+
 void EvalMakePath(const void *data, qCtx *ctx, qStr *out, qArgAry *args)
 {
 	VALID_ARGC("makepath", 2, 2);
@@ -611,7 +630,6 @@ void EvalDirMakePath(const void *mode, qCtx *ctx, qStr *out, qArgAry *args)
 	}
 }
 
-
 void EvalDirRemove(const void *mode, qCtx *ctx, qStr *out, qArgAry *args)
 {
 	VALID_ARGC("rmdir", 1, 1);
@@ -660,6 +678,7 @@ void LoadFile(qCtx *ctx) {
 	ctx->MapObj(EvalFileName,		"filename");
 	ctx->MapObj(EvalFilePath,		"filepath");
 	ctx->MapObj(EvalMakePath,		"makepath");
+	ctx->MapObj(EvalRealPath,		"realpath");
 
 #ifndef WIN32
 	ctx->MapObj(EvalUmask,			"umask", "01");
