@@ -68,7 +68,7 @@ FILE *safe_fopen(qCtx *ctx, const char *path, const char *mode);
 // check a directory for faux-ownership
 bool safe_dcheck(qCtx *ctx, const char *path);
 // check a file for faux-ownersip
-bool safe_fcheck(qCtx *ctx, const char *path);
+bool safe_fcheck(qCtx *ctx, const char *path, char rw);
 
 #ifdef WIN32
 int setenv(const char *name, const char *value, int overwrite);

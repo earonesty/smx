@@ -49,7 +49,7 @@ bool qObjSqlite::Open(const char *dsn, qCtx *ctx)
 		myDB=NULL;
 		myDBOpen=false;
 	}
-	if(!safe_fcheck(ctx, dsn)) {
+	if(!safe_fcheck(ctx, dsn, 'w')) {
 		return false;
 	}
         int rc = sqlite3_open(dsn, &myDB);

@@ -301,7 +301,7 @@ bool safe_dcheck(qCtx *ctx, const char *path)
 	return false;
 }
 
-bool safe_fcheck(qCtx *ctx, const char *path)
+bool safe_fcheck(qCtx *ctx, const char *path, char rw)
 {
         if (!path) return false;
         if (!ctx->GetSafeMode()) return true;
@@ -323,6 +323,7 @@ bool safe_fcheck(qCtx *ctx, const char *path)
 		dir = ".";
 
 #ifdef unix
+/*
 	char *fullp = (char *) malloc(PATH_MAX);
 	realpath(path, fullp);
 	if (!strnicmp(fullp,"/tmp",4)) {
@@ -330,9 +331,13 @@ bool safe_fcheck(qCtx *ctx, const char *path)
 		return false;
 	}
 	free(fullp);
+*/
         struct stat s;
-        if (!stat(dir, &s) &&( ((s.st_mode & S_IROTH) && (s.st_mode & S_IXOTH)) || ((unsigned int) uid == s.st_uid)))
+        if (!stat(dir, &s) && ((unsigned int) uid == s.st_uid))
                 return true;
+
+        if ( (rw == 'r') && ((s.st_mode & S_IROTH) && (s.st_mode & S_IXOTH)) )
+		return true;
 
         errno = EPERM;
 	return false;
@@ -343,7 +348,8 @@ bool safe_fcheck(qCtx *ctx, const char *path)
 
 FILE *safe_fopen(qCtx *ctx, const char *path, const char *mode)
 {
-	if (safe_fcheck(ctx, path))
+	
+	if (safe_fcheck(ctx, path, ((mode && (mode[0] == 'r')) ? 'r' : 'w')))
 		return fopen(path, mode);
 	else
 		return NULL;

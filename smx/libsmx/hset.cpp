@@ -168,7 +168,7 @@ void EvalHFile(const void *data, qCtx *ctx, qStr *out, qArgAry *args)
         	ctx=ctx->GetEnv()->GetSessionCtx();
 
         if (args->Count() == 1) {
-                if (!safe_fcheck(ctx, (*args)[0])) {
+                if (!safe_fcheck(ctx, (*args)[0], 'w')) {
                         ctx->ThrowF(out, 909, "Permission denied");
                         return;
                 }

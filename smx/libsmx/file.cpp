@@ -366,7 +366,7 @@ void EvalDir(const void *data, qCtx *ctx, qStr *out, qArgAry *args)
 		return;
 	}
 
-	if (!safe_fcheck(ctx, path)) {
+	if (!safe_fcheck(ctx, path, 'r')) {
 		ctx->ThrowF(out, 601, "Failed to open directory. %y", GetLastError());
 		return;
 	}
@@ -502,7 +502,7 @@ void EvalFileDelete(const void *mode, qCtx *ctx, qStr *out, qArgAry *args)
 	if (path.IsEmpty())
 		return;
 
-	if (!safe_fcheck(ctx, path)) {
+	if (!safe_fcheck(ctx, path, 'w')) {
 		ctx->ThrowF(out, 632, "Error deleting file, %y", GetLastError());
 		return;
 	}
@@ -542,12 +542,12 @@ void EvalFileRename(const void *mode, qCtx *ctx, qStr *out, qArgAry *args)
 	CStr path = (*args)[0];
 	CStr path_new = (*args)[1];
 
-	if (!safe_fcheck(ctx, path)) {
+	if (!safe_fcheck(ctx, path, 'w')) {
 		ctx->ThrowF(out, 632, "Access denied to source");
 		return;
 	}
 
-	if (!safe_fcheck(ctx, path_new)) { 
+	if (!safe_fcheck(ctx, path_new, 'w')) { 
 		ctx->ThrowF(out, 632, "Access denied to destination");
 		return;
 	}
