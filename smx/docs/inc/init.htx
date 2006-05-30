@@ -2,8 +2,8 @@
 
 ** quote and unquote files
 
-%defined(fquot,%replace(%f%,:,_C_,/,_S_,*,_W_))
-%defined(funquot,%replace(%f%,_C_,:,_S_,/,_W_,*))
+%define(fquot,%replace(%f%,:,_C_,/,_S_,*,_W_))
+%define(funquot,%replace(%f%,_C_,:,_S_,/,_W_,*))
 
 ** inline-authenticate user
 
