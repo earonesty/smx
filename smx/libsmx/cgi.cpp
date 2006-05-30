@@ -79,8 +79,8 @@ public:
 };
 
 
-#define TAG_NS(T) myTags.Set(T, false)
-#define TAG_S(T)  myTags.Set(T, true)
+#define TAG_NS(T) myTags.Set(T, 0)
+#define TAG_S(T)  myTags.Set(T, 1)
 
 class qObjCGI : public qObj {
 
@@ -91,7 +91,7 @@ class qObjCGI : public qObj {
 	CStr       myClientBody;
 	bool       myClientBodyRead;
 
-	CMapStr<bool> myTags;
+	CMapStr<short> myTags;
 
 	qObjCGI *DoFormParse(qCtx *ctx, qStr *out, qArgAry *args);
 
@@ -1250,23 +1250,30 @@ void qObjCGI::EvalHtmlClean(qCtx *ctx, qStr *out, qArgAry *args)
 {
 	if (args->Count()) {
 		CStr html       = (*args)[0];
-		CStr ok_strip   = (*args)[2];
-		CStr ok_nostate = (*args)[3];
-		CStr ok_state   = (*args)[4];
+		CStr ok_strip   = (*args)[1];
+		CStr ok_nostate = (*args)[2];
+		CStr ok_state   = (*args)[3];
 
-		CMapStr<bool> tags;
+		CMapStr<short> tags;
 		CMapStr<int> state;
 
 		if (ok_nostate) {
 			CStrAry ary; int i; int l = ParseAry(ok_nostate, ary, ",;");
 			for (i = 0; i < l; ++i)
-				tags.Set(ary[i], false);
+				tags.Set(ary[i], 0);
 		}
 
 		if (ok_state) {
-			CStrAry ary; int i; int l = ParseAry(ok_nostate, ary, ",;");
+			CStrAry ary; int i; int l = ParseAry(ok_state, ary, ",;");
 			for (i = 0; i < l; ++i)
-				tags.Set(ary[i], true);
+				tags.Set(ary[i], 1);
+		}
+
+		if (ok_strip) {
+			CStrAry ary; int i; int l = ParseAry(ok_strip, ary, ",;");
+			for (i = 0; i < l; ++i) {
+				tags.Set(ary[i], -1);
+			}
 		}
 
 		CStr tmp;
@@ -1275,10 +1282,10 @@ void qObjCGI::EvalHtmlClean(qCtx *ctx, qStr *out, qArgAry *args)
 		char *p = html.GetBuffer();
 		if (!p)	return;
 		bool cl;
-		bool st;
 
 		while (*p) {
 			if (*p == '<') {
+				short st;
 				b = p;
 				while (isspace(*p)) 
 					++p;
@@ -1294,7 +1301,7 @@ void qObjCGI::EvalHtmlClean(qCtx *ctx, qStr *out, qArgAry *args)
 					++p;
 
 				tmp = CStr(n, p - n);
-				if (!myTags.Find(tmp, st) && !tags.Find(tmp, st)) {
+				if ((!tags.Find(tmp, st) && !myTags.Find(tmp, st)) || (st == -1)) {
 					while (*p && *p != '>')
 						++p;
 					if (*p == '>') 
@@ -1306,7 +1313,7 @@ void qObjCGI::EvalHtmlClean(qCtx *ctx, qStr *out, qArgAry *args)
 						out->PutC(*p++);
 					if (*p)
 						out->PutC(*p++);
-					if (st) {
+					if (st == 1) {
 						int *i;
 						if (!state.Find(tmp, &i)) {
 							state.Add(tmp)=cl?-1:1;
