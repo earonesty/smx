@@ -653,6 +653,10 @@ void LoadMath(qCtx *ctx) {
 		DWORD tid = GetCurrentThreadId();
 		srand(c + _rotl(t,24) + _rotl(pid,8) + _rotl(tid,16));
 #else
+		int ur = open("/dev/urandom", O_RDONLY);
+		if (ur != -1) {
+			read(ur, &t, sizeof(t));
+		}
 		srand(t);
 #endif
 	}
