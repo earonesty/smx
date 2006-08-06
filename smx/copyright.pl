@@ -43,6 +43,7 @@ sub copyfil
 	return if $text =~ $copysig;
 	return if $text =~ 'Joe O\'Leary';
 	return if $text =~ 'Jef Poskanzer';
+	return if $text =~ 'Kaz Kylheku';
 # end skip
 	$text =~ s|/\*[^*]+copyright[^*]+\*/||si;
 	$text =~ s|// Copyright.*Prime Data.*\@primedata\.org\s*||si;
