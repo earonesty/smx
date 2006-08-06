@@ -23,32 +23,33 @@ THIS SOFTWARE IS PROVIDED 'AS IS' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDI
 #define DECRYPT     0
 int EVP_cipher(const char *passw, int cbpass, char *strin, int cbstr, int op, const char *cipher);
 
-void EVP_Digest(const char *name, const unsigned char *strin, int cbstr, unsigned char * strout)
+int EVP_Digest(const char *name, const unsigned char *strin, int cbstr, unsigned char * strout)
 {
  unsigned int md_len;
  const EVP_MD *md = EVP_get_digestbyname(name);
- if (!md) return;
+ if (!md) return 0;
  EVP_MD_CTX mdctx;
  EVP_MD_CTX_init(&mdctx);
  EVP_DigestInit_ex(&mdctx, md, NULL);
  EVP_DigestUpdate(&mdctx, strin, cbstr);
  EVP_DigestFinal_ex(&mdctx, strout, &md_len);
  EVP_MD_CTX_cleanup(&mdctx);
+ return md_len;
 }
 
-void SHA1_string(const char *strin, int cbstr, char *strout)
+int SHA1_string(const char *strin, int cbstr, char *strout)
 {
-	EVP_Digest("sha1", (unsigned char *)strin, cbstr, (unsigned char *)strout);
+	return EVP_Digest("sha1", (unsigned char *)strin, cbstr, (unsigned char *)strout);
 }
 
-void MD5_string(const char *strin, int cbstr, char *strout)
+int MD5_string(const char *strin, int cbstr, char *strout)
 {
-	EVP_Digest("md5", (unsigned char *)strin, cbstr, (unsigned char *)strout);
+	return EVP_Digest("md5", (unsigned char *)strin, cbstr, (unsigned char *)strout);
 }
 
-void SHA0_string(const char *strin, int cbstr, char *strout)
+int SHA0_string(const char *strin, int cbstr, char *strout)
 {
-	EVP_Digest("sha0", (unsigned char *)strin, cbstr, (unsigned char *)strout);
+	return EVP_Digest("sha0", (unsigned char *)strin, cbstr, (unsigned char *)strout);
 }
 
 int EVP_encrypt(const char *passw, int cbpass, char *strin, int cbstr, const char *cipher)
@@ -217,21 +218,24 @@ CStr EVP_decrypt(CStr passw, CStr strin, const char *cipher)
 CStr SHA0_string(CStr strin)
 {
 	CStr strout(EVP_MAX_MD_SIZE);
-	SHA0_string(strin, strin.Length(), strout.GetBuffer());
+	int len = SHA0_string(strin, strin.Length(), strout.GetBuffer());
+	strout.Grow(len);
 	return strout;
 }
 
 CStr SHA1_string(CStr strin)
 {
 	CStr strout(EVP_MAX_MD_SIZE);
-	SHA1_string(strin, strin.Length(), strout.GetBuffer());
+	int len = SHA1_string(strin, strin.Length(), strout.GetBuffer());
+	strout.Grow(len);
 	return strout;
 }
 
 CStr MD5_string(CStr strin)
 {
 	CStr strout(EVP_MAX_MD_SIZE);
-	MD5_string(strin, strin.Length(), strout.GetBuffer());
+	int len = MD5_string(strin, strin.Length(), strout.GetBuffer());
+	strout.Grow(len);
 	return strout;
 }
 

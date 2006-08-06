@@ -19,8 +19,6 @@ THIS SOFTWARE IS PROVIDED 'AS IS' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDI
 #define BLOCK_SIZE  8192
 #define CIPHER_INVALID -1
 
-void SHA1_string(const char *strin, int cbstr, char *strout);
-void SHA0_string(const char *strin, int cbstr, char *strout);
 int  EVP_encrypt(const char *passw, int cbpass, char *strin, int cbstr, const char *cipher);
 int  EVP_decrypt(const char *passw, int cbpass, char *strin, int cbstr, const char *cipher);
 void HEX_string(const char *strin, char *strout, int cbstr);
