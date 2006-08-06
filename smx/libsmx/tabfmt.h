@@ -172,21 +172,21 @@ public:
 	long   Wid()        {return m_nWid;}
 	char * Tmp()        {return m_tmp;}
 
-	static inline int CTabFmt::HTIncr(const char *&p, char *&r)
+	static inline int HTIncr(const char *&p, char *&r)
 	{
 		if (*p == '<') {while (*p && *p != '>') *r++ = *p++; if (*p == '>') *r++ = *p++; return 1;}
 		else return 0;
 	}
 
 
-	static inline int CTabFmt::HTIncr(const char *&p)
+	static inline int HTIncr(const char *&p)
 	{
 
 		if (*p == '<') {while (*p && *p != '>') *p++; if (*p == '>') *p++; return 1;}
 		else return 0;
 	}
 
-	static inline int CTabFmt::HTDecr(const char *&p)
+	static inline int HTDecr(const char *&p)
 	{
 		if (*p == '>') {while (*p && *p != '<') *p--; if (*p == '<') *p--; return 1;}
 		else return 0;

@@ -1,6 +1,6 @@
 #!/bin/sh
-ver=1.1.2
-rel=3
+ver=1.1.3
+rel=4
 mbssh rm /home/memebot/inst/smx-*.rpm
 cp /usr/src/redhat/RPMS/i386/smx-$ver-$rel.i386.rpm /home/memebot/inst/
 mbscp /home/memebot/inst/smx-$ver-$rel.i386.rpm

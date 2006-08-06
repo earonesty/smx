@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.57)
-AC_INIT(smx, 1.1.2, bugs@smxlang.org)
+AC_INIT(smx, 1.1.3, bugs@smxlang.org)
 AC_CONFIG_SRCDIR([config.h.in])
 AM_CONFIG_HEADER([config.h])
 AM_INIT_AUTOMAKE
