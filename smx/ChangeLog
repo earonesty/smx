@@ -7,3 +7,4 @@
 2006-03-26 : EA : Created test for null args to functions. smx.spec.in file used 
 2006-04-21 : EA : CGI fix for image generation.  Also fixed edge-case for PathCanonicalize.  
 2006-04-27 : EA : Added %create-image, trimmed http-init page macro output, removed junk code from cgi
+2006-08-06 : EA : Made encryption code use EVP functions instead of the old ones
