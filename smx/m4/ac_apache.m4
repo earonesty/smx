@@ -103,12 +103,11 @@ AC_DEFUN([APACHE_APR], [
         then
           for i in /usr/sbin /usr/local/apache/bin /usr/local/apache2/bin \
             /usr/local/apache/sbin /usr/local/apache2/sbin /usr/bin ; do
-            if test -f "$i/apr-1-config"; then
-              APR="$i/apr-1-config"
-	    else
             if test -f "$i/apr-config"; then
               APR="$i/apr-config"
             fi
+            if test -f "$i/apr-1-config"; then
+              APR="$i/apr-1-config"
             fi
           done
           if test "$APR" = ""; then
@@ -138,6 +137,9 @@ AC_DEFUN([APACHE_APR], [
         for i in /usr/bin /usr/local/apache/bin /usr/local/apache2/bin ; do
           if test -f "$i/apr-config"; then
             APR="$i/apr-config"
+          fi
+          if test -f "$i/apr-1-config"; then
+            APR="$i/apr-1-config"
           fi
         done
         if test "$APR" = ""; then
