@@ -805,7 +805,7 @@ bool _ScanDir(CStr path, int mask, CStr body, qCtx *ctx, qStr *out, DIRSTATE &st
 {
   safe_glob_t gb;
   
-  int err = glob(path, GLOB_NOSORT | GLOB_TILDE, NULL, &gb);
+  int err = glob(path, GLOB_TILDE, NULL, &gb);
   
   if (err) {
     ctx->ThrowF(out, 631, "Error during directory read. %y", GetLastError());
