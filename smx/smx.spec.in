@@ -1,6 +1,6 @@
 %define name smx
 %define ver @VERSION@
-%define rel 3
+%define rel 4
 
 Summary: 	Server Macro eXpansion Language
 Name: 		%{name}
