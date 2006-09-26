@@ -158,7 +158,11 @@ int main(void)
 
 char *PathCombine(char *dest, const char *abs, const char *rel)
 	{
-	if (abs && rel) 
+	if (!abs) {
+		strcpy(dest, rel);
+		return dest;
+	}
+	if (rel) 
 		{	
 		int abslen = strlen(abs);
 
@@ -177,6 +181,7 @@ char *PathCombine(char *dest, const char *abs, const char *rel)
 		}
 	else
 		{
+		*dest = '\0';
 		return (NULL);
 		}
 	}

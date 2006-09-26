@@ -442,7 +442,7 @@ double ParseExprLV(const char *&p, qCtx *ctx, qObjLVal *lval) {
 
 double ParseExpr(const char *&p, qCtx *ctx, qObjLVal *lval) {
 	double val;
-	CStr name; 
+	CStr name;
 	while ( *p ) {
 		if (__iscsymf(*p)) {
 			qObjLVal var(ctx);
@@ -481,8 +481,10 @@ void EvalExpr(const void *data, qCtx *ctx, qStr *out, qArgAry *args) {
 	VALID_ARGC("expr", 1, 1);
 	CStr expr = (*args)[0];
 	const char *p = (const char *) expr;
-	double v = ParseExprTop(p, ctx, 0);
-	PutDbl(v, out);
+	if (p) {
+		double v = ParseExprTop(p, ctx, 0);
+		PutDbl(v, out);
+	}
 }
 
 void EvalRand(const void *data, qCtx *ctx, qStr *out, qArgAry *args) {

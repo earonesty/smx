@@ -194,7 +194,7 @@ CStr qEnvCGI::MapFullPath(const char *path)
 		}
 		}
 	} else {
-		path = GetHeader("SCRIPT_NAME");
+		path1 = GetHeader("SCRIPT_NAME");
 		int i = path1.Length();
 
 		while (i-- > 0) {
@@ -212,7 +212,7 @@ CStr qEnvCGI::MapFullPath(const char *path)
 //	CStr path3(MAX_PATH);
 	CStr path3(path1.Length()+path2.Length()+1);
 	PathCombine(path3.GetBuffer(),path1,path2);
-	path1.Grow(path3.Length());
+	path1.Grow(path3.Length()+1000);
 	PathCanonicalize(path1.GetBuffer(),path3.GetBuffer());
 	PathMakePretty(path1.GetBuffer());
 	path1.Shrink();
