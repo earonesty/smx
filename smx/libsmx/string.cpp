@@ -830,7 +830,7 @@ void EvalPcase(const void *data, qCtx *ctx, qStr *out, qArgAry *args)
 		char *c=0;
 		while (*p) {
 			if (c) {
-				if (!isalnum(*p)) {
+				if (!(isalnum(*p)||*p=='\'')) {
 					pcasew(c, p);
 					c = 0;
 				}
