@@ -43,7 +43,7 @@ CEx *qExF(int id, char *msg, ...)
 	strncpy(gEx.msg,  gExPrefix, QEX_MAXMSG);
 	strncpy(gEx.msg + gExPrefixLen, msg, QEX_MAXMSG);
 
-	return qExV(id, gEx.msg, ((char *)vargs)-sizeof(int));
+	return qExV(id, gEx.msg, vargs-1);
 }
 
 CEx *qExV(int id, char *msg_p, va_list vargs)

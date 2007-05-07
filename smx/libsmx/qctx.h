@@ -92,7 +92,7 @@ public:
 		myLineNum = 0;
 	}
 
-	void FormatV(const char *msg, void *vargs);
+	void FormatV(const char *msg, va_list vargs);
 
 	void AddRef() {++myRefs;}
 	void Free() { if (!--myRefs) delete this;}
@@ -136,7 +136,7 @@ public:
 		return myData->myMsg;
 	}
 
-	void FormatV(const char *msg, void *vargs) {
+	void FormatV(const char *msg, va_list vargs) {
 		myData->FormatV(msg, vargs);
 	}
 };
@@ -638,11 +638,11 @@ public:
 	}
 
 	void AddRef() {
-		InterlockedIncrement((long *) &myRefs);
+		InterlockedIncrement(&myRefs);
 	}
 
 	void Free() {
-		if (InterlockedDecrement((long *) &myRefs) == 0) {
+		if (InterlockedDecrement((int *) &myRefs) == 0) {
 			delete this;
 		}
 	}

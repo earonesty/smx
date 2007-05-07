@@ -325,7 +325,7 @@ CStr CDBHash::Get(const char *path, HTRANS txn) {
                 return str;
         } else {
                 if (tdb_error(m_db) != TDB_ERR_NOEXIST) 
-			smx_log_pf(SMXLOGLEVEL_WARNING, (int) m_db, "TDB Get", path, tdb_errorstr(m_db));
+			smx_log_pf(SMXLOGLEVEL_WARNING, (long) m_db, "TDB Get", path, tdb_errorstr(m_db));
 		if (tdb_error(m_db) == TDB_ERR_CORRUPT) {
 			CMutexLock lock(gEnvLock);
 			rename(m_path, CStr(m_path) + ".bak");
@@ -782,7 +782,7 @@ bool CDBHash::Set(const char *path, const char *val, int vlen, HTRANS txn) {
         if (tdb_store(m_db, key, data, TDB_REPLACE) == 0) {
 		return true;
 	} else {
-		smx_log_pf(SMXLOGLEVEL_WARNING, (int) m_db, "TDB Set", path, tdb_errorstr(m_db));
+		smx_log_pf(SMXLOGLEVEL_WARNING, (long) m_db, "TDB Set", path, tdb_errorstr(m_db));
                 if (tdb_error(m_db) == TDB_ERR_CORRUPT) {
                         CMutexLock lock(gEnvLock);
                         rename(m_path, CStr(m_path) + ".bak");

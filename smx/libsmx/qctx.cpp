@@ -641,9 +641,9 @@ void qCtx::SetErrorHandler(CStr str) {
 
 }
 
-void qCtxExData::FormatV(const char *msg_p, void *pvargs)
+void qCtxExData::FormatV(const char *msg_p, va_list pvargs)
 {
-	exvsprintf(&myMsg, msg_p, (va_list) pvargs);
+	exvsprintf(&myMsg, msg_p, pvargs);
 }
 
 /*

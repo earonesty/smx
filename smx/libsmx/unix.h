@@ -68,8 +68,9 @@ inline char *strupr(char * a) {if (a) {char *p; for(p=a;*p;++p) *p=toupper(*p); 
 #define INVALID_SOCKET -1
 #endif
 
-
-typedef unsigned long DWORD;
+#ifndef DWORD
+#define DWORD unsigned long
+#endif
 
 char *itoa(int num, char *buf, int radix);
 char *ltoa(long num, char *buf, int radix);

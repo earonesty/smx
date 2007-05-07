@@ -430,9 +430,9 @@ void exvsprintf(char **out_p, const char *msg_p, va_list vargs)
 // end support for the "%y" format flag
 
 #ifdef WIN32
-        _vsnprintf((*out_p), max, tmp, (va_list) vargs);
+        _vsnprintf((*out_p), max, tmp, vargs);
 #else 
-        vsnprintf((*out_p), max, tmp, (va_list) vargs);
+        vsnprintf((*out_p), max, tmp, vargs);
 #endif
 
 		free(tmp);

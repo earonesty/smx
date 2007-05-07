@@ -15,6 +15,7 @@ THIS SOFTWARE IS PROVIDED 'AS IS' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDI
 #include "stdafx.h"
 
 #undef UCHAR
+#undef DWORD
 #include <sql.h>
 #include <sqlext.h>
 
@@ -64,7 +65,7 @@ class CDbHandle
 {
 	CStr myErrBuf;
 	CStr myErrState;
-	long myErrCode;
+	SQLINTEGER myErrCode;
 	long myErrRes;
 
 	SQLHANDLE   myHandle;

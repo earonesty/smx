@@ -72,38 +72,42 @@ THIS SOFTWARE IS PROVIDED 'AS IS' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDI
 
 #else
 
-#if defined(__i386__) && defined(__GNUC__)
+#if (defined(__i386__)||defined(__x86_64__)) && defined(__GNUC__)
 
 	inline void *InterlockedCompareExchange( void **dest, void *xchg, void *compare )
 	{
-		void *ret;
+		register void *ret;
 		__asm__ __volatile__( "lock; cmpxchgl %2,(%1)"
 							  : "=a" (ret) : "r" (dest), "r" (xchg), "0" (compare) : "memory" );
 		return ret;
 	}
 
-	inline long InterlockedExchange( long * dest, long val )
+	inline long InterlockedExchange( volatile long * dest, long val )
 	{
-		long ret;
+		register long ret;
 		__asm__ __volatile__( "lock; xchgl %0,(%1)"
 							  : "=r" (ret) :"r" (dest), "0" (val) : "memory" );
 		return ret;
 	}
 
-	inline long InterlockedExchangeAdd( long * dest, long incr )
+	inline int InterlockedExchangeAdd(volatile int *val, int add)
 	{
-		long ret;
-		__asm__ __volatile__( "lock; xaddl %0,(%1)"
-							  : "=r" (ret) : "r" (dest), "0" (incr) : "memory" );
-		return ret;
+		int ret;
+		
+		__asm__ __volatile__ ("lock; xaddl %0, %1"
+				      : "=r" (ret), "=m" (*val)
+				      : "0" (add), "m" (*val));
+	
+		return(ret);
 	}
 
-	inline long InterlockedIncrement( long * dest )
+
+	inline long InterlockedIncrement( volatile int * dest )
 	{
 		return InterlockedExchangeAdd( dest, 1 ) + 1;
 	}
 
-	inline long InterlockedDecrement( long * dest )
+	inline long InterlockedDecrement( volatile int * dest )
 	{
 		return InterlockedExchangeAdd( dest, -1 ) - 1;
 	}

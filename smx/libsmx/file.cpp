@@ -144,7 +144,8 @@ void EvalFilePath(const void *data, qCtx *ctx, qStr *out, qArgAry *args)
 		--r;
 	}
 	if (r >= b) {
-		*r++ = DIRSEP;
+		*r = DIRSEP;
+		++r;
 		*r = '\0';
 		path.Grow(r - b);
 		out->PutS(path);
@@ -665,8 +666,8 @@ void LoadFile(qCtx *ctx) {
 		modules = new qObjCache(ctx);
 		ctx->MapObj(modules, "<modules>");
 	}
-
 	ctx->MapObj(NULL, EvalInclude, "include");
+
 
 	ctx->MapObj(modules, (QOBJMETH) &qObjCache::EvalModule, "module");
 #if defined(WIN32) && !defined(NOACTIVEX)
@@ -772,7 +773,8 @@ bool _ScanDir(CStr path, int mask, CStr body, qCtx *ctx, qStr *out, DIRSTATE &st
 		st.path = path;
 	}
 
-  /* read all entries in the directory */
+  // read all entries in the directory
+
 	WIN32_FIND_DATA *r = &st.data;
     hFind = FindFirstFile(path, r); 
     bMore = (hFind != (HANDLE) -1); 
@@ -789,7 +791,7 @@ bool _ScanDir(CStr path, int mask, CStr body, qCtx *ctx, qStr *out, DIRSTATE &st
     FindClose(hFind); 
 
 	return true;
-} /* dir_scan */
+} // dir_scan
 #else
 
 #include <glob.h>
@@ -824,5 +826,6 @@ bool _ScanDir(CStr path, int mask, CStr body, qCtx *ctx, qStr *out, DIRSTATE &st
   }
   
 	return true;
-} /* dir_scan */
+} // dir scan
 #endif
+
