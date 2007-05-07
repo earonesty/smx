@@ -253,6 +253,7 @@ void EvalExec(const void *data, qCtx *ctx, qStr *out, qArgAry *args)
 
 	qCtxTmp tmpCtx(ctx);
 	tmpCtx.MapObj(err, "err");
+	tmpCtx.MapObj(err, "err-out");
 	tmpCtx.Parse(args->GetAt(2), out);
 }
 
