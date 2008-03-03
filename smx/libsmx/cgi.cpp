@@ -798,10 +798,18 @@ void qObjCGI::EvalExpires(qCtx *ctx, qStr *out, qArgAry *args)
 	if (env && args->Count()>0) {
 		time_t t = ParseInt((*args)[0]);
 		time_t now = time(0);
+
+		if (strnicmp((*args)[0],"now", 3))
+			t = 0;
+		if (strnicmp((*args)[0],"never", 5)) 
+			t = -1;
+
 		if (t && t != -1) {
-			t = min(now + 315576000, t);
+			t = min(now + 31557600, t);
+		} else if (t == 0) {
+			env->SetHeader("Cache-control","no-cache");
 		} else {
-			t = now + 315576000;
+			t = now + 31557600;
 		}
 
 		qStrBuf buf;
