@@ -12,7 +12,7 @@ THIS SOFTWARE IS PROVIDED 'AS IS' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDI
 */
 
 // modsmx.cpp : Defines the entry point for the DLL application.
-//
+
 #include "stdafx.h"
 
 #ifdef unix
@@ -55,12 +55,6 @@ THIS SOFTWARE IS PROVIDED 'AS IS' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDI
 // #define _DWINMEM // define if you want to test memory allocation
 
 #include "modsmx.h"
-
-#ifdef APACHE2
-#define CLEANUP_RET apr_status_t 
-#else
-#define CLEANUP_RET void
-#endif
 
 /* -------------------------------------------------------------- */
 static CMutex gCrit("mod_smx.1917000012");
@@ -129,7 +123,7 @@ static ap_inline qEnvApacheServer *get_psx_srv_env(request_rec *r)
 { 
 	if (!gEnv) {
 		smx_log_str(SMXLOGLEVEL_DEBUG,"server environment created during get_psx_srv_env");
-		ap_set_module_config(r->server->module_config, &smx_module, create_psx_config(r->server->process->pool, r->server));
+		ap_set_module_config(r->server->module_config, &smx_module, create_psx_config(r->pool, r->server));
 	}
 
 	if (!gEnv)
@@ -144,22 +138,11 @@ static ap_inline qEnvApacheServer *get_psx_srv_env(request_rec *r)
 	return ps;
 }
 
-static CLEANUP_RET cleanup_renv(void *env)
-{
-        if (env) {
-                smx_log_str(SMXLOGLEVEL_DEBUG,"cleanup request env");
-                delete (qEnvApache *) env;
-        }
-#ifdef APACHE2
-	return 0;
-#endif
-}
-
 static qEnvApache *get_psx_req_env(request_rec *r, bool create = true)
 {
 	if (!gEnv) {
 		smx_log_str(SMXLOGLEVEL_DEBUG,"server environment created during get_psx_req_env");
-		ap_set_module_config(r->server->module_config, &smx_module, create_psx_config(r->server->process->pool, r->server));
+		ap_set_module_config(r->server->module_config, &smx_module, create_psx_config(r->pool, r->server));
 	}
 
 	if (!gEnv)
@@ -173,12 +156,6 @@ static qEnvApache *get_psx_req_env(request_rec *r, bool create = true)
 		if (create) {
 			renv = new qEnvApache(r);
 			ap_set_module_config(r->request_config, &smx_module, renv);
-#ifdef APACHE2
-                        apr_pool_cleanup_register(r->pool, renv, cleanup_renv, cleanup_renv);
-#else
-                        ap_register_cleanup(r->pool, renv, cleanup_renv, cleanup_renv);
-#endif
-
 		}
 	} else if (create)
 		renv->AddRef();
@@ -441,18 +418,6 @@ static int psx_handler(request_rec *r)
 /* -------------------------------------------------------------- */
 /* Setup configurable data */
 
-static CLEANUP_RET cleanup_genv(void *env)
-{
-	if (gEnv) {
-		smx_log_str(SMXLOGLEVEL_DEBUG,"cleanup server env");
-		delete gEnv;
-		gEnv = NULL;
-	}
-#ifdef APACHE2
-	return 0;
-#endif
-}
-
 static void * create_psx_config(ap_pool *p, server_rec *s)
 {
 	qEnvApacheServer *senv;
@@ -469,14 +434,7 @@ static void * create_psx_config(ap_pool *p, server_rec *s)
 //			gEnv->GetCtx()->MapObj(new qObjCtxP(gEnv->GetCtx()), "global-context");
 
 			gEnv->GetCtx()->MapObj(gEnv, (QOBJFUNC) ServerReInit, "global-reinit");
-if (p) {
-			smx_log_str(SMXLOGLEVEL_DEBUG,"registered cleanup for server env");
-#ifdef APACHE2
-			apr_pool_cleanup_register(s->process->pool, gEnv, cleanup_genv, cleanup_genv);
-#else
-			ap_register_cleanup(s->process->pool, gEnv, cleanup_genv, cleanup_genv);
-#endif
-}
+
 		} else {
 			senv = gEnv->NewServer();
 		}
