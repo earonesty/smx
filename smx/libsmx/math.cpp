@@ -639,7 +639,7 @@ void EvalBin(const void *data, qCtx *ctx, qStr *out, qArgAry *args) {
 }
 
 void EvalRadix(const void *data, qCtx *ctx, qStr *out, qArgAry *args) {
-	VALID_ARGC("radix", 2, 2);
+	VALID_ARGC("radix", 3, 3);
 	EvalRadix(ctx, out, (*args)[0],ParseInt((*args)[1]),ParseInt((*args)[2]));
 }
 
