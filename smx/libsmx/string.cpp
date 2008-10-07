@@ -44,11 +44,11 @@ void EvalSha(const void *data, qCtx *ctx, qStr *pStream, qArgAry *args)
 	}
 }
 
-// sha hash
+// md5 hash
 void EvalMD5(const void *data, qCtx *ctx, qStr *pStream, qArgAry *args)
 {
         if (args->Count() > 0) {
-                CStr out = HEX_encode(SHA1_string((*args)[0]));
+                CStr out = HEX_encode(MD5_string((*args)[0]));
                 if (args->Count() > 1)
                         pStream->PutS(out, max(0,min(ParseInt((*args)[1]), out.Length())));
                 else
