@@ -342,7 +342,12 @@ char *smtp_data_next(qMailState *state, int first, int &len)
 			buf += "\"\r\n";
 		} else {
 			state->multi = false;
-			buf += "Content-Type: text/plain; charset=us-ascii\r\n";
+			char *p = state->opts->body.GetAt(state->bodyn).GetBuffer();
+			if (p && !strnicmp(p, "<html", 5)) {
+				buf += "Content-Type: text/html; charset=us-ascii\r\n";
+			} else {
+				buf += "Content-Type: text/plain; charset=us-ascii\r\n";
+			}
 		}
 		state->bodyn = 0;
 		state->bodyc = state->opts->body.GetAt(state->bodyn).GetBuffer();
