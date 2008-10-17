@@ -22,11 +22,14 @@ THIS SOFTWARE IS PROVIDED 'AS IS' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDI
 int  EVP_encrypt(const char *passw, int cbpass, char *strin, int cbstr, const char *cipher);
 int  EVP_decrypt(const char *passw, int cbpass, char *strin, int cbstr, const char *cipher);
 void HEX_string(const char *strin, char *strout, int cbstr);
+int MD5_string(const char *strin, int cbstr, char *strout);
+int SHA1_string(const char *strin, int cbstr, char *strout);
 
 #ifdef _STR_H
 	CStr EVP_encrypt(CStr passw, CStr strin, const char *cipher);
 	CStr EVP_decrypt(CStr passw, CStr strin, const char *cipher);
 	CStr SHA1_string(CStr strin);
+	CStr MD5_string(CStr strin);
 
 	CStr HEX_encode(CStr strin);
 	CStr HEX_decode(CStr strin);
