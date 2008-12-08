@@ -1,0 +1,8 @@
+%set(name,lt)
+%set(description,"Returns T if the first argument is numerically less than the second. Non-numeric arguments are treated the same as 0. Numeric evaluation of the arguments ends with the first non-numeric character.")
+%set(syntax,"%%lt\(a,b\)")
+%set(example,)
+%set(seealso,lte|gt|gte)
+%set(authorip,24.193.44.12)
+%set(authorlogin,mkrebs)
+%set(author,)

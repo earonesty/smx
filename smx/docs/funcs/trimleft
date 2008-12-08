@@ -1,0 +1,15 @@
+%set(name,trimleft)
+%set(description,"Removes the whitespace from the beginning of a string.")
+%set(syntax,"%%trimleft\(string\)")
+%set(example,"-%%asc\(32\)hi%%asc\(32\)-
+-%%trimleft\(%%asc\(32\)hi%%asc\(32\)\)-
+
+Returns
+
+- hi -
+-hi -
+")
+%set(seealso,trim|trimright|ltrim|rtrim)
+%set(authorip,24.193.44.12)
+%set(authorlogin,mkrebs)
+%set(author,)
