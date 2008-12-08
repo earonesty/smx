@@ -1,0 +1,32 @@
+%null('simple nonvalidating way to handle XML data\, public domain license)
+
+%define(xml-top,%nil(
+        %if(%b%
+                ,
+                 %define(xml,%invoke(xml-top,%value%,%t%,%b%),t,'b)
+                 %rxsplit(%d%,<%t%([^>]*)>(.*?)</%t%>
+                                ,%set(value,%subx(2))
+                                 %set(attr,%trim(%subx(1)))
+                                 %out(%expand(%b%))
+                )
+                ,%rxmatch(%d%,<%t%([^>]*)>(.*?)</%t%>
+                        ,%out(%subx(2))
+                         %gset(xml-attr,%trim(%subx(1)))
+                 )
+        )
+),d,t,'b)
+
+%null(' FOR EXAMPLE
+  %module(xml.htx)
+
+  %xml-top(%client-body%,new-order-notification
+     %xml(merchant-private-data,
+       %gset(clientid,%xml(clientid))
+       %gset(weight,%xml(weight))
+     )
+     %set(gordernum,%xml(google-order-number))
+     %set(gbuyerid, %xml(buyer-id))
+
+     ... etc ...
+  )
+)

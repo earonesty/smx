@@ -7,9 +7,14 @@
 
 Download rpms from <A href="https://developer.berlios.de/project/showfiles.php?group_id=3693">BerliOS</A>.
 <P>
-Prerequisites are unixODBC-2, openssl-0.9, and and httpd-2.
+Prerequisites are unixODBC-2.x, openssl-0.9, gd-2.x, tdb-1.x, sqlite-3.x, and httpd-2.x.
 <P>
-We highly recommend getting the source from CVS and building it yourself.
+We highly recommend getting the source from CVS and building RPMs for your own platform and specs.  
+SMX RPM building is easy.  Just run "make dist" for the tarball, and "rpmbuild -ta" for the rpm! 
+<p>
+WARNING: AFAWK, on newer Linux distros, the configure script that comes with libtdb 
+might think that mmap isn't available.  Make sure the output from configure thinks 
+mmap is OK.  If not, run autoconf first.
 
 <p class="subHeader">Getting the source from CVS:</p>
 
@@ -27,15 +32,22 @@ That should get all the code.
 <dd>openssl, openssl-devel
 
 <dt>Required for ODBC support: 
-<dd>unixODBC, unixODBC-devel (fedora) OR unixodbc-dev (debian)
+<dd><a href="http://www.unixodbc.org/">unixODBC</a>, unixODBC-devel (fedora) OR unixodbc-dev (debian)
+
+<dt>Required for IMAGE support: 
+<dd>gd (<a href="http://www.boutell.com/gd/">graphics library</a> by Thomas Boutell)
+
+<dt>Required for SQLITE support: 
+<dd>sqlite and sqlite-devel (<a href="http://www.sqlite.org/">sqlite</a>)
 
 <dt>Required for Apache 2.0 module support:
 <dd>httpd-devel (fedora)  OR apache2-dev (debian)
 </dl>
  
-<p>Since BerkelyDB tends to get corrupted when there's lots of processes writing simultaneously to it, you're better off with 
-<a href="https://sourceforge.net/projects/tdb/">TDB</a> - which is faster and performs better under the mixed/unstable conditions typical of web serving.
+<p>BerkelyDB needs to be switched to <a href="http://www.sleepycat.com/docs/ref/ext/mod.html">mod_db4</a> when SMX runs as an apache module, which we haven't done, because maintaining two source bases is complicated. You're much better off with 
+<a href="https://sourceforge.net/projects/tdb/">tdb</a> - which is smaller, faster and performs better under the mixed/unstable conditions typical of web serving.   The RPM build assumes TDB support.  If you're running SMX as a CGI, native BerkeleyDB works fine.
 </p>
+
 <p> Download from <a href="https://sourceforge.net/projects/tdb">https://sourceforge.net/projects/tdb</a> OR <a href="https://developer.berlios.de/project/showfiles.php?group_id=3693">download an RPM which we built.</a>
 
 Once all the prerequisites are installed, you should be able to run:
@@ -55,7 +67,7 @@ Once all the prerequisites are installed, you should be able to run:
 
 <p>Make libsmx and modsmx DLL projects, and SMX an EXE project.</p>
 
-<p>You will need to adjust paths so that apache, apr, openssl and libsmx are all in your project's path.</p>
+<p>You will need to adjust paths, and manually create a config.h so that apache, apr, gd, sqlite, openssl and libsmx are all in your project's path.</p>
 
 <p class="subHeader"><a name=apache>Configuring Apache:</a></p>
 

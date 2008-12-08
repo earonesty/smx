@@ -30,6 +30,7 @@ blockquote {font-family:"Trebuchet MS",helvetica,sans-serif; color:#004A66; font
 #subcontainer a:link, #navlist a:visited {color: #FFF; text-decoration: none; }
 #subcontainer a:hover {background-color: #336699; color: #fff; }
 #sideBarNews {}
+#sideBarAds {margin-top:10px;}
 #sideBarNewsContent {background-color:#EEE; padding:10px; }
 #newsHeader {height:22px; line-height:22px; color:#80FF00; font-family:"Trebuchet MS",helvetica,sans-serif; font-size:14px; padding:0px 5px 0px 5px; background-color:#004A66;  border-bottom:1px solid #FFF; }
 

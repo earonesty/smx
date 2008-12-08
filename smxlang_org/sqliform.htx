@@ -1,0 +1,14 @@
+        %enumcol(
+                <tr>
+                <th align=left>%name%</th>
+                <td>
+                %if(%equ(%type%,1)
+                        ,
+                <input name=%name% value="T" type=checkbox %%if(%%gt(%%col(%name%),0),checked)">
+                        ,
+                <input name=%name% value="%%col(%name%)">
+                )
+                </td>
+                </tr>%lf%
+        )
+
