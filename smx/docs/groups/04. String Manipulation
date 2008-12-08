@@ -1,1 +1,1 @@
-|dup|equal|toupper|tolower|table|tabpre|rxmatch|rxsplit|enumtoken|gettoken|xin|xequal|collate|wcmatch|replace|getattrvalue|pcase|pos|enumsort|url-encode
+|dup|equal|toupper|tolower|table|tabpre|rxmatch|rxsplit|enumtoken|gettoken|xin|xequal|collate|wcmatch|replace|getattrvalue|pcase|pos|enumsort|url-encode|trim|trimright|trimleft|rtrim|ltrim|stricmp|mid
