@@ -1090,6 +1090,14 @@ void ParseDSN(char *cstr, char *&dsn, char *&uid, char *&pwd, char *&etc)
 			*pwd++ = 0; 
 			while (isspace(*pwd)) ++pwd;
 			etc = strchr(pwd,';');
+			while (etc && etc[1] == ';') {
+				char *p = etc;
+				while (p[1]) {
+					p[0] = p[1];
+					++p;
+				}
+				etc = strchr(etc+1, ';');
+			}
 			if (etc) {
 				*etc++ = 0;
 				while (isspace(*etc)) ++etc;
