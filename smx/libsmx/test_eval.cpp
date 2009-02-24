@@ -61,3 +61,11 @@ bool qEnvCGI::Flush()
         return false;
 }
 
+int qEnvCGI::GetHeaders(qEnvHttpHeaderCB*)
+{
+}
+
+void qEnvCGI::PrintHeaders()
+{
+}
+
