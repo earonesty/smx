@@ -1,0 +1,27 @@
+#!/bin/sh
+
+error()
+{
+    echo "ERROR during test '$curtest', quitting"
+    kill `cat test_httpd.pid` 2> /dev/null
+    exit 1
+}
+
+useradd test_httpd_user -d `pwd` 2> /dev/null
+cd tests 2> /dev/null
+httpd -f `pwd`/test.conf
+
+for curtest in test-*.html
+do
+        if [ -e "$curtest.skip"  ]; then
+                echo "$curtest ... skipping"
+        else
+                echo $curtest
+                wget -q http://127.0.0.1:55558/$curtest -O $curtest.tmp
+                if ! diff $curtest.ok $curtest.tmp; then error; fi
+        fi
+done
+
+kill `cat test_httpd.pid`
+
+userdel test_httpd_user 
