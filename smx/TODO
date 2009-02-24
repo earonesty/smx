@@ -1,10 +1,12 @@
+2009-02-24 : EA : add tests for libmodsmx whhich instantiate a local httpd server and run some tests on it
+2009-02-24 : EA : add tests and examples for dll/so library code
+2009-02-24 : EA : get the durned thing to complie on windows/mingw/apache2
 2006-04-27 : EA : rewrite noncompiled parser to resemble compiled parser (less recursion)?
 2006-04-27 : EA : document all macros, mark experimental ones as experimental
-2006-03-19 : EA : put code into qObjHttp, and remove code from the modsmx apache module - for new IIS build
-2006-03-19 : EA : cwd at session start to the script path, so you can %include without %fqppath
-2006-03-19 : EA : apache 2 stuff caused apache 1.X to fail, figure that out
+2006-03-19 : EA : put more code into qObjHttp, and remove code from the modsmx apache module - for new IIS build, and help with other servers
+2006-03-19 : EA : ??cwd at session start to the script path, so you can %include without %fqppath
 2006-03-19 : EA : split project/rpms/etc into smx/modsmx so someone can install smx without having apache 
-2006-03-19 : EA : figure out why openssl's sha/md5 seem to be different than others? and fix
+2006-03-19 : EA : figure out why openssl's sha/md5 seem to be different than others? and fix (I THINK THIS IS DONE... ADD A TEST?)
 2006-03-19 : EA : try changing schare object hooks (sqlite/odbc/openss) to demand load
 2005-05-13 : EA : document the use of the authenticate: macro, example is in /docs/inc/init.htx
 2005-05-09 : EA : add a 'session class', and put all safe mode and module-load code in there (qCtxSession?) .. all contexts have a session pointer, sessions are the 'context-top' for gset, etc.

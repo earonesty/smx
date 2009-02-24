@@ -1,5 +1,5 @@
 #!/bin/sh
-ver=1.1.3
+ver=1.1.4
 rel=5
 mbssh rm /home/memebot/inst/smx-*.rpm
 cp /usr/src/redhat/RPMS/i386/smx-$ver-$rel.i386.rpm /home/memebot/inst/

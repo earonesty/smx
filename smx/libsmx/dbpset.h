@@ -15,9 +15,15 @@ THIS SOFTWARE IS PROVIDED 'AS IS' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDI
   #include "unix.h"
 #endif
 
+#ifdef HAVE_SQLITE3_H
+  #include <sqlite3.h> 
+  #define DBH_SQLITE3
+#else
 #ifdef HAVE_LIBTDB
   #include <tdb.h>
+  #define DBH_TDB
 #else
+  #define DBH_BDB
 #ifdef WIN32
   #include <windows.h>
   #include <db_cxx.h>
@@ -27,6 +33,7 @@ THIS SOFTWARE IS PROVIDED 'AS IS' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDI
   #include <db4/db_cxx.h>
   #define min(a,b) ((a)<(b)?(a):(b))
   #define max(a,b) ((a)>(b)?(a):(b))
+#endif
 #endif
 #endif
 
@@ -43,10 +50,17 @@ typedef void * HTRANS;
 
 class CDBHash {
 
+#ifdef HAVE_SQLITE3_H
+	sqlite3 *m_db;
+	sqlite3_stmt *m_st_get;
+	sqlite3_stmt *m_st_set;
+	sqlite3_stmt *m_st_del;
+#else
 #ifdef HAVE_LIBTDB
 	TDB_CONTEXT *m_db;
 #else
 	Db *m_db;
+#endif
 #endif
 
 	char m_path[MAX_PATH];
@@ -82,7 +96,7 @@ public:
 	bool Commit(HTRANS trans);
 	bool Rollback(HTRANS trans);
 
-#ifndef HAVE_LIBTDB
+#ifdef DBH_BDB
 	bool Repair();
 #endif
 };

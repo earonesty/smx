@@ -27,13 +27,7 @@ yum install or apt-get
 
 	unixODBC unixODBC-devel sqlite sqlite-devel httpd-devel
 
-tdb is necessary until sqlite is better tested as the 
-only embedded db
-
-	http://sourceforge.net/projects/tdb/
-
 **** INSTALL
-
 
 Should be able to run 
 
@@ -44,7 +38,6 @@ Should be able to run
 If you did a cvs update, and you get a libtool error, run 
 
 	./make clean
-
 
 **** APACHE CONFIG
 

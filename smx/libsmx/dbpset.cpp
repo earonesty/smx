@@ -35,11 +35,8 @@ THIS SOFTWARE IS PROVIDED 'AS IS' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDI
 
 static CMutex gEnvLock("smx-dbpset.cpp-gEnvLock");
 
-#ifndef HAVE_LIBTDB
+#ifdef DBH_BDB
 bool gEnvOpen = false;
-#endif
-
-#ifndef HAVE_LIBTDB
 
 class DestroyableDBEnv {
 	DbEnv  *myEnv;
@@ -132,7 +129,7 @@ bool CDBHash::Repair()
 	return ok;
 }
 
-#endif // #ifndef HAVE_LIBTDB
+#endif // #ifdef DBH_BDB
 
 bool CDBHash::SetPath(const char *path)
 {
@@ -158,7 +155,35 @@ bool CDBHash::Open()
 		return false;
 	}
 
-#ifdef HAVE_LIBTDB
+#ifdef DBH_SQLITE3
+	sqlite3 *t = NULL;
+        int err = sqlite3_open(m_path, &t);
+        if (err) {
+                smx_log_pf(SMXLOGLEVEL_WARNING, err, "SQLITE3 open failed", m_path, t ? sqlite3_errmsg(t) : "");
+        } else {
+		const char *p;
+		sqlite3_busy_timeout(t, 100);
+		char *msg = NULL;
+		if (sqlite3_exec(t, "create table if not exists h (k text primary key, v text)", NULL, NULL, &msg))  {
+                	smx_log_pf(SMXLOGLEVEL_WARNING, err, "SQLITE3 create table failed", m_path, msg);
+		} else {
+			if (sqlite3_prepare_v2(t, "select v from h where k=?", -1, &m_st_get, &p)) {
+                		smx_log_pf(SMXLOGLEVEL_WARNING, err, "SQLITE3 prepare stmt get failed", m_path, sqlite3_errmsg(t));
+			}
+                        if (sqlite3_prepare_v2(t, "delete from h where k=?", -1, &m_st_del, &p)) {
+                                smx_log_pf(SMXLOGLEVEL_WARNING, err, "SQLITE3 prepare stmt del failed", m_path, sqlite3_errmsg(t));
+                        }
+			if (sqlite3_prepare_v2(t, "insert or replace into h (k, v) values (?, ?)", -1, &m_st_set, &p)) {
+                		smx_log_pf(SMXLOGLEVEL_WARNING, err, "SQLITE3 prepare stmt set failed", m_path, sqlite3_errmsg(t));
+			}
+		}
+	}
+	if (!m_st_get || !m_st_del || !m_st_set) {
+		sqlite3_close(t);
+		t = NULL;
+	}
+#else
+#ifdef DBH_TDB
 	TDB_CONTEXT *t;
 	t = tdb_open(m_path, 0, 0, O_CREAT|O_RDWR, 0666);
 	if (!t) {
@@ -282,7 +307,8 @@ bool CDBHash::Open()
 	}
 
 	smx_log_pf(SMXLOGLEVEL_DEBUG, m_oktxn, "DBDoneOpen",m_path);
-#endif // HAVE_LIBTDB
+#endif // DBH_BDB
+#endif // DBH_SQLITE3
 
 	if (t) {
 		m_db = t;
@@ -307,8 +333,23 @@ CStr CDBHash::Get(const char *path, HTRANS txn) {
 
 	if ((p-b) <= 0) return "";
 
-
-#ifdef HAVE_LIBTDB
+#ifdef DBH_SQLITE3
+	sqlite3_bind_text(m_st_get, 1, b, p-b, SQLITE_STATIC);
+	int rv = sqlite3_step(m_st_get);
+	if (rv == SQLITE_ROW) {
+		CStr str((const char *) sqlite3_column_text(m_st_get, 0));
+		sqlite3_reset(m_st_get);
+		return str;
+	}
+	if (rv == SQLITE_DONE) {
+		sqlite3_reset(m_st_get);
+	} else {
+        	smx_log_pf(SMXLOGLEVEL_WARNING, rv, "SQLITE3 get error", m_path, sqlite3_errmsg(m_db));
+		Close();
+	}
+	
+#else
+#ifdef DBH_TDB
 	CStr str;
 	TDB_DATA key;
 	TDB_DATA data;
@@ -394,13 +435,14 @@ CStr CDBHash::Get(const char *path, HTRANS txn) {
 		}
 	}
 #endif
+#endif
 
 	return (const char *) NULL;
 }
 
 HTRANS CDBHash::BeginTrans() {
 	if (!Open()) return NULL;
-#ifndef HAVE_LIBTDB
+#ifdef DBH_BDB
 	DbTxn * txn;
   try {
 	  if (m_oktxn && gEnvOpen && gEnv.Env()->txn_begin(NULL, &txn, DB_TXN_NOSYNC) == 0) {
@@ -416,7 +458,7 @@ HTRANS CDBHash::BeginTrans() {
 
 bool CDBHash::Commit(HTRANS txn) {
 	if (!Open()) return false;
-#ifndef HAVE_LIBTDB
+#ifdef DBH_BDB
 	if (txn) {
 		try {
 	  		int ret = ((DbTxn *)txn)->commit(DB_TXN_NOSYNC);
@@ -432,7 +474,7 @@ bool CDBHash::Commit(HTRANS txn) {
 
 bool CDBHash::Rollback(HTRANS txn) {
 	if (!Open()) return false;
-#ifndef HAVE_LIBTDB
+#ifdef DBH_BDB
 	if (txn) {
 		int ret = ((DbTxn *)txn)->abort();
 		return 0 == ret;
@@ -454,7 +496,21 @@ bool CDBHash::Exists(const char *path) {
 	b = p;
 	p = b + strlen(b);
 
-#ifdef HAVE_LIBTDB
+#ifdef DBH_SQLITE3
+        sqlite3_bind_text(m_st_get, 1, b, p-b, SQLITE_STATIC);
+        int rv = sqlite3_step(m_st_get);
+        if (rv == SQLITE_ROW) {
+                sqlite3_reset(m_st_get);
+                return true;
+        } else if (rv == SQLITE_DONE) {
+                sqlite3_reset(m_st_get);
+        } else {
+        	smx_log_pf(SMXLOGLEVEL_WARNING, rv, "SQLITE3 exists error", m_path, sqlite3_errmsg(m_db));
+                Close();
+        }
+	return false;
+#else
+#ifdef DBH_TDB
         TDB_DATA key;
         key.dptr=(char *)b;
         key.dsize=p-b;
@@ -490,13 +546,14 @@ bool CDBHash::Exists(const char *path) {
 
 	return (ret == 0);
 #endif
+#endif
 }
 
 int CDBHash::Enum(void *obj, const char *path, int mode, bool (*EnumCallback)(void *obj, char *key, int klen, char *val, int vlen)) 
 {
 	if (!Open()) return false;
 
-#ifndef HAVE_LIBTDB
+#ifdef DBH_BDB
   
 	int n, ret, flag;
 	
@@ -731,7 +788,15 @@ bool CDBHash::Del(const char *path, HTRANS txn) {
 	b = p;
 	p = b + strlen(b);
 
-#ifdef HAVE_LIBTDB
+#ifdef DBH_SQLITE3
+	int rv;
+	sqlite3_bind_text(m_st_del, 1, b, p-b, SQLITE_STATIC);
+	if ((rv = sqlite3_step(m_st_del)) != SQLITE_DONE) {
+        	smx_log_pf(SMXLOGLEVEL_WARNING, rv, "SQLITE3 del error", m_path, sqlite3_errmsg(m_db));
+	}
+	sqlite3_reset(m_st_del);
+#else
+#ifdef DBH_TDB
         CStr str;
         TDB_DATA key;
         key.dptr=(char *)b;
@@ -754,6 +819,7 @@ bool CDBHash::Del(const char *path, HTRANS txn) {
 	}
 
 #endif
+#endif
 }
 
 bool CDBHash::Set(const char *path, const char *val, int vlen, HTRANS txn) {
@@ -769,7 +835,18 @@ bool CDBHash::Set(const char *path, const char *val, int vlen, HTRANS txn) {
 	b = p;
 	p = b + strlen(b);
 
-#ifdef HAVE_LIBTDB
+#ifdef DBH_SQLITE3
+        sqlite3_bind_text(m_st_set, 1, b, p-b, SQLITE_STATIC);
+        sqlite3_bind_text(m_st_set, 2, val, vlen, SQLITE_STATIC);
+        int rv = sqlite3_step(m_st_set);
+        if (rv == SQLITE_DONE) {
+                sqlite3_reset(m_st_set);
+        } else {
+                smx_log_pf(SMXLOGLEVEL_WARNING, rv, "SQLITE3 set error", m_path, sqlite3_errmsg(m_db));
+                Close();
+        }
+#else
+#ifdef DBH_TDB
 	int retry = 0;
         do {
         CStr str;
@@ -811,6 +888,7 @@ bool CDBHash::Set(const char *path, const char *val, int vlen, HTRANS txn) {
 		return false;
 	}
 #endif
+#endif
 }
 
 bool CDBHash::Close()
@@ -819,21 +897,28 @@ bool CDBHash::Close()
  
   smx_log_pf(SMXLOGLEVEL_DEBUG, 0, "DBClose", m_path);
 
-#ifdef HAVE_LIBTDB
+  bool ret;
+
+#ifdef DBH_SQLITE3
+  ret = !sqlite3_close(m_db);
+  m_db = NULL;
+#endif
+
+#ifdef DBH_TDB
   TDB_CONTEXT *t = m_db;
   m_db = NULL;
-  bool ret;
   ret = tdb_close(t);
 
 // i think tdb_lib calls free
 // delete t;
+#endif
 
-#else
+#ifdef DBH_BDB
   Db *t = m_db;
   m_db = NULL;
   m_triedthispath=0;
 
-  bool ret = false;
+  ret = false;
   try {
 	ret = (t->close(0) == 0);
   } catch (DbException x) {

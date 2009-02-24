@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.57)
-AC_INIT(smx, 1.1.3, bugs@smxlang.org)
+AC_INIT(smx, 1.1.4, bugs@smxlang.org)
 AC_CONFIG_SRCDIR([config.h.in])
 AM_CONFIG_HEADER([config.h])
 AM_INIT_AUTOMAKE
@@ -51,7 +51,7 @@ CPPFLAGS="$CPPFLAGS -I $APXS_INCLUDE -I $APR_INCLUDE"
 AC_HEADER_DIRENT
 AC_HEADER_STDC
 AC_HEADER_SYS_WAIT
-AC_CHECK_HEADERS([arpa/inet.h fcntl.h limits.h malloc.h memory.h netdb.h netinet/in.h stddef.h stdlib.h string.h sys/file.h sys/ioctl.h sys/socket.h sys/time.h unistd.h wchar.h wctype.h apr_strings.h httpd.h sqlite3.h sql.h pthread.h openssl/evp.h tdb.h signal.h gd.h])
+AC_CHECK_HEADERS([arpa/inet.h fcntl.h limits.h malloc.h memory.h netdb.h netinet/in.h stddef.h stdlib.h string.h sys/file.h sys/ioctl.h sys/socket.h sys/time.h unistd.h wchar.h wctype.h sqlite3.h sql.h pthread.h openssl/evp.h tdb.h signal.h gd.h])
 
 # Checks for typedefs, structures, and compiler characteristics.
 AC_HEADER_STDBOOL

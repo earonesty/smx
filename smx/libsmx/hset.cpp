@@ -14,7 +14,7 @@ THIS SOFTWARE IS PROVIDED 'AS IS' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDI
 #include "stdafx.h"
 #include "util.h"
 
-#if defined(HAVE_LIBTDB) || defined(HAVE_SQLITE3) || defined(HAVE_DB_H)
+#if defined(HAVE_LIBTDB) || defined(HAVE_SQLITE3_H) || defined(HAVE_DB_H)
 
 #include "qctx.h"
 #include "qobj-ctx.h"
@@ -354,6 +354,7 @@ void LoadHSet(qCtx *ctx) {
     	if (tmpName.IsEmpty())
 		tmpName = GetTempPath();
 	tmpName = tmpName << DIRSEP << ".smx";
+	mkdir(tmpName, 0777);
     }
     tmpName = tmpName << DIRSEP << "hset.db";
 

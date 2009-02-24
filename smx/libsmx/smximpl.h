@@ -15,21 +15,21 @@ THIS SOFTWARE IS PROVIDED 'AS IS' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDI
 
 #ifndef _PSIMPL_H
 
-class psxExContextImpl;
-class psxExStreamOutImpl;
-class psxExObject;
+class smxExContextImpl;
+class smxExStreamOutImpl;
+class smxExObject;
 
 static char S_QMAP[2] = "A";
 
-class psxExObjectWrap : public qObj {
-	psxExObject *myObj;
+class smxExObjectWrap : public qObj {
+	smxExObject *myObj;
 
 public:
-	psxExObjectWrap(psxExObject* obj) {
+	smxExObjectWrap(smxExObject* obj) {
 		myObj = obj;
 	}
 
-	~psxExObjectWrap() {
+	~smxExObjectWrap() {
 		myObj->Delete();
 	}
 
@@ -45,11 +45,11 @@ public:
 	}
 };
 
-class psxExFuncWrap : public qObj {
+class smxExFuncWrap : public qObj {
 	void *myData;
-	PSXUSERFUNC myFunc;
+	SMXUSERFUNC myFunc;
 public:
-	psxExFuncWrap(void *data, PSXUSERFUNC func) {
+	smxExFuncWrap(void *data, SMXUSERFUNC func) {
 		myData = data;
 		myFunc = func;
 	}
@@ -60,8 +60,8 @@ public:
 		{return S_QMAP;}
 };
 
-class psxExStreamOutWrap : public qStr {
-	psxExStreamOut *myStr;
+class smxExStreamOutWrap : public qStr {
+	smxExStreamOut *myStr;
 	bool myFree;
 
 public:
@@ -70,12 +70,12 @@ public:
 			delete this;
 	}
 
-	psxExStreamOutWrap(psxExStreamOut* str, bool free) {
+	smxExStreamOutWrap(smxExStreamOut* str, bool free) {
 		myStr = str;
 		myFree = free;
 	}
 
-	~psxExStreamOutWrap() {
+	~smxExStreamOutWrap() {
 		if (myFree)
 			myStr->Delete();
 	}
@@ -94,17 +94,17 @@ public:
 		{if (s) myStr->PutS(s, len);}
 };
 
-class psxExObjectImpl : public psxExObject {
+class smxExObjectImpl : public smxExObject {
 	bool  myFree;
 	qObj *myObj;
 
 public:
-	psxExObjectImpl(qObj *obj, bool free) {
+	smxExObjectImpl(qObj *obj, bool free) {
 		myObj  = obj;
 		myFree = free;
 	}
 
-	virtual ~psxExObjectImpl() {
+	virtual ~smxExObjectImpl() {
 		if (myFree)
 			myObj->Free();
 	}
@@ -113,9 +113,9 @@ public:
 		return myObj;
 	}
 
-    void STDCALL Eval(psxExContext *pCtx, psxExStreamOut *pOut, const char *pArgs[], psxArgType pArgType[], int nArgs);
+    void STDCALL Eval(smxExContext *pCtx, smxExStreamOut *pOut, const char *pArgs[], smxArgType pArgType[], int nArgs);
 
-    psxExContext *STDCALL GetContext() {
+    smxExContext *STDCALL GetContext() {
 		// put context wrapper in here!
 		return NULL;
 	}
@@ -125,24 +125,24 @@ public:
 	}
 };
 
-class psxExStreamOutImpl : public psxExStreamOut {
+class smxExStreamOutImpl : public smxExStreamOut {
 	bool  myFree;
 	qStr *myStr;
 	CStr  myTmp;
 
 public:
-	psxExStreamOutImpl(qStr *str, bool free) {
+	smxExStreamOutImpl(qStr *str, bool free) {
 		myStr  = str;
 		myFree = free;
 	}
 
-	virtual ~psxExStreamOutImpl() {
+	virtual ~smxExStreamOutImpl() {
 		if (myFree)
 			delete myStr;
 	}
 
-	psxExStreamOut * STDCALL New() {
-		return new psxExStreamOutImpl(new qStrBuf, true); 
+	smxExStreamOut * STDCALL New() {
+		return new smxExStreamOutImpl(new qStrBuf, true); 
 	}
 
 	void STDCALL Delete() {
@@ -151,7 +151,7 @@ public:
 	}
 
 	int STDCALL GetVersion() {
-		return PSXEXTVER;
+		return SMXEXTVER;
 	}
 
 	void STDCALL PutS(const char *pStr, int nLen) {
@@ -176,17 +176,17 @@ public:
 	}
 };
 
-class psxExContextImpl : public psxExContext {
+class smxExContextImpl : public smxExContext {
 	bool  myFree;
 	qCtx *myCtx;
 
 public:
-	psxExContextImpl(qCtx *ctx, bool free) {
+	smxExContextImpl(qCtx *ctx, bool free) {
 		myCtx  = ctx;
 		myFree = free;
 	}
 
-	virtual ~psxExContextImpl() {
+	virtual ~smxExContextImpl() {
 
 		if (myFree)
 			myCtx->Free();
@@ -197,32 +197,32 @@ public:
 	}
 
 	int STDCALL GetVersion() {
-		return PSXEXTVER;
+		return SMXEXTVER;
 	}
 
-	virtual psxExContext * STDCALL New() {
-		return new psxExContextImpl(new qCtxRef(myCtx), true);
+	virtual smxExContext * STDCALL New() {
+		return new smxExContextImpl(new qCtxRef(myCtx), true);
 	}
 	virtual void STDCALL Delete() {
 		delete this;
 	}
 
 	// HACK ALERT... NEED TO WRAP WITH POSSIBLE EXTENDED OBJECTS!
-	virtual void STDCALL Parse(const char *pIn, int nLen, psxExStreamOut *pOut) {
-		psxExStreamOutWrap wrap(pOut, false);
+	virtual void STDCALL Parse(const char *pIn, int nLen, smxExStreamOut *pOut) {
+		smxExStreamOutWrap wrap(pOut, false);
 		qStrReadBuf rb(CStr(pIn, nLen));
 		myCtx->Parse(&rb, &wrap);
 	}
 
-	virtual void STDCALL ParseString(const char *pIn, psxExStreamOut *pOut) {
-		psxExStreamOutWrap wrap(pOut, false);
+	virtual void STDCALL ParseString(const char *pIn, smxExStreamOut *pOut) {
+		smxExStreamOutWrap wrap(pOut, false);
 		qStrReadBuf rb(CStr(pIn, strlen(pIn)));
 		myCtx->Parse(&rb, &wrap);
 	}
 
-	virtual char * STDCALL ParseArg(int nIndex, const char *pArgs[], psxArgType pArgType[], int nNumArgs) {
+	virtual char * STDCALL ParseArg(int nIndex, const char *pArgs[], smxArgType pArgType[], int nNumArgs) {
 		if (nIndex < nNumArgs && pArgs) {
-			if (!pArgType || pArgType[nIndex] != psxQuotedString) {
+			if (!pArgType || pArgType[nIndex] != smxQuotedString) {
 				qStrBuf out;
 				myCtx->Parse(pArgs[nIndex], &out);
 				((CStr *)pArgs)[nIndex] = out;
@@ -232,35 +232,35 @@ public:
 			return "";
 	}
 
-	virtual psxExObject * STDCALL GetObj(const char *name) {
+	virtual smxExObject * STDCALL GetObj(const char *name) {
 		qObj *obj;
 		if (myCtx->Find(&obj, name))
-			return new psxExObjectImpl(obj, false);
+			return new smxExObjectImpl(obj, false);
 		else
 			return NULL;
 	}
 
-	virtual void STDCALL Eval(const char *name, int nLen, psxExStreamOut *pOut, const char *pArgs[], psxArgType pArgType[], int nNumArgs) {
+	virtual void STDCALL Eval(const char *name, int nLen, smxExStreamOut *pOut, const char *pArgs[], smxArgType pArgType[], int nNumArgs) {
 		qObj *obj;
 		if (myCtx->Find(&obj, name)) {
 			qArgAry ary;
 			int i;
 			for (i = 0; i < nNumArgs; ++i) {
 				ary.Add(pArgs[i]);
-				ary.SetQuot(i, pArgType ? (pArgType[i] == psxQuotedString) : false);
+				ary.SetQuot(i, pArgType ? (pArgType[i] == smxQuotedString) : false);
 			}
-			psxExStreamOutWrap wrap(pOut, false);
+			smxExStreamOutWrap wrap(pOut, false);
 			obj->Eval(myCtx, &wrap, &ary);
 		}
 	}
 
 // map objects
-	virtual void STDCALL MapObj(psxExObject *pObj, const char *name) {
-		myCtx->MapObj(new psxExObjectWrap(pObj), name);
+	virtual void STDCALL MapObj(smxExObject *pObj, const char *name) {
+		myCtx->MapObj(new smxExObjectWrap(pObj), name);
 	}
 
-	virtual void STDCALL MapFunc(void *pData, PSXUSERFUNC pFunc, const char *name) {
-		myCtx->MapObj(new psxExFuncWrap(pData, pFunc), name);
+	virtual void STDCALL MapFunc(void *pData, SMXUSERFUNC pFunc, const char *name) {
+		myCtx->MapObj(new smxExFuncWrap(pData, pFunc), name);
 	}
 
 	virtual void STDCALL MapString(const char *pStr, const char *name) {
@@ -281,13 +281,13 @@ public:
 	}
 
 // enumerate objects
-	virtual PSXENUMPOS STDCALL First() {
-		PSXENUMPOS pos;
+	virtual SMXENUMPOS STDCALL First() {
+		SMXENUMPOS pos;
 		*((MAPPOS *)(&pos)) = myCtx->GetMap()->First();
 		return pos;
 	}
 
-	virtual bool STDCALL Next(PSXENUMPOS *ppos, const char **name) {
+	virtual bool STDCALL Next(SMXENUMPOS *ppos, const char **name) {
 		qObj *obj;
 		const char *key;
 		if (myCtx->GetMap()->Next(((MAPPOS *)ppos), &key, &obj)) {
@@ -297,8 +297,8 @@ public:
 			return false;
 	}
 
-	virtual psxExStreamOut * STDCALL NewBuffer() {
-		return new psxExStreamOutImpl(new qStrBuf, true); 
+	virtual smxExStreamOut * STDCALL NewBuffer() {
+		return new smxExStreamOutImpl(new qStrBuf, true); 
 	}
 };
 

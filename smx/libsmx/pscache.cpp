@@ -32,8 +32,8 @@ THIS SOFTWARE IS PROVIDED 'AS IS' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDI
 
 #include "pstime.h"
 
-#include "psxext.h"
-#include "psximpl.h"
+#include "smxext.h"
+#include "smximpl.h"
 
 #include "qobj-cache.h"
 #include "qstr-pipe.h"
@@ -202,14 +202,14 @@ public:
 	}
    ~qObjModule() {
 #ifdef WIN32 
-		PPSXEXTLIB psx = (PPSXEXTLIB) GetProcAddress(myHMod, "PSXLibrary");
-		if(psx)
-			psx->pTermLib();
+		PSMXEXTLIB smx = (PSMXEXTLIB) GetProcAddress(myHMod, "SMXLibrary");
+		if(smx)
+			smx->pTermLib();
 		FreeLibrary(myHMod);
 #else
-		PPSXEXTLIB psx = (PPSXEXTLIB) dlsym(myHMod, "PSXLibrary");
-		if(psx)
-			psx->pTermLib();
+		PSMXEXTLIB smx = (PSMXEXTLIB) dlsym(myHMod, "SMXLibrary");
+		if(smx)
+			smx->pTermLib();
 		dlclose(myHMod);
 #endif
 	}
@@ -238,7 +238,7 @@ void qObjCache::EvalModule(qCtx *ctx, qStr *out, qArgAry *args)
 
 	if (!module) {
 		if (!stricmp(path.GetBuffer() + path.Length() - strlen(SHARED_LIB_EXT), SHARED_LIB_EXT)) {
-			PPSXEXTLIB psx;
+			PSMXEXTLIB smx;
 
 	#ifdef WIN32
 			HMODULE hM = (HMODULE) LoadLibrary(path);
@@ -248,27 +248,27 @@ void qObjCache::EvalModule(qCtx *ctx, qStr *out, qArgAry *args)
 				return;
 			}
 
-			psx = (PPSXEXTLIB) GetProcAddress(hM, "PSXLibrary");
+			smx = (PSMXEXTLIB) GetProcAddress(hM, "SMXLibrary");
 
-			if (!psx) {
-				ctx->ThrowF(out, 551, "PSXLibrary not found in module.");
+			if (!smx) {
+				ctx->ThrowF(out, 551, "SMXLibrary not found in module.");
 				FreeLibrary(hM);
 				return;
 			}
 
 	#else
 			void * hM = dlopen(path, RTLD_LAZY);
-			psx = (PPSXEXTLIB) dlsym(hM, "PSXLibrary");
+			smx = (PSMXEXTLIB) dlsym(hM, "SMXLibrary");
 
-			if (!psx) {
-				ctx->ThrowF(out, 551, "PSXLibrary not found in module.");
+			if (!smx) {
+				ctx->ThrowF(out, 551, "SMXLibrary not found in module.");
 				dlclose(hM);
 				return;
 			}
 	#endif
 
-			if (psx->dwSize != sizeof(*psx) || !psx->pLoadLib) {
-				ctx->Throw(out, 552, "PSXLibrary incompatible version.");
+			if (smx->dwSize != sizeof(*smx) || !smx->pLoadLib) {
+				ctx->Throw(out, 552, "SMXLibrary incompatible version.");
 	#ifdef WIN32
 				FreeLibrary(hM);
 	#else
@@ -279,8 +279,8 @@ void qObjCache::EvalModule(qCtx *ctx, qStr *out, qArgAry *args)
 
 			module = new qObjModule(hM);
 			module->GetCtx()->SetParent(ctx);
-			psxExContextImpl extCtx(module->GetCtx(), false);
-			psx->pLoadLib(&extCtx);
+			smxExContextImpl extCtx(module->GetCtx(), false);
+			smx->pLoadLib(&extCtx);
 			module->GetCtx()->SetParent(NULL);
 		} else { //! SHARED_LIB_EXT
 			qStrNull  null;

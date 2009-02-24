@@ -17,31 +17,31 @@ THIS SOFTWARE IS PROVIDED 'AS IS' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDI
 
 #include "qctx.h"
 
-#include "psxext.h"
-#include "psximpl.h"
+#include "smxext.h"
+#include "smximpl.h"
 
-void STDCALL psxExObjectImpl::Eval(psxExContext *pCtx, psxExStreamOut *pOut, const char *pArgs[], psxArgType pArgType[], int nNumArgs)
+void STDCALL smxExObjectImpl::Eval(smxExContext *pCtx, smxExStreamOut *pOut, const char *pArgs[], smxArgType pArgType[], int nNumArgs)
 {
 	qArgAry ary;
 	int i;
 	for (i = 0; i < nNumArgs; ++i) {
 		ary.Add(pArgs[i]);
-		ary.SetQuot(i, pArgType ? (pArgType[i] == psxQuotedString) : false);
+		ary.SetQuot(i, pArgType ? (pArgType[i] == smxQuotedString) : false);
 	}
 
-	psxExStreamOutWrap wrap(pOut, false);
-	myObj->Eval(((psxExContextImpl *)pCtx)->GetCtx(), &wrap);
+	smxExStreamOutWrap wrap(pOut, false);
+	myObj->Eval(((smxExContextImpl *)pCtx)->GetCtx(), &wrap);
 }
 
 
-void psxExFuncWrap::Eval(qCtx *ctx, qStr *out, qArgAry *args) {
-	psxExContextImpl exCtx(ctx, false);
-	psxExStreamOutImpl exOut(out, false);
-	myFunc(myData, &exCtx, &exOut, (const char **) (args ? (const char **) *args : NULL), (psxArgType*)args->GetQuots(), args->Count());
+void smxExFuncWrap::Eval(qCtx *ctx, qStr *out, qArgAry *args) {
+	smxExContextImpl exCtx(ctx, false);
+	smxExStreamOutImpl exOut(out, false);
+	myFunc(myData, &exCtx, &exOut, (const char **) (args ? (const char **) *args : NULL), (smxArgType*)args->GetQuots(), args->Count());
 }
 
-void psxExObjectWrap::Eval(qCtx *ctx, qStr *out, qArgAry *args) {
-	psxExContextImpl exCtx(ctx, false);
-	psxExStreamOutImpl exOut(out, false);
-	myObj->Eval(&exCtx, &exOut, (const char **) (args ? (const char **) *args : NULL), (psxArgType*)args->GetQuots(), args->Count());
+void smxExObjectWrap::Eval(qCtx *ctx, qStr *out, qArgAry *args) {
+	smxExContextImpl exCtx(ctx, false);
+	smxExStreamOutImpl exOut(out, false);
+	myObj->Eval(&exCtx, &exOut, (const char **) (args ? (const char **) *args : NULL), (smxArgType*)args->GetQuots(), args->Count());
 }
