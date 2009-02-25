@@ -1,3 +1,4 @@
+2009-02-25 : EA : memory "management" in modsmx is a spaghetti of heuristics borne of trial and error that usually works and sometimes doesn't.  look to apache docs?? for correct way
 2009-02-24 : EA : add tests for libmodsmx whhich instantiate a local httpd server and run some tests on it
 2009-02-24 : EA : add tests and examples for dll/so library code
 2009-02-24 : EA : get the durned thing to complie on windows/mingw/apache2
