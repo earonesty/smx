@@ -33,8 +33,9 @@ POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
 check_PROGRAMS = test_map$(EXEEXT) test_str$(EXEEXT) \
-	test_eval$(EXEEXT)
-TESTS = test_map$(EXEEXT) test_str$(EXEEXT) test_eval$(EXEEXT)
+	test_eval$(EXEEXT) test_ext2$(EXEEXT)
+TESTS = test_map$(EXEEXT) test_str$(EXEEXT) test_eval$(EXEEXT) \
+	test_ext2$(EXEEXT)
 subdir = libsmx
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
@@ -66,9 +67,15 @@ am_libsmx_la_OBJECTS = base64.lo qmail.lo buf_ref.lo pscache.lo \
 	cgi.lo card.lo hash.lo mapstr.lo smx_sqlite.lo psxutil.lo \
 	gd.lo
 libsmx_la_OBJECTS = $(am_libsmx_la_OBJECTS)
+libtest_ext_la_LIBADD =
+am_libtest_ext_la_OBJECTS = test_ext.lo
+libtest_ext_la_OBJECTS = $(am_libtest_ext_la_OBJECTS)
 am_test_eval_OBJECTS = test_eval.$(OBJEXT)
 test_eval_OBJECTS = $(am_test_eval_OBJECTS)
 test_eval_DEPENDENCIES = libsmx.la
+am_test_ext2_OBJECTS = test_ext2.$(OBJEXT)
+test_ext2_OBJECTS = $(am_test_ext2_OBJECTS)
+test_ext2_DEPENDENCIES = libsmx.la
 am_test_map_OBJECTS = test_map.$(OBJEXT)
 test_map_OBJECTS = $(am_test_map_OBJECTS)
 test_map_DEPENDENCIES = libsmx.la
@@ -96,10 +103,12 @@ CXXLD = $(CXX)
 CXXLINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
 	--mode=link $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) $(AM_LDFLAGS) \
 	$(LDFLAGS) -o $@
-SOURCES = $(libsmx_la_SOURCES) $(test_eval_SOURCES) \
-	$(test_map_SOURCES) $(test_str_SOURCES)
-DIST_SOURCES = $(libsmx_la_SOURCES) $(test_eval_SOURCES) \
-	$(test_map_SOURCES) $(test_str_SOURCES)
+SOURCES = $(libsmx_la_SOURCES) $(libtest_ext_la_SOURCES) \
+	$(test_eval_SOURCES) $(test_ext2_SOURCES) $(test_map_SOURCES) \
+	$(test_str_SOURCES)
+DIST_SOURCES = $(libsmx_la_SOURCES) $(libtest_ext_la_SOURCES) \
+	$(test_eval_SOURCES) $(test_ext2_SOURCES) $(test_map_SOURCES) \
+	$(test_str_SOURCES)
 ETAGS = etags
 CTAGS = ctags
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
@@ -215,7 +224,7 @@ top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 
 ####### kdevelop will overwrite this part!!! (begin)##########
-lib_LTLIBRARIES = libsmx.la
+lib_LTLIBRARIES = libsmx.la libtest_ext.la
 
 # include_HEADERS = crit.h qctx.h qobj-cache.h unix.h qmail_resource.h qobj-ctx.h pstime.h qobj.h qenv.h ary.h qarg.h str.h buf.h buf_ref.h qlib.h unix_interlock.h opt.h libs.h stdafx.h map.h lst.h hash.h crit_win.h crit_unix.h qstr.h smximpl.h smxext.h psxutil.h
 libsmx_la_SOURCES = base64.cpp qmail.cpp buf_ref.cpp pscache.cpp \
@@ -238,6 +247,9 @@ libsmx_la_SOURCES = base64.cpp qmail.cpp buf_ref.cpp pscache.cpp \
 	qgargs.h qsched.h regx.h strex.h dbpset.h lstx.h qarg.h qgif.h \
 	qstr.h res.h str.h debug.h map.h qlib.h dparse.h mapstr.h \
 	qmail.h tabfmt.h psxutil.h gd.cpp
+libtest_ext_la_SOURCES = test_ext.cpp
+test_ext2_SOURCES = test_ext2.cpp
+test_ext2_LDADD = libsmx.la
 test_map_SOURCES = test_map.cpp
 test_map_LDADD = libsmx.la
 test_str_SOURCES = test_str.cpp
@@ -306,6 +318,8 @@ clean-libLTLIBRARIES:
 	done
 libsmx.la: $(libsmx_la_OBJECTS) $(libsmx_la_DEPENDENCIES) 
 	$(CXXLINK) -rpath $(libdir) $(libsmx_la_OBJECTS) $(libsmx_la_LIBADD) $(LIBS)
+libtest_ext.la: $(libtest_ext_la_OBJECTS) $(libtest_ext_la_DEPENDENCIES) 
+	$(CXXLINK) -rpath $(libdir) $(libtest_ext_la_OBJECTS) $(libtest_ext_la_LIBADD) $(LIBS)
 
 clean-checkPROGRAMS:
 	@list='$(check_PROGRAMS)'; for p in $$list; do \
@@ -316,6 +330,9 @@ clean-checkPROGRAMS:
 test_eval$(EXEEXT): $(test_eval_OBJECTS) $(test_eval_DEPENDENCIES) 
 	@rm -f test_eval$(EXEEXT)
 	$(CXXLINK) $(test_eval_OBJECTS) $(test_eval_LDADD) $(LIBS)
+test_ext2$(EXEEXT): $(test_ext2_OBJECTS) $(test_ext2_DEPENDENCIES) 
+	@rm -f test_ext2$(EXEEXT)
+	$(CXXLINK) $(test_ext2_OBJECTS) $(test_ext2_LDADD) $(LIBS)
 test_map$(EXEEXT): $(test_map_OBJECTS) $(test_map_DEPENDENCIES) 
 	@rm -f test_map$(EXEEXT)
 	$(CXXLINK) $(test_map_OBJECTS) $(test_map_LDADD) $(LIBS)
@@ -377,6 +394,8 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/tabpre.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/tabtd.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_eval.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_ext.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_ext2.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_map.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_str.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/time.Plo@am__quote@

@@ -19,9 +19,17 @@ THIS SOFTWARE IS PROVIDED 'AS IS' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDI
 #define SMXEXTVER 1
 
 #ifdef WIN32
-#ifndef STDCALL
-#define STDCALL _stdcall
+	#ifndef STDCALL
+		#define STDCALL _stdcall
+	#endif
 #endif
+
+#ifndef STDCALL 
+	#define STDCALL __attribute__((stdcall)) 
+#endif
+
+#ifndef DWORD
+        #define DWORD unsigned short
 #endif
 
 struct SMXENUMPOS {
@@ -119,7 +127,13 @@ typedef struct _SMXEXTLIB {
 } SMXEXTLIB, *PSMXEXTLIB;
 
 // helper macros
-#define DECL_SMXUSERFUNC(name) name(const void *pObject, smxExContext *pContext, smxExStreamOut *pOutput, const char *pArgs[], smxArgType pArgType[], int nNumArgs)
+#define DECL_SMXUSERFUNC(name) void name(const void *pObject, smxExContext *pContext, smxExStreamOut *pOutput, const char *pArgs[], smxArgType pArgType[], int nNumArgs)
+
+#ifdef WIN32
 #define SMXLIB_EXPORT extern "C" __declspec(dllexport) 
+#else
+#define SMXLIB_EXPORT extern "C"
+#endif
+
 
 #endif // #ifndef _PSEXT_H

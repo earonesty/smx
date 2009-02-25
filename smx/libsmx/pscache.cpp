@@ -187,20 +187,12 @@ void qStrCache::EvalInclude(qCtx *ctx, qStr *out, qArgAry *args)
 
 class qObjModule : public qObjClass
 {
-#ifdef WIN32 
 	HMODULE myHMod;
-#else
-	void *myHMod;
-#endif
-
 public:
-// override virtuals
 	qObjModule(HMODULE hM) {
-#ifdef WIN32
 		myHMod = hM;
-#endif
 	}
-   ~qObjModule() {
+	~qObjModule() {
 #ifdef WIN32 
 		PSMXEXTLIB smx = (PSMXEXTLIB) GetProcAddress(myHMod, "SMXLibrary");
 		if(smx)
