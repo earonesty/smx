@@ -30,6 +30,9 @@ xs_init(pTHX)
         char *file = __FILE__;
         dXSUB_SYS;
 
+#ifdef unix
+	dlopen("libperl.so", RTLD_LAZY|RTLD_GLOBAL);
+#endif
         /* DynaLoader is a special case */
         newXS("DynaLoader::boot_DynaLoader", boot_DynaLoader, file);
 }
@@ -42,7 +45,6 @@ DECL_SMXUSERFUNC(perl) {
 }
 
 STDCALL void LoadLib(smxExContext *pContext) {
-	dlopen("libperl.so", RTLD_LAZY|RTLD_GLOBAL);
 	PERL_SYS_INIT3(NULL, NULL, NULL);
 	my_perl = perl_alloc();
 	perl_construct(my_perl);
