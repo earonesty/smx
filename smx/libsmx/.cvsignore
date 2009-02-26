@@ -8,3 +8,5 @@ buildtests
 *.plg
 test_str
 test_eval
+ibtest_ext.la
+test_ext2
