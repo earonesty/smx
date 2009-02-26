@@ -53,6 +53,12 @@ AC_HEADER_STDC
 AC_HEADER_SYS_WAIT
 AC_CHECK_HEADERS([arpa/inet.h fcntl.h limits.h malloc.h memory.h netdb.h netinet/in.h stddef.h stdlib.h string.h sys/file.h sys/ioctl.h sys/socket.h sys/time.h unistd.h wchar.h wctype.h sqlite3.h sql.h pthread.h openssl/evp.h tdb.h signal.h gd.h])
 
+# sets PERL var to full path
+AC_PATH_PROG(PERL, perl)
+
+# sets HAVE_PERL conditional
+AM_CONDITIONAL(HAVE_PERL, test -n "$PERL")
+
 # Checks for typedefs, structures, and compiler characteristics.
 AC_HEADER_STDBOOL
 AC_C_CONST
@@ -74,5 +80,5 @@ AC_FUNC_STRTOD
 AC_FUNC_VPRINTF
 AC_CHECK_FUNCS([bzero dup2 gethostbyname gettimeofday inet_ntoa memchr memmove memset mkdir pow putenv rmdir select setenv socket sqrt strchr strerror strpbrk strrchr strspn strstr strtol strtoul tzset])
 
-AC_CONFIG_FILES([Makefile smx/Makefile libsmx/Makefile modsmx/Makefile smx.spec])
+AC_CONFIG_FILES([Makefile smx/Makefile libsmx/Makefile extperl/Makefile modsmx/Makefile smx.spec])
 AC_OUTPUT

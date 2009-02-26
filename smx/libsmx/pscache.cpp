@@ -250,11 +250,15 @@ void qObjCache::EvalModule(qCtx *ctx, qStr *out, qArgAry *args)
 
 	#else
 			void * hM = dlopen(path, RTLD_LAZY);
-			smx = (PSMXEXTLIB) dlsym(hM, "SMXLibrary");
-
-			if (!smx) {
+			if (hM) {
+			    smx = (PSMXEXTLIB) dlsym(hM, "SMXLibrary");
+			    if (!smx) {
 				ctx->ThrowF(out, 551, "SMXLibrary not found in module.");
 				dlclose(hM);
+				return;
+			    }
+			} else {
+				ctx->ThrowF(out, 550, "Module can't be opened. %s", dlerror());
 				return;
 			}
 	#endif

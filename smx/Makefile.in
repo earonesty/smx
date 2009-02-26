@@ -125,6 +125,7 @@ PACKAGE_STRING = @PACKAGE_STRING@
 PACKAGE_TARNAME = @PACKAGE_TARNAME@
 PACKAGE_VERSION = @PACKAGE_VERSION@
 PATH_SEPARATOR = @PATH_SEPARATOR@
+PERL = @PERL@
 POW_LIB = @POW_LIB@
 RANLIB = @RANLIB@
 SED = @SED@
@@ -183,7 +184,7 @@ sysconfdir = @sysconfdir@
 target_alias = @target_alias@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-SUBDIRS = libsmx smx modsmx
+SUBDIRS = libsmx smx modsmx extperl
 EXTRA_DIST = smx.spec.in smx.spec docs
 all: config.h
 	$(MAKE) $(AM_MAKEFLAGS) all-recursive
