@@ -14,11 +14,26 @@ THIS SOFTWARE IS PROVIDED 'AS IS' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDI
 
 #include "smxext.h"
 
-#include <EXTERN.h>
-#include <perl.h>
 #include <dlfcn.h>
 
-static PerlInterpreter *my_perl;
+#include "EXTERN.h"
+#include "perl.h"
+#include "XSUB.h"
+
+#include "ppport.h"
+
+/* declare thread-safe storage */
+
+#define XS_VERSION
+
+#define MY_CXT_KEY "SmxExt::_guts" XS_VERSION
+
+typedef struct {
+	smxExStreamOut *pOut;
+	smxExContext *pCtx;
+} my_cxt_t;
+
+START_MY_CXT
 
 EXTERN_C void xs_init (pTHX);
 
@@ -37,20 +52,83 @@ xs_init(pTHX)
         newXS("DynaLoader::boot_DynaLoader", boot_DynaLoader, file);
 }
 
-DECL_SMXUSERFUNC(perl) {
-	if (nNumArgs>=1) {
-		SV *val = eval_pv(pArgs[0], TRUE);
-		pOutput->PutS(SvPV_nolen(val));
+/* Outputs stuff to SMX from within Perl */
+
+XS(XS_SmxPerl_output); /* prototype to pass -Wmissing-prototypes */
+XS(XS_SmxPerl_output)
+{
+    dXSARGS;
+    if (items != 1)
+        Perl_croak(aTHX_ "Usage: SmxExt::output(str)");
+    {
+	dMY_CXT;
+        char *  str = (char *)SvPV_nolen(ST(0));
+	MY_CXT.pOut->PutS(str);
+    }
+    XSRETURN_EMPTY;
+}
+
+
+/* Calls the named perl sub from within SMX */
+DECL_SMXUSERFUNC(call_perl_func) {
+	dMY_CXT;
+	dSP;
+	int cnt = call_argv((const char *) pObject, G_SCALAR, (char **) pArgs);
+	SPAGAIN;
+	while (cnt--) {
+		SV * sv = POPs;
+		if (sv) pOutput->PutS(SvPV_nolen(sv));
 	}
 }
 
+/* Exports a perl sub to SMX */
+
+XS(XS_SmxPerl_export); /* prototype to pass -Wmissing-prototypes */
+XS(XS_SmxPerl_export)
+{
+    dXSARGS;
+    if (items != 2 && items != 1)
+        Perl_croak(aTHX_ "Usage: SmxExt::export(name_of_function)");
+    {
+        dMY_CXT;
+        char * name = SvPV_nolen(ST(0));
+	char * cp_name = (char *) MY_CXT.pCtx->Alloc(strlen(name)+1);
+	strcpy(cp_name, name);
+        MY_CXT.pCtx->MapFunc(cp_name, (SMXUSERFUNC) &call_perl_func, name);
+    }
+    XSRETURN_EMPTY;
+}
+
+/* Evaluates some perl code */
+
+DECL_SMXUSERFUNC(perl) {
+	if (nNumArgs>=1) {
+		dMY_CXT;
+		MY_CXT.pOut = pOutput;
+		MY_CXT.pCtx = pContext;
+		SV *val = eval_pv(pArgs[0], TRUE);
+	}
+}
+
+/* Startup perl */
+
+static PerlInterpreter *my_perl;
+
 STDCALL void LoadLib(smxExContext *pContext) {
 	PERL_SYS_INIT3(NULL, NULL, NULL);
+
 	my_perl = perl_alloc();
 	perl_construct(my_perl);
 	char *embedding[] = { "", "-e", "0" };
 	perl_parse(my_perl, xs_init, 3, embedding, NULL);	
 	PL_exit_flags |= PERL_EXIT_DESTRUCT_END;
+
+	{ MY_CXT_INIT; }
+
+    	char *file = __FILE__;
+   	newXS("main::output", XS_SmxPerl_output, file);
+   	newXS("main::export", XS_SmxPerl_export, file);
+
 	pContext->MapFunc(NULL, (SMXUSERFUNC) &perl, "perl");	
 };
 

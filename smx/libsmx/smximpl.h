@@ -271,6 +271,8 @@ public:
 		myCtx->MapObj(pInt, name);
 	}
 
+// allocate memory
+        virtual void * STDCALL Alloc(int pInt);
 
 // kill objects
 	virtual void STDCALL DelObj(const char *name) {

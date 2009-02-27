@@ -104,6 +104,9 @@ public:
 	virtual void STDCALL MapString(const char *pStr, const char *name) = 0;
 	virtual void STDCALL MapInt(int pInt, const char *name) = 0;
 
+// allocate a bit of memory
+	virtual void * STDCALL Alloc(int pInt) = 0;
+
 // kill objects
 	virtual void STDCALL DelObj(const char *name) = 0;
 	virtual void STDCALL Clear() = 0;

@@ -30,8 +30,18 @@ int main()
 
         LoadAllLibs(&ctx);
 
+	// load and parse
 	ctx.Parse("%module(.libs/libextperl.so)%perl(2*2)", &buf);
-
 	printf("2*2 is: %s\n", (const char *) buf.GetS());
+
+	// already loaded
+	ctx.Parse("%perl(2*4)", &buf);
+	printf("2*4 is: %s\n", (const char *) buf.GetS());
+
+	// already loaded
+	ctx.Parse("%perl(use Cwd; export('getcwd')) %getcwd()", &buf);
+
+	printf("cwd is: %s\n", (const char *) buf.GetS());
+
 	return 0;
 }

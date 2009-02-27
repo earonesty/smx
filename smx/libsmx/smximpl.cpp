@@ -45,3 +45,57 @@ void smxExObjectWrap::Eval(qCtx *ctx, qStr *out, qArgAry *args) {
 	smxExStreamOutImpl exOut(out, false);
 	myObj->Eval(&exCtx, &exOut, (const char **) (args ? (const char **) *args : NULL), (smxArgType*)args->GetQuots(), args->Count());
 }
+
+class smxExAllocWrap : public qObj {
+        void *myMem;
+
+public:
+        smxExAllocWrap(int N) {
+                myMem = malloc(N);
+        }
+
+        ~smxExAllocWrap() {
+		if (myMem) free(myMem);
+        }
+
+        void Delete() {
+                if (this)
+                        delete this;
+        }
+
+	void * Mem() {
+		return myMem;
+	}
+
+        void Eval(qCtx *ctx, qStr *out, qArgAry *args) {
+        }
+
+        char *GetQmap() {
+                return S_QMAP;
+        }
+};
+
+
+char gB[4] = {1,1,1,1};
+
+void * STDCALL smxExContextImpl::Alloc(int pInt) {
+	char memID[7];
+	int i = 3;
+	while (i >= 0 && gB[i] >= 125) {
+		gB[i] = 1;
+		--i;
+	}
+	++gB[i];
+	memID[0] = 'M';
+	memID[1] = '<';
+	memID[2] = gB[0];
+	memID[3] = gB[1];
+	memID[4] = gB[2];
+	memID[5] = gB[3];
+	memID[6] = '\0';
+
+	smxExAllocWrap *pA;
+	myCtx->MapObj(pA = new smxExAllocWrap(pInt), memID);
+	return pA->Mem();
+}
+
