@@ -1,0 +1,12 @@
+%set(name,macro-quote)
+%set(description,"Outputs the arguments, separated by commas, but also replaces %% with %%%%, \( and \) with \\\( and \\\), and other things. If any argument is different then the output, then the output is also wrapped in double quotes.
+")
+%set(syntax,"%%macro-quote\(arg1, arg2, ...\)")
+%set(example,"%%macro-quote\(a,this is a %% in my code, this time in parentheses: \(%%\)\)
+Returns:
+a,\"this is a %%%% in my code\",\"this time in parentheses: \\\(%%%%\\\)\"
+")
+%set(seealso,)
+%set(authorip,98.14.94.76)
+%set(authorlogin,mkrebs)
+%set(author,)
