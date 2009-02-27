@@ -79,6 +79,11 @@ DECL_SMXUSERFUNC(call_perl_func) {
 	}
 }
 
+DECL_SMXUSERFUNC(call_get_sv) {
+        SV * sv = get_sv((const char *) pObject, 0);
+        if (sv) pOutput->PutS(SvPV_nolen(sv));
+}
+
 /* Exports a perl sub to SMX */
 
 XS(XS_SmxPerl_export); /* prototype to pass -Wmissing-prototypes */
@@ -93,10 +98,9 @@ XS(XS_SmxPerl_export)
 	if (name && *name) {
 		if (*name == '$') {
 			++name;
-			SV *val = get_sv(name, 0);
-			if (val) {
-				MY_CXT.pCtx->MapString(SvPV_nolen(val), name);
-			}
+                        char * cp_name = (char *) MY_CXT.pCtx->Alloc(strlen(name)+1);
+                        strcpy(cp_name, name);
+                        MY_CXT.pCtx->MapFunc(cp_name, (SMXUSERFUNC) &call_get_sv, name);
 		} else {
 			if (*name == '&') ++name;
 			char * cp_name = (char *) MY_CXT.pCtx->Alloc(strlen(name)+1);
