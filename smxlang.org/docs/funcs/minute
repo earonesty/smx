@@ -1,0 +1,6 @@
+%set(name,minute)
+%set(syntax,%%minute%%)
+%set(description,Minute of the day as an integer.)
+%set(author,)
+%set(example,)
+%set(seealso,)

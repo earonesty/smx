@@ -1,0 +1,13 @@
+%set(name,include)
+			%set(description,"Syntax 1 \"includes\" a file name.  It is reccomended that you included a full path or use the %%fqppath\(\) function.  If you want the filename to be parsed, you should use %%expand\(%%include\(filename\)\).<br>
+
+Syntax 2 retrieves the contents of an http[s] url.  
+
+The Windows version supports the same options as \"qweb\" \(http://www.q32.com/qweb.htm\), since it shares the same source base.  So you can specify a username, password, certificate file, and much more.
+
+On Linux, for now, just use %%exec\(wget -O -...\) or %%exec\(lynx -source ...\).")
+			%set(syntax,"syntax 1: %%include\(filename\)
+syntax 2: %%include\(http://url\)")
+			%set(example,)
+			%set(seealso,)
+			%set(authorip,209.21.110.205)

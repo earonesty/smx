@@ -1,0 +1,14 @@
+%set(name,flush)
+%set(syntax,%%flush%%)
+%set(description,Writes the data out to the client so the browser can display
+what's happened so far. This is useful if you have a particularly long
+operation (credit card\, sql\, etc.) and you want to show the user some info
+first.)
+%set(author,)
+%set(example,Running very long query...
+%%flush%%
+
+  %%sleep(2000)
+
+Ok ... we're done.)
+%set(seealso,)

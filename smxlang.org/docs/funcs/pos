@@ -1,0 +1,10 @@
+%set(name,pos)
+%set(syntax,%%pos(searchstring\,source))
+%set(description,Returns the byte position of searchstring within source\, where the first position is numbered 0. Returns %%null%% if searchstring is not found.)
+%set(author,)
+%set(example,%%pos(c\,abcde)
+2
+
+%%equal(%%pos(f\,abcde)\,%%null%%)
+T)
+%set(seealso,)

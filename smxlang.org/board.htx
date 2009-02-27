@@ -1,0 +1,1327 @@
+%expand%%trim(
+
+%null(****
+Copyright (c) 2006, Erik Aronesty
+All rights reserved.
+
+Redistribution and use of this code, with or without modification, are permitted provided that the following conditions are met:
+Redistributions of code must retain the above copyright notice, this list of conditions and the following disclaimer.
+Neither the name of SMX, SMX Board, Erik Aronesty nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE
+
+VERSION 1.0.4
+****)
+
+
+%null(**** add data-dir variable to the http-init macro for your safe-mode users, or gset one below ****) 
+
+%if(%not(%invoke(data-dir))
+	,%if(%safe-mode%
+		,%gset(data-dir,%rtrim(%replace(%fqppath(--),public_html/--,,,/--,),/))
+		,%gset(data-dir,~)
+	 )
+)
+
+
+%define(load-config,
+	%gset(board-dsn,'sqlite:%data-dir%/board.sq3)
+	%gset(board-baseurl,%client-url%)
+	%gset(board-avatarurl,avatars)
+	%gset(board-title,SMX Forums)
+	%gset(board-showregform,1)
+	%gset(board-smtp,localhost)
+	%gset(board-email,forums@%gettoken(%client-host%,:,0))
+	%gset(board-css,)
+	%gset(board-usepathlinks,)
+	%safe-expand(%include(%data-dir%/board.conf),let)
+)
+
+%gdefine(authenticate,
+  %set(auth,%decode(%gettoken(%header(Authorization)," ",1)))
+  %set(username,%gettoken(%auth%,":",0))
+  %set(password,%gettoken(%auth%,":",1))
+  %set(ok,)
+  %sql(%dsn%,"select * from users inner join groups on groupid=groups.id
+	 where login=%sqlq(%username%) and pass=%sqlq(%sha(%password%))"
+	,%enumcol(%gset(user-%name%,%value%))
+	 %let(ok,T)
+  )
+  %if(%not(%ok%)
+        ,
+	 <html>
+	 <body>
+	 	<h1>Authorization Required</h1>
+	 </body>
+	 </html>
+	 %authenticate:(Forum Authentication)
+  )
+
+  %gset(client-authname,%username%)
+)
+
+%gdefine(rebuild-db
+	,
+	%delete(%data-dir%/board.sq3)
+	%create-db%
+)
+
+%gset(aeq,%if(%board-usepathlinks%,.,=))
+%gset(aamp,%if(%board-usepathlinks%,/,&))
+%gset(aqm,%if(%board-usepathlinks%,/,?))
+
+%gdefine(alink
+	,%if(%not(%link%),%let(link,%act%))
+	 %if(%other%,%let(other,%if(%board-usepathlinks%,/,&)%other%))
+	 %if(%equal(%form(act),%act%),%link%,<a href="%board-baseurl%%if(%board-usepathlinks%,/%act%,?act=%act%)%other%">%link%</a>)
+,act, link, other)
+
+%gdefine(create-db
+	,
+  %sql(%dsn%,
+	create table forums ( id integer primary key autoincrement, 
+		subject text, body text, userid integer, addtime integer, numtopics int, numposts int, lpostid int, canreplyflag text, cantopicflag text);
+
+	create table topics ( id integer primary key autoincrement, forumid integer,
+		subject text, body text, userid integer, addtime integer, edittime integer, numposts int, numviews int, lpostid int);
+
+	create table posts ( id integer primary key autoincrement, topicid integer,
+		subject text, body text, userid integer, addtime integer, edittime integer);
+
+	create table users ( id integer primary key autoincrement, 
+		login text, pass text, avatar text, name text, email text, www text, profile text, 
+		lpostid integer, ltopicid, numposts int, groupid int, addtime integer, edittime integer, rcode text);
+
+	create table groups ( id integer primary key autoincrement, 
+		groupname text, canadmin text, canmoderate text, cantopic text, canforum text, canpost text, isdefault text);
+
+	insert into groups (groupname, canadmin, canmoderate, cantopic, canforum, canpost) 
+		values ('Administrator', '1', '1', '1', '1', '1');
+
+	insert into groups (groupname, canadmin, canmoderate, cantopic, canforum, canpost) 
+		values ('Moderator', '', '1', '1', '', '1');
+
+	insert into groups (groupname, canadmin, canmoderate, cantopic, canforum, canpost, isdefault) 
+		values ('User', '', '', '', '', '1', '1');
+
+	insert into users (groupid, login, pass, name, addtime) 
+		values (1, 'admin', '%sha(%if(%form(password),%form(password),admin))', 'admin', %time%);
+
+	create unique index ix_users_login on users (login);
+  )
+)
+
+
+%gset(board-default-css,"
+        
+.headerbar {
+   color:#fff; background:#510570; padding:0.7ex;
+   border-bottom:4px dotted #000;
+}
+
+.headerbar a {
+   color:#fff; 
+}
+
+a { 
+  text-decoration:none;
+  color:#007; 
+  font-weight:bold;
+}
+
+body {
+ color:#002;
+ background-color:#fff;
+ margin:0.5em;
+ padding:0.5em;
+ font-family: helvetica, arial, sans-serif;
+ font-size: 12pt;
+}
+
+table {
+	border:0;
+}
+
+th {
+   color:#fff; background:#510570; padding:0.7ex;
+   text-decoration:none;
+   font-size: 0.9em;
+}
+
+td {
+   font-size: 0.9em;
+}
+
+td.label {
+   border: 1px solid #000;
+}
+
+td.num {
+   text-align:center;
+}
+
+.tablehead {
+   font-weight:bold; clear:left;
+   font-size: 1.3em;
+   white-space: nowrap;
+}
+
+.userinfo {
+   white-space: nowrap;
+}
+
+h2 {
+   font-weight:bold; clear:left;
+   font-size: 1.1em;
+}
+
+.display td {
+   border: 1px solid #000;
+}
+
+.posttime td {
+   border: none;
+   border-top: 1px solid #000;
+}
+
+.tablebar td {
+	border: none;
+}
+.quote {
+	border:1px solid #000
+}
+
+")
+)
+
+%define(board-init,%trim(
+
+%gset(autoconfig,)
+
+%load-config%
+
+%gset(dsn,%safe-expand(%board-dsn%,data-dir))
+
+%gset(act,%html-quote(%lcase(%gettoken(%form(act),",",0))))
+
+%if(%and(%board-usepathlinks%,%not(%act%),%wcmatch(%client-url%,%board-baseurl%/*))
+	,%gset(act,%gettoken(%replace(%client-url%,%board-baseurl%/),/,0))
+)
+%gset(user-id,)
+%gset(user-login,)
+%gset(user-name,)
+
+%try(
+        %if(%lte(%try(%dir(%data-dir%/board.sq3,%fsize%)),0)
+                ,%gset(user-canadmin,1)
+                 %gset(act,config)
+                 %gset(autoconfig,1)
+                ,%sql(%dsn%,"select count(*),min(id) from forums",
+                 	%gset(forum-count,%col(1))
+                 	%gset(forum-minid,%col(2))
+                 )
+		 %if(%or(%header(Authorization)
+       			,%in(%act%,login,config,edit-profile,edit-users,edit-groups,new-forum,new-post,new-topic))
+			,%authenticate%
+		 )
+        )
+)
+
+%if(%not(%board-css%)
+	,%gset(board-css,%board-default-css%)
+)
+
+))
+
+%define(board-header,
+%if(%exists(%fqppath(board-header.html))
+        ,%expand(%include(%fqppath(board-header.html)))
+,{
+
+<p class=headerbar>
+  %alink(home)
+| %alink(search)
+| %alink(help)
+%if(%user-name%
+        ,| %alink(edit-profile, edit profile)
+        ,| %alink(login)
+         %if(%gt(%board-showregform%,0),| %alink(register))
+)
+%if(%gt(%user-canadmin%,0),
+        | %alink(edit-groups,manage roles/users)
+)
+
+</p>
+
+})
+)
+
+%define(board-footer,
+  %if(%exists(%fqppath(board-footer.html))
+        ,%expand(%include(%fqppath(board-footer.html)))
+  )
+)
+
+%define(board-body,
+
+<!-- process actions -->
+
+%if(%and(%board-usepathlinks%,%not(%form(fid)),%wcmatch(%client-url%,%board-baseurl%*))
+        ,%enumtoken(%replace(%client-url%,%board-baseurl%/),/&
+		,%if(%gettoken(%token%,.=,1),%fset(%gettoken(%token%,.=,0),%gettoken(%token%,.=,1)))
+	 )
+)
+
+%set(fid,%iadd(0,%form(fid)))
+%set(tid,%iadd(0,%form(tid)))
+%set(pid,%iadd(0,%form(pid)))
+%set(uid,%iadd(0,%form(uid)))
+%set(gid,%iadd(0,%form(gid)))
+
+%define(checkbox
+	,<input type=checkbox name=%name%%if(%row%,-%row%) value="1" %if(%gt(%col(%name%),0),checked)>
+,name, row)
+
+%define(radiobox
+	,<input type=radio name=%name%%if(%row%,-%row%) value="1" %if(%gt(%col(%name%),0),checked)>
+,name, row)
+
+%define(formatpost
+	,
+	%nil(
+	%if(%not(%wcmatch(%body%,*<p*)%wcmatch(%body%,*<br*))
+	,	
+	%set(body,%replace(%body%,%cr%,,))
+	%set(body,%replace(%body%,%lf%%lf%,<p>))
+	%set(body,%replace(%body%,<p><p>,<p>,<p><p>,<p>,<p><p>,<p>))
+	%set(body,%replace(%body%,%lf%,<br>))
+	%set(body,%replace(%body%,<br><br>,<br>))
+	)
+	%out(%body%)
+	)
+,body)
+
+%define(quit
+	,<font color=red id=fatal class=message><p>%msg%</p></font>
+	 </body>
+	 </html>
+	 %flush%
+	 %abort%
+,msg)
+
+%define(message
+	,<font color=red class=message><p>%msg%</p></font>
+,msg)
+
+%define(abbrev
+	,%if(%lte(%len(%text%),%num%),%text%,%left(%text%,17)%sub(%num%,3))
+,text,num)
+
+%define(update-ucnt,
+        %sql(%dsn%
+                ,"select max(posts.id), count(*) from posts where userid=%uid%;"
+                ,%gset(update-qry,"update users set lpostid=%iadd(%col(1),0), numposts=%iadd(%col(2),0) where id=%uid%")
+        )
+	%update-qry%
+        %sql(%dsn%,%update-qry%)
+,uid)
+
+%define(update-tcnt,
+        %sql(%dsn%
+                ,"select max(posts.id), count(*) from posts where topicid=%tid%;"
+                ,%gset(update-qry,"update topics set lpostid=%iadd(%col(1),0), numposts=%iadd(%col(2),0) where id=%tid%")
+        )
+	%update-qry%
+        %sql(%dsn%,%update-qry%)
+,tid)
+
+%define(update-fcnt,
+        %sql(%dsn%
+                ,"select max(posts.id), count(*) from posts inner join topics on topicid=topics.id where forumid=%fid%;"
+                ,%gset(update-qry,"update forums set lpostid=%iadd(%col(1),0), numposts=%iadd(%col(2),0) where id=%fid%")
+        )
+	%update-qry%
+        %sql(%dsn%,%update-qry%)
+,fid)
+
+%if(%and(%gt(%user-canadmin%,0),%in(%act%,config))
+	,
+	%set(error,)
+	%if(%form(submit)
+		,
+		%create-file(%data-dir%/board.conf,
+%%let(board-title,%macro-quote(%form(title)))
+%%let(board-baseurl,%macro-quote(%form(baseurl)))
+%%let(board-dsn,%macro-quote(%form(dsn)))
+%%let(board-email,%macro-quote(%form(email)))
+%%let(board-showregform,%macro-quote(%form(showregform)))
+%%let(board-usepathlinks,%macro-quote(%form(usepathlinks)))
+%%let(board-css,%macro-quote(%replace(%form(css),%crlf%,%lf%)))
+		)
+		%load-config%
+		%if(%lte(%dir(%data-dir%/board.sq3,%fsize%),0)
+			,%if(%not(%form(password))
+				,%let(error,please set your admin user password)
+			 )
+			 %if(%not(%form(title))
+				,%let(error,please set your board title)
+			 )
+			 %if(%not(%error%),%create-db%)
+			,%if(%form(password)
+				,%sql(%dsn%,"update users set pass='%sha(%form(password))' where login='admin'")
+			 )
+		)
+		
+	)
+
+	%if(%form(rebuild)
+		,%rebuild-db%
+	)
+
+	<h2>Configuration</h2>
+
+	%if(%error%,%message(%error%))
+
+	<form action="%board-baseurl%?act=config" method=post>
+        <table id=config class=input>
+        <tr valign=top>
+        <td class=label>data directory: </td>
+        <td class=input>
+	%data-dir%
+	</td>
+        </tr>
+        <tr valign=top>
+        <td class=label>admin password: </td>
+        <td class=input>
+        <input name=password type=password value="" size=40>
+        </td>
+        </tr>
+        <tr valign=top>
+        <td class=label>title: </td>
+        <td class=input>
+        <input name=title type=text value="%html-quote(%board-title%)" size=40>
+	</td>
+        </tr>
+        <tr valign=top>
+        <td class=label>base url: </td>
+        <td class=input>
+        <input name=baseurl type=text value="%html-quote(%board-baseurl%)" size=40>
+	</td>
+        </tr>
+        <tr valign=top>
+        <td class=label>database: </td>
+        <td class=input>
+        <input name=dsn type=text value="%html-quote(%board-dsn%)" size=40>
+	</td>
+        </tr>
+        <tr valign=top>
+        <td class=label>show registration form: </td>
+        <td class=input>
+        <input name=showregform type=checkbox value="1" %if(%gt(%board-showregform%,0),checked)>
+        </td>
+        </tr>
+        <tr valign=top>
+        <td class=label>use path-info links: </td>
+        <td class=input>
+        <input name=usepathlinks type=checkbox value="1" %if(%gt(%board-usepathlinks%,0),checked)>
+        </td>
+        </tr>
+        <tr valign=top>
+        <td class=label>board email address: </td>
+        <td class=input>
+        <input name=email type=email value="%html-quote(%board-email%)" size=40>
+        </td>
+        </tr>
+        <tr valign=top>
+        <td class=label>css: </td>
+        <td class=input>
+        <textarea name=css rows=15 cols=70>%html-quote(%trim(%board-css%))</textarea>
+        </td>
+        </tr>
+	</table>
+	<p><input type=submit value="save config" name=submit>
+	</form>
+)
+
+%if(%and(%gt(%user-canadmin%,0),%in(%act%,edit-users))
+	,%if(%form(create),%gset(act,new-user))
+)
+
+%if(%and(%gt(%user-canadmin%,0),%in(%act%,edit-users))
+	,
+
+	<h2>Edit Users</h2>
+
+	%set(uids,%form(uids))
+
+	%if(%form(delete)
+		,%set(topic-cnt,0)
+		 %sql(%dsn%,select count(*) from topics where userid in (%uids%), %let(topic-cnt,%col(1)))
+		 %set(post-cnt,0)
+		 %sql(%dsn%,select count(*) from posts where userid in (%uids%), %let(post-cnt,%col(1)))
+		 %if(%form(ok)
+			,%sql(%dsn%, delete from users where id in (%uids%);
+			 	     delete from posts where userid in (%uids%);
+			 	     delete from topics where userid in (%uids%);
+			 )
+			,%message(
+			 deleting these users will also delete %topic-cnt% topics and %post-cnt% replies.
+			 is this OK?
+			 )
+			 <form action="%board-baseurl%?%client-query%&ok=t&delete=t" method=post>
+			 <input name=uids type=hidden value="%html-quote(%uids%)">
+			 <input type=submit name=ok value=ok></form>
+			 </font>
+		 )
+	)
+
+        %if(%form(update)
+		,%enumtoken(%uids%,","
+			,%sql(%dsn%,"update users set 
+					name=%sqlq(%form(name-%token%)),
+					login=%sqlq(%form(login-%token%)),
+					%if(%form(pass-%token%),"pass='%sha(%form(pass-%token%))',")
+					email=%sqlq(%form(email-%token%))
+				    where id=%token%
+					"
+			 )
+		 )
+        )
+
+        %if(%form(move)
+            ,%sql(%dsn%,"update users set
+                            groupid=%iadd(0,%form(movegid))
+			    where id <> %user-id%
+                            and id in (%uids%)
+                        "
+             )
+        )
+
+	<form action="%board-baseurl%?act=edit-users&gid=%gid%" method=post>
+	<table id=users class=display>
+	<tr>
+		<th></th>
+		<th>login</th>
+		<th>pass</th>
+		<th>name</th>
+		<th>email</th>
+		<th>last post</th>
+	</tr>
+
+        %sql(%dsn%,"select users.*, subject from users left join posts on lpostid = posts.id 
+			where groupid=%gid% order by name"
+		,<tr>
+			<td><input type=checkbox name=uids value=%col(id)> %alink(new-user,edit,uid=%col(id))&nbsp; </td>
+                        <td><input type=text name=login-%col(id) value="%html-quote(%col(login))"></td>
+                        <td><input type=text name=pass-%col(id) value=""></td>
+                        <td><input type=text name=name-%col(id) value="%html-quote(%col(name))"></td>
+                        <td><input type=text name=email-%col(id) value="%html-quote(%col(email))"></td>
+			<td>%if(%col(subject),%alink(edit-post&pid=%col(lpostid)&edit=t
+				,%abbrev(%col(subject),20)
+			    ))
+			</td>
+		 </tr>
+	)
+
+	</table>
+	<p>
+	<input type=submit name=update value="update">
+	<input type=submit name=delete value="delete">
+	<input type=submit name=create value="new user">
+	<input type=submit name=move value="move to group:">
+	<select name=movegid>
+		%sql(%dsn%,"select id, groupname from groups where id<>%gid%",<option value="%col(id)">%html-quote(%col(groupname)))
+	</select>
+	</form>
+)
+
+%if(%and(%gt(%user-canadmin%,0),%in(%act%,edit-groups,delete-group))
+	,
+	%if(%and(%gt(%gid%,0),%in(%act%,delete-group))
+		,%set(cnt,0)
+		 %sql(%dsn%,select count(*) from users where groupid=%gid%, %let(cnt,%col(1)))
+		 %if(%gt(%cnt%,0)
+			,%message(group still has %cnt% users)
+			,%sql(%dsn%, delete from groups where id =%gid% and isdefault<>'1')
+		 )
+	)
+
+	%fset(canadmin-%user-groupid%,1)
+
+	%enumtoken(%form(gids),","
+		,
+		 %sql(%dsn%
+			,"update groups set
+				groupname=%sqlq(%form(groupname-%token%)),
+				canadmin='%if(%gt(%form(canadmin-%token%),0),1)',
+				canmoderate='%if(%gt(%form(canmoderate-%token%),0),1)',
+				canforum='%if(%gt(%form(canforum-%token%),0),1)',
+				cantopic='%if(%gt(%form(cantopic-%token%),0),1)',
+				canpost='%if(%gt(%form(canpost-%token%),0),1)'
+				isdefault='%if(%gt(%form(isdefault-%token%),0),1)'
+			  where id=%iadd(0,%token%)
+			 "
+		 )
+	)
+
+	%if(%form(groupname)
+		,
+		 %sql(%dsn%
+			,"insert into groups (groupname, canadmin, canmoderate, canforum, cantopic, canpost)
+			  values (
+				%sqlq(%form(groupname)),%sqlq(%form(canadmin)),%sqlq(%form(canmoderate))
+				,%sqlq(%form(canforum)),%sqlq(%form(cantopic)),%sqlq(%form(canpost))
+				)
+			 "
+		 )
+	)
+
+	<form action="%board-baseurl%?act=edit-groups" method=post>
+	<table id=groups class=display>
+	<tr>
+		<th>role name</th>
+		<th>is admin?</th>
+		<th>is moderator?</th>
+		<th>add forums?</th>
+		<th>add topics?</th>
+		<th>post replys?</th>
+		<th>is default?</th>
+		<th>action</th>
+	</tr>
+
+        %sql(%dsn%,"select * from groups order by groupname"
+		,<tr>
+			<input type=hidden name=gids value="%col(id)">
+                        <td><input type=text name=groupname-%col(id) value="%html-quote(%col(groupname))"></td>
+			<td class=num>%checkbox(canadmin,%col(id))</td>
+			<td class=num>%checkbox(canmoderate,%col(id))</td>
+			<td class=num>%checkbox(canforum,%col(id))</td>
+			<td class=num>%checkbox(cantopic,%col(id))</td>
+			<td class=num>%checkbox(canpost,%col(id))</td>
+			<td class=num>%radiobox(isdefault,%col(id))</td>
+			<td>%alink(edit-users, edit users,gid=%col(id)) | %alink(delete-group&gid=%col(id),delete role)</td>
+		 </tr>
+	)
+
+                <tr>
+                        <td><input type=text name=groupname value=""></td>
+                        <td class=num>%checkbox(canadmin)</td>
+                        <td class=num>%checkbox(canmoderate)</td>
+                        <td class=num>%checkbox(canforum)</td>
+                        <td class=num>%checkbox(cantopic)</td>
+                        <td class=num>%checkbox(canpost)</td>
+                        <td></td>
+                 </tr>
+
+	</table>
+	<input type=submit value="submit">
+	</form>
+)
+
+%if(%in(%act%,edit-profile,new-user,register)
+        ,
+	%set(edit,%in(%act%,edit-profile))
+	%set(uid,%if(%and(%gt(%user-canadmin%,0),%gt(%uid%,0)),%uid%,%user-id%))
+	%set(gid,%if(%and(%gt(%user-canadmin%,0),%gt(%gid%,0)),%gid%,0))
+	%if(%not(%or(%gt(%user-canadmin%,0),%gt(%board-showregform%,0)))
+		,%redirect(%board-baseurl%)
+	)
+	%set(okemail,%or(%gt(%user-canadmin%,0),%not(%edit%)))
+        %if(%form(submit)
+                ,
+		%set(error,)
+		%if(%and(%form(newpass),%not(%equal(%form(newpass),%form(confpass))))
+			,%let(error,password and confirm don't match)
+		)
+		%if(%not(%wcmatch(%form(email),*@*.*))
+			,%let(error,email must be valid)
+		)
+                %if(%error%
+		   ,<!-- -->
+		   ,%edit%
+                        ,<!-- edit -->
+                   %set(update-qry
+                        ,"
+                         update users set
+                          login=%sqlq(%form(login)),
+                          name=%sqlq(%form(name)),
+                          %if(%okemail%
+				,"email=%sqlq(%form(email)),"
+			  )
+			  %if(%form(newpass)
+				,"pass=%sqlq(%sha(%form(newpass))),"
+			  )
+                          www=%sqlq(%form(www)),
+                          avatar=%sqlq(%form(avatar)),
+                          profile=%sqlq(%form(profile)),
+                          edittime=%time%
+                         where id=%uid%
+                        "
+                   )
+                   %sql(%dsn%,%update-qry%)
+                   ,<!-- insert -->
+		   %if(%lte(%gid%,0)
+			,%sql(%dsn%,"select id from groups where isdefault='1'",%let(gid,%col(1)))
+		   )
+                   %if(%lte(%gid%,0)
+                        ,%quit(no valid registration group)
+                   )
+		   %set(rcode,%rand(100000)%rand(100000))
+		   %set(error,
+                   %sql(%dsn%,"
+                         insert into users (login, name, %if(%okemail%,"email,") %if(%form(newpass),"pass,") www, avatar, profile, addtime, groupid, rcode)
+                         values (%sqlq(%form(login)), %sqlq(%form(name)), 
+				 %if(%okemail%, "%sqlq(%form(email)),")
+				 %if(%form(newpass),"%sqlq(%form(newpass)),") %sqlq(%form(www)), %sqlq(%form(avatar)), 
+				 %sqlq(%form(profile)), %time%, %gid%, '%rcode%'
+				)
+
+			;
+
+			select last_insert_rowid() as id;
+                   ",%gset(newid,%col(id)))
+		   )
+                )
+		%if(%error%
+			,%message(%error%)
+			,%if(%in(%act%,register)
+				,%smtp-mail(%board-smtp%,,%board-email%,%form(email),New User Registration,
+"Welcome to %board-title%
+
+Your activation url is: http://%header(host)%board-baseurl%?act=confreg&id=%newid%&rcode=%rcode%
+
+Please abide by the rules.
+
+Automated posting is disallowed.
+"
+				 )
+				 %redirect(%board-baseurl%?act=thankyou)
+			    ,%in(%act%,new-user)
+				,%redirect(%board-baseurl%?act=edit-users&gid=%gid%)
+				,%message(changes saved)
+			     
+			 )
+		)
+        )
+        %if(%edit%
+                ,
+        %sql(%dsn%,"select * from users where users.id=%uid%"
+                ,%fset(login,%col(login))
+                 %fset(name,%col(name))
+                 %fset(email,%col(email))
+                 %fset(www,%col(www))
+                 %fset(avater,%col(avater))
+                 %fset(profile,%col(profile))
+        )
+        )
+        <h2>%if(%edit%,edit profile, register new user)</h2>
+        <form method=post action="%board-baseurl%?act=%act%&fid=%fid%%if(%edit%,&uid=%uid%)">
+	%if(%form(gid),<input type=hidden name=gid value="%html-quote(%form(gid))">)
+        <table id=newuser class=input>
+        <tr valign=top>
+        <td class=label>login: </td>
+        <td class=input>
+        <input name=login type=text value="%html-quote(%form(login))">
+        </td>
+        </tr>
+        <tr valign=top>
+        <td class=label>%if(%edit%,"change ")password: </td>
+        <td class=input>
+        <input type=password name=newpass type=text value="">
+        </td>
+        </tr>
+        <tr valign=top>
+        <td class=label>password confirm: </td>
+        <td class=input>
+        <input type=password name=confpass type=text value="">
+        </td>
+        </tr>
+        <tr valign=top>
+        <td class=label>name: </td>
+        <td class=input>
+        <input name=name type=text size=40 value="%html-quote(%form(name))">
+        </td>
+        </tr>
+        <tr valign=top>
+        <td class=label>email: </td>
+        <td class=input>
+        %if(%okemail%
+		,<input name=email type=text size=40 value="%html-quote(%form(email))">
+		,%html-quote(%form(email))
+	)
+        </td>
+        </tr>
+        <tr valign=top>
+        <td class=label>www: </td>
+        <td class=input>
+        <input name=www type=text size=40 value="%html-quote(%form(www))">
+        </td>
+        </tr>
+	%if(%edit%,
+        <tr valign=top>
+        <td class=label>avatar: </td>
+        <td class=input>
+        %if(%form(avatar),<img src="%board-avatarurl%/%col(avatar)">) %alink(select-avatar, select avatar)
+        </td>
+        </tr>
+	)
+        <tr valign=top>
+        <td class=label>profile: </th>
+        <td class=input>
+                <textarea name=profile rows=10 cols=40>%html-quote(%form(profile))</textarea>
+        </td>
+        </tr>
+        </table>
+        <p><input type=submit value="submit" name=submit>
+        </form>
+)
+
+%if(%in(%act%,confreg)
+	,%set(rcode,-)
+	 %sql(%dsn%,"select rcode from users where id=%iadd(%form(id),0)"
+		,%let(rcode,%col(1))
+	 )
+	 %if(%equal(%form(rcode),%rcode%),
+		 %sql(%dsn%,"update users set rcode='' where id=%iadd(%form(id),0) and rcode=%sqlq(%form(rcode))")
+		 %message(account activated)
+		,
+		 %if(%rcode%	
+			,%message(failed to activate account)
+			,%message(account already activated)
+		 )
+	 )
+	 %gset(act,home)
+	 
+)
+
+%if(%and(%gt(%user-canpost%,0),%in(%act%,new-post,edit-post))
+        ,
+        %if(%or(%form(submit),%form(delete))
+                ,
+
+                %try(
+		%if(
+                    %form(delete)
+                        ,
+		   	%set(delid,0)
+			   %sql(%dsn%,"select posts.id, topicid, posts.userid, forumid 	
+					from posts inner join topics on posts.topicid=topics.id
+					where posts.id=%pid% %if(%lte(%user-canadmin,0),and posts.userid=%user-id%)
+					"
+					,%let(delid,%col(id))
+					 %let(tid,%col(topicid))
+					 %let(uid,%col(userid))
+					 %let(fid,%col(forumid))
+			   )
+
+			   %if(%gt(%delid%,0),
+
+				%sql(%dsn%,"
+                         		delete from posts where id=%delid%; 
+					"
+				)
+
+				%update-fcnt(%fid%)
+				%update-tcnt(%tid%)
+				%update-ucnt(%uid%)
+			   )
+		   ,%form(edit)
+			,
+
+                   %sql(%dsn%,"
+                         update posts
+                         set subject=%sqlq(%form(subject)), 
+			  body=%sqlq(%form(body)),
+			  edittime=%time%
+			 where id=%pid% and userid=%user-id%
+                   ")
+			,
+                   %sql(%dsn%,"
+                         insert into posts (topicid, subject, body, userid, addtime)
+                         values (%tid%, %sqlq(%form(subject)), %sqlq(%form(body)), %user-id%, %time%);
+
+			 update users set lpostid=last_insert_rowid(), numposts=coalesce(numposts,0)+1
+				where id=%user-id%;
+
+			 update topics set lpostid=last_insert_rowid(), numposts=coalesce(numposts,0)+1
+				where id=%tid%;
+
+                         update forums set lpostid=last_insert_rowid(), numposts=coalesce(numposts,0)+1
+                                where id=%fid%;
+                   ")
+		)
+                 %redirect(%board-baseurl%?act=topic&tid=%tid%)
+                )
+        )
+
+        %sql(%dsn%,"select subject, body, users.name as username from topics left join users on topics.userid=users.id where topics.id=%tid%"
+                ,%gset(topic-subject,%col(subject))
+                 %gset(topic-body,%col(body))
+                 %gset(topic-username,%col(username))
+        )
+        %sql(%dsn%,"select subject, body, users.name as username from posts left join users on posts.userid=users.id where posts.id=%pid%"
+                ,%gset(post-subject,%col(subject))
+                 %gset(post-body,%col(body))
+                 %gset(post-username,%col(username))
+        )
+
+	%if(%form(edit)
+		,%fset(body,%post-body%)
+		 %fset(subject,%post-subject%)
+	)
+	%if(%not(%form(body))
+		,%fset(body, %if(%invoke(post-username),
+			%%quote(%post-username%,%macro-quote(%post-body%))
+			,
+			%%quote(%topic-username%,%macro-quote(%topic-body%))
+		 	)
+		 )
+	)
+	%if(%not(%form(subject))
+		,%fset(subject, %replace(Re: %if(%invoke(post-username),%post-subject%, %topic-subject%), Re: Re:, Re:))
+	)
+        <h2>%if(%form(edit),edit post,create reply)</h2>
+        <form method=post action="%board-baseurl%?act=new-post&tid=%tid%%if(%form(edit),&pid=%pid%&edit=t)">
+        <table id=newpost class=input>
+        <tr valign=top>
+        <td class=label>subject: </td>
+        <td class=input>
+        <input name=subject type=text size=100 value="%html-quote(%form(subject))">
+        </td>
+        </tr>
+        <tr valign=top>
+        <td class=label>reply text: </th>
+        <td class=input>
+        <textarea name=body rows=10 cols=70>%html-quote(%form(body))</textarea>
+        </td>
+        </tr>
+        </table>
+        <p><input type=submit value="submit" name=submit>
+           %if(%form(edit),<input type=submit value="delete post" name=delete>)
+        </form>
+)
+
+%if(%in(%act%,new-topic)
+	,
+	%if(%or(%form(delete),%form(submit))
+		,
+   		%try(
+		%if(
+			%form(delete)
+			,
+		 	   %set(delid,0)
+                           %sql(%dsn%,"select id, forumid
+                                        from topics
+                                        where topics.id=%tid% %if(%lte(%user-canadmin,0),and topics.userid=%user-id% and topics.id not in (select topicid from posts))"
+                                        ,%let(delid,%col(id))
+                                         %let(fid,%col(forumid))
+                           )
+                           %if(%gt(%delid%,0),
+
+                                %sql(%dsn%,"
+                                        %if(%gt(%user-canadmin%,0),delete from posts where topicid=%delid%;)
+                                        delete from topics where id=%delid%;
+                                        "
+                                )
+                                %update-fcnt(%fid%)
+                           )
+			,%form(edit)
+			,
+		   %set(update-qry
+			,"
+                         update topics set
+                          subject=%sqlq(%form(subject)),
+                          body=%sqlq(%form(body)),
+                          edittime=%time%
+                         where id=%tid% and userid=%user-id%
+			"
+		   )
+                   %sql(%dsn%,%update-qry%)
+			,
+		   %sql(%dsn%,"
+			 insert into topics (forumid, subject, body, userid, addtime)
+			 values (%fid%, %sqlq(%form(subject)), %sqlq(%form(body)), %user-id%, %time%);
+
+			 update forums set numtopics=coalesce(numtopics,0)+1 where id=%fid%;
+		   ")
+		)
+		 %redirect(%board-baseurl%?act=forum&fid=%fid%)
+			,%exception-msg%
+		)
+	)
+	%if(%form(edit)
+		,
+        %sql(%dsn%,"select subject, body, users.name as username from topics left join users on topics.userid=users.id where topics.id=%tid%"
+                ,%gset(topic-subject,%col(subject))
+                 %gset(topic-body,%col(body))
+		 %fset(body,%topic-body%)
+		 %fset(subject,%topic-subject%)
+	)
+	)
+	<h2>%if(%form(edit),edit topic, create new topic)</h2>
+	<form method=post action="%board-baseurl%?act=new-topic&fid=%fid%%if(%form(edit),&tid=%tid%&edit=t)">
+	<table id=newtopic class=input>
+	<tr valign=top>
+	<td class=label>topic: </td>
+	<td class=input>
+	<input name=subject type=text value="%html-quote(%form(subject))">
+	</td>
+	</tr>
+	<tr valign=top>
+	<td class=label>description: </th>
+	<td class=input>
+	        <textarea name=body rows=10 cols=70>%html-quote(%form(body))</textarea>
+	</td>
+	</tr>
+	</table>
+        <p><input type=submit value="submit" name=submit>
+           %if(%and(%equ(%col(numposts),0),%form(edit)),<input type=submit value="delete topic" name=delete>)
+	</form>
+)
+
+%if(%in(%act%,new-forum)
+        ,
+        %if(%form(submit)
+                ,
+                %try(
+                %sql(%dsn%,"
+                         insert into forums (subject, body, userid, addtime, numtopics, numposts)
+                         values (%sqlq(%form(subject)), %sqlq(%form(body)), %user-id%, %time%, 0, 0)
+                ")
+                 %redirect(%board-baseurl%)
+                )
+        )
+        <h2>create new forum</h2>
+        <form method=post action="%board-baseurl%?act=new-forum">
+        <table id=newforum class=input>
+        <tr>
+        <td class=label>forum name: </td>
+        <td class=input>
+        <input name=subject type=text value="%html-quote(%form(subject))">
+        </td>
+        </tr>
+        <tr>
+        <td class=label>description: </th>
+        <td class=input>
+        <input name=body type=text value="%html-quote(%form(body))">
+        </td>
+        </tr>
+        </table>
+        <p><input type=submit value="submit" name=submit>
+        </form>
+)
+
+%define(quote,
+<blockquote class=quote><b>%name%:</b><div class="quotebody">%safe-expand(%body%,quote)</div></blockquote>
+,name,body)
+
+
+%if(%in(%act%,topic)
+        ,
+        %sql(%dsn%,"select subject, forumid from topics where id=%tid%"
+                ,%gset(topic-subject,%col(subject))
+    		 %gset(fid, %col(forumid))
+        )
+        %sql(%dsn%,"select subject from forums where id=%fid%"
+                ,%gset(forum-subject,%col(subject))
+        )
+
+	%sql(%dsn%,"update topics set numviews=coalesce(numviews,0)+1 where id=%tid%;")
+
+        <table id=forumhead class=display width="100%">
+        <tr valign=bottom class=tablebar>
+            <td>
+                <span class=tablehead>%alink(forum,%forum-subject%,fid=%fid%) : %gettoken(%topic-subject%,",",0)</span>
+            </td>
+            <td align=right><span style="white-space:nowrap;">
+        %if(%gt(%user-cantopic%,0),
+                %alink(new-topic, new topic, fid=%fid%)
+	)
+            </span></td>
+        </tr>
+	</table>
+        <table id=forums class=display width="100%">
+        %sql(%dsn%,"select topics.*, users.name as username, users.numposts, users.id as userid, users.groupid, groups.groupname
+                      from topics left join users on topics.userid=users.id
+                      		  left join groups on users.groupid=groups.id
+			where topics.id=%tid%
+                "
+                ,<tr>
+                        <th colspan=2 align=left>%col(subject)</th>
+                 </tr>
+                <tr valign=top class=topic>
+                        <td class=userinfo>
+			<b class=username>%alink(profile,%col(username),uid%aeq%%col(userid))</b><br>
+			%if(%col(avatar),<img src="%board-avatarurl%/%col(avatar)">)
+                        %if(%col(email),email: <a href="mailto:%col(email)"></a><br>)
+                        %if(%col(www),www: <a href="mailto:%col(www)"></a><br>)
+			%col(groupname)<br>
+			</td>
+			<td class=body id=topicbody>
+			%html-clean(%safe-expand(%formatpost(%col(body)),quote),,,blockquote)
+                        <table border=0 width="100%" class=posttime><tr valign=top>
+				<td>posted %lcase(%fmtltime(%col(addtime), mmm dd yyyy hh:nn))
+				%if(%col(edittime)
+				, <br> edited %lcase(%fmtltime(%col(edittime), mmm dd yyyy hh:nn))
+				)
+				</td>
+				<td align=right>
+				%if(%equ(%col(userid),%user-id%),
+					%alink(new-topic, edit topic, tid=%col(id)&fid=%fid%&edit=t) | 
+				)
+				%if(%gt(%user-canpost%,0)
+					,%alink(new-post, create reply, tid=%tid%)
+				)
+				</td>
+			</tr></table>
+			</td>
+                 </tr>
+	)
+        %sql(%dsn%,"select posts.*, posts.addtime as posttime, users.name as username, groups.groupname
+                      from posts left join users on posts.userid=users.id
+			left join groups on users.groupid=groups.id
+			where posts.topicid=%tid%
+			order by posts.id desc
+                "
+                ,<tr>
+                        <th colspan=2 align=left><a name="p%col(id)"></a>%col(subject)</th>
+                 </tr>
+                 <tr valign=top class=post>
+                        <td class=userinfo>
+			<b class=username>%alink(profile,%col(username),uid%aeq%%col(userid))</b><br>
+			%if(%col(avatar),<img src="%board-avatarurl%/%col(avatar)">)
+                        %if(%col(email),email: <a href="mailto:%col(email)"></a><br>)
+                        %if(%col(www),www: <a href="mailto:%col(www)"></a><br>)
+			%col(groupname)<br>
+			</td>
+			<td class=body id=postbody>
+			%html-clean(%safe-expand(%formatpost(%col(body)),quote),,,blockquote)
+                        <table border=0 width="100%" class=posttime><tr valign=top>
+				<td>posted %lcase(%fmtltime(%col(addtime), mmm dd yyyy hh:nn))
+				%if(%col(edittime)
+				, <br> edited %lcase(%fmtltime(%col(edittime), mmm dd yyyy hh:nn))
+				)
+				</td>
+				<td align=right>
+				%if(%equ(%col(userid),%user-id%),
+					%alink(new-post, edit post, tid=%tid%&pid=%col(id)&edit=t) | 
+				)
+				%if(%gt(%user-canpost%,0)
+					,%alink(new-post, create reply, tid=%tid%&pid=%col(id))
+				)
+				</td>
+			</tr></table>
+			</td>
+                 </tr>
+                ,
+        )
+        </table>
+)
+
+%if(%and(%in(%act%,%null%,home,login),%equ(%forum-count%,1))
+	,%gset(act,forum)
+	 %gset(fid,%forum-minid%)
+	 %gset(autodrill,1)
+)
+
+%if(%in(%act%,forum)
+        ,
+	%sql(%dsn%,select subject from forums where id=%fid%
+		,%gset(forum-subject,%col(subject))
+	)
+        <table id=forums class=display>
+        <tr valign=bottom class=tablebar>
+	    <td>
+		<span class=tablehead>%forum-subject%</span>
+	    </td>
+	    <td colspan=3 align=right>
+	%if(%and(%autodrill%,%gt(%user-canforum%,0)),
+		%alink(new-forum, new forum) |
+	)
+	%if(%gt(%user-cantopic%,0),
+		%alink(new-topic, new topic, fid=%fid%)
+	)
+	    </td>
+	</tr>
+                <tr>
+                <th>topic</th>
+                <th>replies</th>
+                <th>views</th>
+                <th>last post</th>
+                </tr>
+        %sql(%dsn%,"select topics.*, posts.addtime as posttime, users.name as username
+                      from topics left join posts on topics.lpostid=posts.id
+                                  left join users on posts.userid=users.id
+		     where forumid=%fid%
+			order by topics.id desc
+                "
+                ,<tr>
+                        <td>%alink(topic,%html-quote(%col(subject)),fid%aeq%%fid%%aamp%tid%aeq%%col(id))<br>%html-clean(%col(body))</td>
+                        <td class=num>%iadd(%col(numposts),0)</td>
+                        <td class=num>%iadd(%col(numviews),0)</td>
+                        <td class=lastpost>%if(%col(username),%col(username)<br>%fmtltime(%col(posttime),yyyy mmm dd),<br>)</td>
+                 </tr>
+        )
+        </table>
+)
+
+%if(%in(%act%,%null%,home,login)
+	,
+	<table id=forums class=display>
+        <tr valign=bottom class=tablebar>
+            <td>
+                <span class=tablehead>%board-title%</span>
+            </td>
+        %if(%gt(%user-canforum%,0),
+            <td colspan=3 align=right>
+                %alink(new-forum, new forum)
+            </td>
+        )
+        </tr>
+		<tr>
+		<th>forum</th>
+		<th>topics</th>
+		<th>replies</th>
+		<th>last post</th>
+		</tr>
+	%sql(%dsn%,"select forums.*, posts.addtime as posttime, users.name as username 
+		      from forums left join posts on forums.lpostid=posts.id 
+				  left join users on posts.userid=users.id
+		"
+		,<tr>
+			<td>%alink(forum,%html-quote(%col(subject)),fid%aeq%%col(id))<br>%html-clean(%col(body))</td>
+			<td class=num>%iadd(%col(numtopics),0)</td>
+			<td class=num>%iadd(%col(numposts),0)</td>
+			<td class=lastpost>%col(username)<br>%col(posttime)</td>
+		 </tr>
+	)
+	</table>
+)
+
+
+%if(%in(%act%,help)
+        ,
+{
+	<H2>Posting</H2>
+
+	<P>Click on the forum that you want to post to.  
+%if(%gt(%user-cantopic%,0),
+	<P>A link "new topic" will appear.  You can use this to start a new topic of conversation.
+)
+	<P> To reply to a topic, click on the topic you want to reply to.  Then click "create reply".  Replying top the "first post" is considered a reply to the topic itself.
+
+	<P> You can use some HTML in your post (B, I, A)
+
+	<H2>Editing Your Post</H2>
+
+	<P>You can only edit a post if you own the post, or if you are an administrator.
+
+	<H2>Managing Your Profile</H2>
+
+	<P>You should keep your email up to date by logging in, clicking Edit Profile and editing your email address.  Accounts with invalid email addresses will be discarded.
+
+	<P>Profile text can contain links, I/M addresses, etc.
+
+	<P>Your email address will not be shown.
+
+	<P>You can set your display preferences as well. 
+}
+)
+
+%if(%in(%act%,thankyou)
+        ,
+{
+        <H2>Registration Confirmation Needed</H2>
+
+	You will receive an activation email to confirm your registration.
+
+	<P>
+	
+	Until you click on the link in that email, posting will be restricted.	
+}
+)
+
+%define(selopt
+	,%for(i,1,%isub(%num-args%,1)
+		,<option %if(%equal(%gettoken(%arg(%i%),=,1),%form(%name%)),selected) value="%gettoken(%arg(%i%),=,1)">%gettoken(%arg(%i%),=,0)</option>
+	)	
+,name)
+
+%if(%in(%act%,search)
+        ,
+{
+        <H2>Search</H2>
+
+	
+	%if(%form(q)
+		,
+		<table class=display id=searchresults>
+
+		%if(%equal(%form(type),post)
+			,
+			%set(qry,"select posts.topicid, subject, body, posts.id as postid, posts.addtime, users.name from posts inner join users on users.id=posts.userid where posts.subject like %sqlq(%%%form(q)%%) OR posts.body like %sqlq(%%%form(q)%%)")
+		     ,%equal(%form(type),topic)
+			,
+			%set(qry,"select topics.id as topicid, subject, body, topics.addtime, users.name from topics inner join users on users.id=topics.userid where topics.subject like %sqlq(%%%form(q)%%) OR topics.body like %sqlq(%%%form(q)%%)")
+		     ,%equal(%form(type),pbyu)
+			,
+			%set(qry,"select posts.topicid, subject, body, posts.id as postid, posts.addtime, users.name from posts inner join users on users.id=posts.userid where users.name like %sqlq(%form(q))")
+		     ,%equal(%form(type),tbyu)
+			,
+			%set(qry,"select topics.id as topicid, subject, body,  topics.addtime, users.name from topics inner join users on users.id=topics.userid where users.name like %sqlq(%form(q))")
+		     ,%equal(%form(type),user)
+			,
+			%set(qry,"select id, name, www, addtime from users where profile like %sqlq(%%%form(q)%%) OR name like %sqlq(%%%form(q)%%)")
+		 )
+		%define(quote,"...")
+		%if(%in(%form(type),user)
+			,
+			%sql(%dsn%,%qry% limit 10
+				,<tr><td><a href="%board-baseurl%%aqm%act%aeq%profile&uid%aeq%%col(id)">%fmtltime(%col(addtime),yyyy mm dd)</a></td><td>%col(name)</td><td>%col(www)</td></tr>
+			)
+			,
+			%sql(%dsn%,%qry% limit 10
+				,<tr>
+				<td><a href="%board-baseurl%?act=topic&tid=%col(topicid)%if(%col(postid),#p%col(postid))">
+					%fmtltime(%col(addtime),yyyy mm dd)</a>
+				</td>
+				<td>%col(subject)</td>
+				<td>%trim(%html-clean(%safe-expand(%col(3),quote)))</td>
+				</tr>
+			)
+		)
+		</table>
+	)
+
+	<form action="%board-baseurl%?act=search" method=post>
+	<table id=search class=input>
+	<tr><th align=left>Text:</th><td><input type=text name=q value="%form(q)"></td></tr>
+	<tr><th align=left>Search:</th><td><select name=type>%selopt(type,Topics=topic,Replies=post,Users=user,Posts by User=pbyu,Topics by User=tbyu)</select></td></tr>
+	</table>
+	<p><input type=submit name=submit value=submit>	
+	</form>
+}
+)
+
+%if(%in(%act%,profile)
+        ,
+{
+        <H2></H2>
+
+	<table id=profile class=display>
+        %sql(%dsn%,"select users.*, posts.addtime as posttime from users left join posts on lpostid = posts.id where users.id=%uid% "
+        	,<tr><th align=left>Name:</th><td>%col(name)</td></tr>
+        	 <tr><th align=left>Posts:</th><td>%col(numposts)</td></tr>
+        	 %if(%col(posttime),<tr><th align=left>Last Post:</th><td>%fmtltime(%col(posttime),yyyy mmm dd)</td></tr>)
+        	 <tr><th align=left>Www:</th><td><a href="%col(www)">%replace(%col(www),http://)</a></td></tr>
+        	 %if(%col(avatar),<tr><th align=left>Avatar:</th><td><img src="%board-avatarurl%/%col(avatar)"></td></tr>)
+        	 %if(%col(profile),<tr><th align=left>Profile:</th><td id=profilecol>%html-clean(%col(profile),,blockquote)</td></tr>)
+	)
+	</table>
+}
+)
+
+)
+
+%null(end-trim)
+)

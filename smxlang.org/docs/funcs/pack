@@ -1,0 +1,10 @@
+%set(name,pack)
+%set(syntax,%%pack(TEMPLATE\,LIST))
+%set(description,Convert a list into a binary representation
+
+Takes an array or list of values and packs it into a binary structure\, returning the string containing the structure. The TEMPLATE is a sequence of characters that give the order and type of values\, as follows: 
+    L   An unsigned long value.
+    a   An ascii string.)
+%set(author,)
+%set(example,)
+%set(seealso,)

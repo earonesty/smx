@@ -1,0 +1,9 @@
+%set(name,num-columns)
+%set(syntax,%%num-columns%%)
+%set(description,Returns the number of columns in the result of an SQL query. 
+
+%%num-columns%% is valid only in the rowpattern\, header\, and footer arguments to 
+the sql macro.)
+%set(author,)
+%set(example,)
+%set(seealso,)

@@ -1,0 +1,8 @@
+%set(name,stricmp)
+%set(description,"Case insensitively compares 2 strings and returns 0 \(for equal\), 1 for string 1 greater than string 2, or -1 for string  1 less than string 2.")
+%set(syntax,"%%stricmp\(string1,string2\)")
+%set(example,"%%stricmp\(a,b\) => -1")
+%set(seealso,equal|xequal)
+%set(authorip,24.211.245.174)
+%set(authorlogin,erik)
+%set(author,)

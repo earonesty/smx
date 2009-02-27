@@ -1,0 +1,20 @@
+%null(
+
+** quote and unquote files
+
+%define(fquot,%replace(%f%,:,_C_,/,_S_,*,_W_))
+%define(funquot,%replace(%f%,_C_,:,_S_,/,_W_,*))
+
+** inline-authenticate user
+
+%define(authenticate,
+  %set(auth,%decode(%gettoken(%header(Authorization)," ",1)))
+  %set(username,%gettoken(%auth%,":",0))
+  %set(password,%gettoken(%auth%,":",1))
+  %if(%not(%equ(%sha(%username%:%password%),%include(%fqppath(/docs/inc/passwds/%username%))))
+        ,%authenticate:(SMX Documentation)
+  )
+  %gset(client-authname,%username%)
+)
+
+)

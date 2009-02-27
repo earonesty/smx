@@ -1,0 +1,21 @@
+%set(name,comm-open)
+%set(syntax,%%comm-open(port\,port-info\,body))
+%set(description,%%comm-open opens a communications port\, and then exposes the %%comm-write and %%comm-read functions within the body.
+&nbsp;
+port-info contains a standard communications port "baud rate\, parity\, etc." string\, and is parsed by the operating system.)
+%set(author,)
+%set(example,This will write SOMEBYTES to COM1\, and wait up to 1 second to read an 8 
+byte response.
+
+%%comm-open(
+   COM1
+  \,baud–00 data=8 parity=N
+  \,WRITING: %%comm-write(SOMEBYTES) ...
+   READING: %%comm-read(8\,1) ...
+)
+
+You can also read delimited responses 
+
+EG: %%comm-read(\,1\,%%asc(9)) - reads untill an ascii "9" is seen - waits 
+at most 1 second maximum.)
+%set(seealso,)

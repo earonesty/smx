@@ -1,0 +1,6 @@
+%set(name,ext)
+%set(syntax,%%ext(filename))
+%set(description,Returns the extension of a filename.)
+%set(author,)
+%set(example,)
+%set(seealso,)

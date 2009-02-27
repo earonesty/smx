@@ -1,0 +1,13 @@
+%set(name,asc)
+%set(description,"Returns the ascii character corresponding to the number supplied.")
+%set(syntax,"%%asc\(<num>\)")
+%set(example,"%%asc\(65\)
+
+Outputs:
+
+A
+")
+%set(seealso,ord)
+%set(authorip,64.131.154.83)
+%set(authorlogin,admin)
+%set(author,)

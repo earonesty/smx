@@ -1,0 +1,23 @@
+%set(name,client-state)
+%set(syntax,%%client-body%%
+%%client-query%%
+%%client-state%%)
+%set(description,Provides access to the raw\, undecoded query string appended to the URL\, 
+%%client-query%%\, or posted to the server\, %%client-body%%.
+
+%%client-state%% is defined as: %%client-query%%&%%client-body%% 
+
+- %%client-query%% will not contain information resulting from a POST method; use 
+%%client-body%% instead.)
+%set(author,)
+%set(example,Document first.html accepts parameters\, but does not fully process them. In order to pass them on to second.html\, use %%client-query%% as follows within first.html. 
+Pass parameters when user clicks on a link: 
+a href="second.html?%%client-query%%"Stage two/a
+Pass parameters from a parent frame to a child document: 
+frameset cols="*"
+   frame name=second src="second.html?%%client-query%%"
+   frame name=third src="third.html"
+/frameset
+Pass parameters when user presses a submit button in a form: 
+   input type=submit method=post action="second.html?%%client-query%%")
+%set(seealso,)

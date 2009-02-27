@@ -1,0 +1,25 @@
+%expand%
+%expand(%include(%fqppath(header.htx)))
+
+						<h2>SMX News</h2>
+						<p class="subHeader">2009-02-27 SMX adds %perl support</p>
+						<p>%%module(libextperl.so)  (or %%module(extperl.dll)) now export the %%perl() function which opens up the ability to 'use' all the modules on CPAN.... natively in your SMX code.    
+						<p class="subHeader">2009-02-25 SMX extension code</p>
+						<p>%%module(...) now can load SMX extensions.  These are easy to build in C, using the supplied "smxext.h" header file. 
+						<p class="subHeader">2006-02-27 SMX adds sqlite support</p>
+						<p>Try %%sql(sqlite:filename) as your datasource.  Easily integrate database apps without a server.</P>
+						<p class="subHeader">2006-02-27 SMX 1.2 Release</p>
+						<p><a href="http://developer.berlios.de/project/shownotes.php?release_id=9235">SMX 1.1.2</A> release includes rpm/srpms</P>
+						<p class="subHeader">2005-05-04 SMX Integrated with BerliOS</p>
+						<p>Using <a href="http://developer.berlios.de/projects/smx/">BerliOS</a> to host CVS, bug tracking, etc.</p>
+						<p class="subHeader">2005-05-02  SMX added to Freshmeat</p>
+						<p>Added SMX to <a href="http://freshmeat.net/projects/smx/">Freshmeat</a> for release management.</p>
+						<p class="subHeader">2005-05-01 SMX Safe-mode implemented</p>
+						<p>Added the ability to enable safe-mode, similar to PHP's safe mode.  
+						<p>Macro is %%safe-mode(T).  Once it's set, it cannot be unset.   
+							It prevents a script from reading/writing to files in directory that isn't 
+							owned by the same owner as the directory the scripts is in.
+							Also prevents use of %%exec, %%setenv and other potentially unsafe macros.
+						</p>
+
+%expand(%include(%fqppath(footer.htx)))

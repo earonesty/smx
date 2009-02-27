@@ -1,0 +1,33 @@
+%set(name,form)
+%set(syntax,%%form(name[\,instance]))
+%set(description,%%form() returns the value of a form variable passed to the document as the result of either a POST or GET method HTML form
+
+- %%form() will decode the variable by calling %%url-decode() internally. 
+
+- The first time %%form() is used\, all form variables are scanned\, decoded\, and 
+processed. Later invocations of %%form() will be much faster. 
+
+- When first expanded %%form() will define macros with the same name as as the 
+form variables\, set to the correct values\, as long as a macro with the same 
+name doesn't already exist.
+
+- For example\, instead of writing %%set(foo\,%%form(foo)) you can just write %%form
+(foo). 
+
+- You can also declare %%form() (or %%form%%)\, with no parameters\, to generate 
+variables for all of the form variables that don't conflict with existing macro 
+names. 
+
+- For multiple-select form controls that create multiple variables with the 
+same name\, %%form%% takes a second parameter which indicates which instance of 
+the variable you want: %%form(foo\,2) or %%form(foo\,0). 
+
+- %%form%%\, automatically defines variables; you can access multiple instances of 
+them with a subscript: %%foo(0) or %%foo(2).)
+%set(author,)
+%set(example,If your query string looks like this: foo=12&foo=34&bar=16 then:
+%%foo%% and %%form(foo) will expand to 12
+%%foo(0) and %%form(foo\,0) will expand to 12
+%%foo(1) and %%form(foo\,1) will expand to 34
+"%%bar%% will all expand to 16)
+%set(seealso,)

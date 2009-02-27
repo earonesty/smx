@@ -1,0 +1,40 @@
+	<div id="navcontainer">
+		<ul id="navlist">
+			<li id="active"><a href="index.html" id="current">
+			Overview</a></li>
+			<li><a href="http://developer.berlios.de/cvs/?group_id=3693">Get Code</a></li>
+			<li><a href="install.html">Installation 
+			Instructions</a></li>
+			<li><a href="example.html">Example Applications</a></li>
+			<li><a href="docs/">Documentation</a></li>
+			<li><a href="faq.html">F.A.Q.</a></li>
+			<li><a href="mailto:info_at_smxlang_dot_org">Contact</a></li>
+		</ul>
+	</div> 
+	
+	<div id="sideBarNews">
+		<div id="newsHeader">News</div>
+		<div id="sideBarNewsContent">
+			<div class="newsItem">SMX adds <a href="http://www.sqlite.org">sqlite</a> support.</div>
+			<div class="readNewsLink">
+			  <a href="news.html?rec=4">Read More</a></div>
+			<div class="newsItem">SMX 1.2 release</div>
+			<div class="readNewsLink">
+			  <a href="news.html?rec=5">Read More</a></div>
+		</div>
+	</div>
+        <div id="sideBarAds">
+		<div id="newsHeader">Links</div>
+		<div id="sideBarNewsContent" align=center>
+<script type="text/javascript"><!--
+google_ad_client = "pub-6848512682142613";
+google_ad_width = 120;
+google_ad_height = 240;
+google_ad_format = "120x240_as_rimg";
+google_cpa_choice = "CAAQjeWZzgEaCGUPemYRwK8bKPG193M";
+google_ad_channel = "";
+//--></script>
+<script type="text/javascript" src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
+</script>
+		</div>
+        </div>

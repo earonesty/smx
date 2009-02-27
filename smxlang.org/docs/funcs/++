@@ -1,0 +1,14 @@
+%set(name,++)
+%set(description,"increments the variable specified")
+%set(syntax,"%%++\(<varname>\)")
+%set(example,"%%set\(x,1\)
+%%++\(x\)
+%%x%%
+
+returns:
+
+2")
+%set(seealso,--)
+%set(authorip,64.131.154.83)
+%set(authorlogin,admin)
+%set(author,)

@@ -1,0 +1,14 @@
+%set(name,time)
+			%set(description,"If format is not specified, the number of seconds since Jan. 1, 1970, GMT will 
+be returned. 
+
+If format is specified, this time value will be formatted. %%localtime\(\) adjusts 
+to the local time zone and daylight savings time, if applicable.
+
+Note that %%time%% \(or %%time\(\)\) will always return the same value as %%localtime%% 
+or %%localtime\(\)")
+			%set(syntax,"%%time\([format]\)
+%%localtime\([format]\)")
+			%set(example,)
+			%set(seealso,"* Time Formats")
+			%set(authorip,209.21.110.205)

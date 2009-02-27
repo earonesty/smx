@@ -1,0 +1,27 @@
+%set(name,switch)
+%set(syntax,%%switch(cond0\,'case0[\,cond1\,'case1[\,...][\,'defcase]))
+%set(description,Test one or more conditions and expand the matching case. If no matches are 
+found\, expand the optional default case.
+
+- The conditions are tested in order. 
+
+- The case expressions will typically be quoted so that only one is expanded. 
+
+- When used with 2 or 3 arguments\, %%switch() is identical to the %%if() macro\, but is slightly slower. 
+
+- This macro is not auto-quoted\, that is\, you must explicitly type in a single 
+quote mark in front of each case to ensure that only one of the cases is 
+expanded)
+%set(author,)
+%set(example,%%switch(
+   %%equal(%%form(Name)\,Joe)\,
+   'Hello Joe!\,
+   %%equal(%%form(Name)\,Fred)\,
+   'Hey Freddie!\,
+   %%equal(%%form(Name)\,Sue)\,
+   'Yo Suzie!\,
+   'I don't know you!)
+
+Returns:
+I don't know you!)
+%set(seealso,)

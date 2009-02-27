@@ -1,0 +1,26 @@
+%set(name,rxmatch
+)%set(syntax,%%rxmatch(string\, regular-expression[\,body])
+)%set(description,Scans the string for the expression\, optionally expands the "body" instead of 
+just returning the string that was found.
+
+The following macro(s) are defined within the body:
+
+  %%subx(integer) - returns the contents of the numbered subexpression 
+                   which was matched in the string
+)%set(author,
+)%set(example,%%set(tags\,
+"	<A HREF=mysite.com>My Site</A>
+	<A HREF=hissite.com>His Site</A>"
+)
+
+Return First Match:
+%%rxmatch(%%tags%%
+	\,<([/A-Za-z]+)( +([^>]*))? *>
+)
+
+----RESULTS----
+
+Return First Match:
+<A HREF=mysite.com>
+)%set(seealso,
+)

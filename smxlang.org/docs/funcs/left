@@ -1,0 +1,11 @@
+%set(name,left)
+%set(description,"Extract left-aligned substrings by length.
+
+Returns no more than \"length\" characters in \"string\".
+")
+%set(syntax,"%%left\(string,length\)")
+%set(example,"%%left\(xyz,2\) => xy")
+%set(seealso,mid|right)
+%set(authorip,71.111.229.37)
+%set(authorlogin,erik)
+%set(author,)

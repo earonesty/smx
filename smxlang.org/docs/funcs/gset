@@ -1,0 +1,11 @@
+%set(name,gset)
+%set(description,"Sets a variable globally.")
+%set(syntax,"%%gset\(name[,value]\)")
+%set(example,"%%nil\('%%gset\(x,45\)%%set\(x,9\)\)
+
+%%x%% = 45
+")
+%set(seealso,)
+%set(authorip,64.131.154.83)
+%set(authorlogin,admin)
+%set(author,)

@@ -1,0 +1,34 @@
+%expand%
+%expand(%include(%fqppath(header.htx)))
+
+						<h2>SMX FAQ</h2>
+						<p class="subHeader">Why did we need another web development language?</p>
+						<p>SMX is s something that people do all the time - in perl and in php - 
+							when they write template code.  
+
+							So SMX is a standard way of doing it, 
+							instead of rewriting template code all the time.  
+						
+							All too often I find myself writing code in perl where I was parsing text and replacing strings with percent-signs or dollar-signs in that text.
+								
+						</p>
+						<p class="subHeader">Is safe-expand really safe?</p>
+						<p>Yes.  SMX has no "special syntax" which could allow a user to execute macros outside of the explicit list provided.  Feel free to give your untrusted users, bloggers, commenters, etc. the ability to write code!  You can even give them for loops, and restrict the number of iterations allowed, restrict recursion, etc.   SMX is specifically designed to be a language that can be run by untrusted users.
+  
+						<p class="subHeader">Is safe-mode really safe?</p>
+						<p>No.  But it's better than the not having it.  
+						  And it's possible to make it very safe, with a little more careful coding.</p>
+						<p class="subHeader">How can I help?</p>
+						<p>Email us.  Your email will get sent to the current developers. </p>
+						<p class="subHeader">How do I do a 301 (Permanent) Redirect instead of a 302?</p>
+						<p>Might be OK to add a parameter to %redirect, but for now just do
+</p>
+<p>
+<code>
+					        	%%return-code:(301)<br>
+					        	%%set-header:(Location,http://www.wherever.org/etc)<br>
+						        %%abort%%
+</code>
+</p>
+						
+%expand(%include(%fqppath(footer.htx)))

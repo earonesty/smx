@@ -1,0 +1,12 @@
+%set(name,hdbfile)
+%set(description,"Sets or gets \(if the file is omitted\) the location of the temporary variable database.
+
+Default location is <HOMEPATH>/.smx/hset.db OR <TMPPATH>/hset.db \(if a homepath can't be found\)
+
+NOTE:  This can be set at server-init, or per-page.  It's a very fast operation since it no longer opens the database.")
+%set(syntax,"%%hdbfile\([full path to file]\)")
+%set(example,)
+%set(seealso,pdbfile|hset)
+%set(authorip,64.131.154.83)
+%set(authorlogin,admin)
+%set(author,)

@@ -1,0 +1,24 @@
+%set(name,column)
+%set(syntax,%%column(columnID))
+%set(description,Obtains the value of the given column for the current row in an SQL query\, 
+either by name or by number.
+
+- %%column() is valid only when used in the rowpattern argument to the sql 
+macro. 
+
+- columnID can be either the column's number or its name (field name). Column 
+numbers start with 1; the 0th column (the bookmark column) cannot be accessed. 
+
+- Columns are numbered in the order they appear in the SELECT statement; or\, if 
+* is used\, in the order they are specified in the underlying datasource. 
+
+- The implementation of %%column() imposes a very slight penalty for using a 
+column's name (field name) instead of its number. We recommend using column 
+names whenever possible for code legibility. 
+
+- It is difficult to determine the name of calculated columns in advance\, so 
+the use of numbers is recommended for them. %%column-name() can obtain the name 
+of a column by number if it's needed)
+%set(author,)
+%set(example,)
+%set(seealso,)

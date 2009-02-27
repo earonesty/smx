@@ -1,0 +1,10 @@
+%set(name,getenv)
+%set(syntax,%%getenv(name))
+%set(description,%%getenv retrieves an string from the operating system environment (just like getenv() in C/C++).)
+%set(author,)
+%set(example,Server OS is %%getenv(OS)
+
+Returns:
+
+Server OS is Windows_NT)
+%set(seealso,)

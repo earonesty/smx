@@ -1,0 +1,12 @@
+%set(name,--)
+%set(description,"Decrements the variable name supplied.")
+%set(syntax,"%%--\(varname\)")
+%set(example,"%%set\(x,3\)%%--\(x\)%%x%%
+
+Outputs:
+
+2")
+%set(seealso,++)
+%set(authorip,64.131.154.83)
+%set(authorlogin,admin)
+%set(author,)

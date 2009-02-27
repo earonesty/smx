@@ -1,0 +1,6 @@
+%set(name,sha)
+%set(syntax,%%sha(string))
+%set(description,Returns hex-encoded text which was "scrambled" with the Secure Hash Algorithm. The %%sha function is a standard\, secure algorithm for "scrambling" text so that anyone who knows the original can perform verification without transmiting the original.  This algorithm is portable and available in any language and environment.)
+%set(author,)
+%set(example,Rather than storing passwords in a database\, store the %%sha() hashed username and password as a unique "id".  Then\, when a paerson logs in you check to see if their "id" is in the database.  This way you can run an anonymous\, secure database\, where nobody\, not even the DBA\, can get access to a users password!)
+%set(seealso,)

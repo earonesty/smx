@@ -1,0 +1,6 @@
+%set(name,form-saveas)
+%set(syntax,%%form-saveas(filename\,name[\,instance]))
+%set(description,Save the binary data uploaded using a multipart form to a file)
+%set(author,)
+%set(example,)
+%set(seealso,)

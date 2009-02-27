@@ -1,0 +1,10 @@
+%set(name,bin)
+%set(syntax,%%hex(n)
+%%oct(n)
+%%bin(n)
+%%radix(n\,base))
+%set(description,Converts n to hexadecimal (hex)\, octal (oct)\, binary (bin)\, or any arbitrary 
+base\, up to 36 (radix).)
+%set(author,)
+%set(example,)
+%set(seealso,)

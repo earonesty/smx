@@ -1,0 +1,11 @@
+%set(name,defined)
+%set(description,"Returns T if a macro has any value, including if that value is %%null%%. ")
+%set(syntax,"%%defined\(macroname\)")
+%set(example,"-%%defined\(hi\)-%%set\(hi,\)+%%defined\(hi\)+
+
+Returns:
+--+T+")
+%set(seealso,set|gset|define|gdefine)
+%set(authorip,98.14.94.76)
+%set(authorlogin,mkrebs)
+%set(author,)

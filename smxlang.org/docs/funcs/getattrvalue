@@ -1,0 +1,6 @@
+%set(name,getattrvalue)
+%set(syntax,%%getattrvalue(string\,attribute[\,sep1][\,sep2]))
+%set(description,Parses the "named value" string\,  looking for ";" semicolons to separate the value names and "=" to separate the name from the value.  This is essentially a "cookie parser"\, that reads the cookies from the http header... but you can use it for other applications.)
+%set(author,)
+%set(example,%%getattrvalue(name=bob;idea=ibm\,idea) = ibm)
+%set(seealso,)

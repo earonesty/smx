@@ -1,0 +1,6 @@
+%set(name,fqppath)
+%set(syntax,%%fqppath(pathspec))
+%set(description,Construct a fully-qualified physical path specification based on pathspec and the document's virtual pathname.)
+%set(author,)
+%set(example,)
+%set(seealso,)

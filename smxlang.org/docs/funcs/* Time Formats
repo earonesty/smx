@@ -1,0 +1,40 @@
+%set(name,* Time Formats)
+			%set(description,"Time macros use format specifiers based on those used in various Microsoft applications. 
+")
+			%set(syntax,)
+			%set(example,"The following characters can appear in a format specifier:
+
+h       Hour, in 12-hour format, no leading 0 
+hh      Hour, in 12-hour format, with leading 0 
+H       Hour, in 24-hour format, no leading 0 
+HH      Hour, in 24-hour format, with leading 0 
+n       Minutes, no leading 0 
+nn      Minutes, leading 0 
+yy      Year of current century 
+yyyy    Year 
+w       Weekday, as a number, no leading 0 
+ww      Weekday, as a number, leading 0 
+www     Weekday, abbreviated 
+wwww    Weekday, in full 
+ddd     Weekday, abbreviated \(same as www\) 
+dddd    Weekday, in full \(same as wwww\) 
+d       Day of month, no leading 0 
+dd      Day of month, leading 0 
+ddd     Same as www 
+dddd    Same as wwww 
+s       Seconds, no leading 0 
+ss      Seconds, leading 0 
+a       a or p, depending on hour 
+aa      am or pm, depending on hour 
+m       Month, as number, no leading 0 
+mm      Month, as number, leading 0 
+mmm     Month, abbreviated 
+mmmm    Month 
+
+a, m, d, and w can be capitalized to cause the result to be capitalized.
+Note that m is interpreted as minutes n if it follows a use of h \(hour\). 
+
+
+")
+			%set(seealso,)
+			%set(authorip,209.21.110.205)

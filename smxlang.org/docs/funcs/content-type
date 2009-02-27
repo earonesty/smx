@@ -1,0 +1,6 @@
+%set(name,content-type)
+%set(syntax,%%content-type(mime-type))
+%set(description,This macro allows the content type of a document to be specified dynamically)
+%set(author,)
+%set(example,)
+%set(seealso,)

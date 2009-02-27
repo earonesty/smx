@@ -1,0 +1,12 @@
+%set(name,or)
+%set(syntax,%%or(a\,b\,c\,...))
+%set(description,Performs a short-circuit boolean OR)
+%set(author,)
+%set(example,%%set(x\,1)
+%%set(y\,1)
+%%or(%%equ(%%x%%\,1)\,%%equ(%%y%%\,1))
+
+returns:
+
+T)
+%set(seealso,)

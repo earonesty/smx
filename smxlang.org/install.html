@@ -1,0 +1,97 @@
+%expand%
+%expand(%include(%fqppath(header.htx)))
+
+<h2>SMX Installation</h2>
+
+<p class="subHeader">Installing the RPM:</p>
+
+Download rpms from <A href="https://developer.berlios.de/project/showfiles.php?group_id=3693">BerliOS</A>.
+<P>
+Prerequisites are unixODBC-2.x, openssl-0.9, gd-2.x, tdb-1.x, sqlite-3.x, and httpd-2.x.
+<P>
+We highly recommend getting the source from CVS and building RPMs for your own platform and specs.  
+SMX RPM building is easy.  Just run "make dist" for the tarball, and "rpmbuild -ta" for the rpm! 
+<p>
+WARNING: AFAWK, on newer Linux distros, the configure script that comes with libtdb 
+might think that mmap isn't available.  Make sure the output from configure thinks 
+mmap is OK.  If not, run autoconf first.
+
+<p class="subHeader">Getting the source from CVS:</p>
+
+<pre>cvs -d:pserver:anonymous@cvs.smx.berlios.de:/cvsroot/smx login
+cvs -z3 -d:pserver:anonymous@cvs.smx.berlios.de:/cvsroot/smx co</pre>
+
+That should get all the code.
+
+<p class="subHeader">Prerequisites for Linux:</p>
+
+<p>You can install all of these as RPM's from www.rpmfind.net, or using apt-get, or yum:</p>
+
+<dl>
+<dt>Required for Crypto support: 
+<dd>openssl, openssl-devel
+
+<dt>Required for ODBC support: 
+<dd><a href="http://www.unixodbc.org/">unixODBC</a>, unixODBC-devel (fedora) OR unixodbc-dev (debian)
+
+<dt>Required for IMAGE support: 
+<dd>gd, gd-devel (<a href="http://www.boutell.com/gd/">graphics library</a> by Thomas Boutell)
+
+<dt>Required for SQLITE support: 
+<dd>sqlite and sqlite-devel (<a href="http://www.sqlite.org/">sqlite</a>)
+
+<dt>Required for Apache 2.0 module support:
+<dd>httpd-devel (fedora)  OR apache2-dev (debian)
+</dl>
+
+<p>Future versions of smx will probably REQUIRE sqlite, since it works so much more reliably than berkely and tdb, and seems to compile easliy on most platforms.
+<p>BerkelyDB needs to be switched to <a href="http://www.sleepycat.com/docs/ref/ext/mod.html">mod_db4</a> when SMX runs as an apache module, which we haven't done, because maintaining two source bases is complicated. You're much better off with 
+<a href="https://sourceforge.net/projects/tdb/">tdb</a> - which is smaller, faster and performs better under the mixed/unstable conditions typical of web serving.   The RPM build assumes TDB support.  If you're running SMX as a CGI, native BerkeleyDB works fine.
+</p>
+
+<p> Download from <a href="https://sourceforge.net/projects/tdb">https://sourceforge.net/projects/tdb</a> OR <a href="https://developer.berlios.de/project/showfiles.php?group_id=3693">download an RPM which we built.</a>
+
+Once all the prerequisites are installed, you should be able to run:
+
+<pre>./configure
+./make
+./make install
+</pre>
+
+<p>Go to the <a href="#apache">Configuring Apache</a> section.</p>
+
+<p class="subHeader">Prerequisites for Windows:</p>
+
+<P>Download and compile the latest versions of apache and openssl from apache.org and openssl.org.</P>
+
+<p>Windows compilation requires that you add all the .cpp and .h files for each directory to a separate project.</p>
+
+<p>Make libsmx and modsmx DLL projects, and SMX an EXE project.</p>
+
+<p>You will need to adjust paths, and manually create a config.h so that apache, apr, gd, sqlite, openssl and libsmx are all in your project's path.</p>
+
+<p class="subHeader"><a name=apache>Configuring Apache:</a></p>
+
+<p>
+ The httpd.conf should have lines like this in it:
+ </p>
+<pre> LoadModule smx_module /usr/lib/libmodsmx.so
+ AddHandler smx-parsed .htm
+ AddHandler smx-parsed .html
+ AddHandler smx-parsed .hmx
+</pre>
+
+<p> and in the individual VirtualHost sections, you may want to have 
+ something
+ like:
+ </p>
+
+<pre> SMXInit %%module(/var/www/html/global.htx) </pre>
+
+<p>
+ That should do it -- please email with any steps that were different 
+ in
+ your configuration, or if you find any steps that were left out.
+</p>
+
+%expand(%include(%fqppath(footer.htx)))

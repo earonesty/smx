@@ -1,0 +1,17 @@
+%set(name,expand)
+%set(description,"%%expand expands its argument as a macro.  This is VERY unsafe to do with user-supplied content, please use safe-expand instead.  
+
+Typical usage for %%expand is to partition code into libraries and then load them as needed, for example %%expand\(%%include\(/path/to/file\)\) will evaluate the contents of that file, potentially creating or redefining functions.")
+%set(syntax,"%%expand\(macro-text\)")
+%set(example,"%%set\(x,%%%%iadd\(1,1\)\)
+
+The result of %%x%% is %%expand\(%%x%%\).
+
+-----
+
+The result of %%iadd\(1,1\) is 2.
+")
+%set(seealso,safe-expand|invoke)
+%set(authorip,64.131.154.83)
+%set(authorlogin,erik)
+%set(author,Erik Aronesty <erik@q32.com>)

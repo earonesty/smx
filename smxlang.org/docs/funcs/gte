@@ -1,0 +1,9 @@
+%set(name,gte)
+%set(description,"Returns T if the first argument is numerically larger than or equal to the second. Non-numeric arguments are treated the same as 0. Numeric evaluation of the arguments ends with the first non-numeric character.")
+%set(syntax,"%%gte\(a,b\)")
+%set(example,)
+%set(seealso,"gt|lt|lte
+")
+%set(authorip,24.193.44.12)
+%set(authorlogin,mkrebs)
+%set(author,)

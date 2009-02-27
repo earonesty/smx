@@ -1,0 +1,60 @@
+%set(name,rxsplit)
+%set(syntax,%%rxsplit(string\, regular-espression\,body))
+%set(description,Scans the string for the expression\, expands the "body" for EVERY match.
+This can be used for "global replacement"\, "splitting" a file into rows\, 
+scanning for html tags\, etc.
+
+The following macro(s) are defined within the body:
+
+  %%subx(integer) - returns the contents of the numbered subexpression 
+                   which was matched in the string
+  %%elem%%         - returns the "element" which was "split" by the regular
+                   expression.
+----EXAMPLE----
+
+%%set(tags\,
+"	<A HREF=mysite.com>My Site</A>
+	<A HREF=hissite.com>His Site</A>"
+)
+
+Loop for all matches:
+
+%%rxsplit(%%tags%%
+	\,<([/A-Za-z]+)( +([^>]*))? *>
+	\,
+         %%crlf%%
+         TAG    : %%subx(1)
+	 VALUES : %%subx(3)
+)
+
+Remove all tags:
+
+%%rxsplit(%%tags%%
+	\,<([/A-Za-z]+)( +([^>]*))? *>
+	\,
+         %%elem%%
+)
+
+----RESULTS----
+
+Loop for all matches:
+
+
+         TAG    : A
+         VALUES : HREF=mysite.com
+
+         TAG    : /A
+         VALUES :
+
+         TAG    : A
+         VALUES : HREF=hissite.com
+
+         TAG    : /A
+         VALUES :
+
+Remove all tags:
+        My Site
+        His Site)
+%set(author,)
+%set(example,)
+%set(seealso,)

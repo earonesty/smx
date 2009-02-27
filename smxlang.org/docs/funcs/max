@@ -1,0 +1,11 @@
+%set(name,max)
+%set(description,"Returns the maximum of zero or more integer or floating-point integers.
+Invalid arguments default to zero.
+Integer arguments to %%max\(\) are promoted to floating point.")
+%set(syntax,"%%max\([a[,b[,...]]]\)
+")
+%set(example,)
+%set(seealso,min)
+%set(authorip,64.131.154.83)
+%set(authorlogin,erik)
+%set(author,Erik Aronesty <erik@q32.com>)

@@ -1,0 +1,15 @@
+%set(name,client-url)
+%set(syntax,%%client-url%%)
+%set(description,Returns the URL of the current HTTP session\, without any appended query 
+information.
+
+- The query can be obtained using %%client-query%%.
+
+- There is no way to determine if the document was fetched with a "?" without
+query data (the stuff after the "?"). 
+
+- If the URL did not specify a document\, and therefore the default document was 
+fetched\, %%client-url%% will not show the default document's name.)
+%set(author,)
+%set(example,)
+%set(seealso,)

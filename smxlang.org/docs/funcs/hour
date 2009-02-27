@@ -1,0 +1,8 @@
+%set(name,hour)
+%set(syntax,%%hour%%)
+%set(description,Hour of the day as an integer.
+<BR>
+*GMT Time Zone)
+%set(author,)
+%set(example,)
+%set(seealso,)

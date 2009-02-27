@@ -1,0 +1,17 @@
+%set(name,mid)
+%set(description,"Extract substrings by position and length.")
+%set(syntax,"%%mid\(string,skipchars,resultlength\)
+
+Returns no more than \"resultlength\" characters in \"string\"
+after the first \"skipchars\". If the optional argument
+\"resultlength\" is not specified, all of the characters in 
+\"string\" after the first skipchars are returned.
+")
+%set(example,"%%mid\(<header>text<footer>,8\) => text<footer>
+
+%%mid\(<header>text<footer>,8,4\) => text
+")
+%set(seealso,)
+%set(authorip,72.225.212.219)
+%set(authorlogin,earthman)
+%set(author,)

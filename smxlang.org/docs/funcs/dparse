@@ -1,0 +1,45 @@
+%set(name,dparse)
+%set(syntax,%%dparse(<string>))
+%set(description,Returns a numeric (ANSI) time suitable for passing to fmtltime or fmtgtime.
+
+Supported formats:
+N mth YYYY HH:MM:SS ampm zone
+N mth YYYY HH:MM ampm zone
+N mth YYYY HH:MM:SS ampm
+N mth YYYY HH:MM ampm
+mm/dd/yy[yy] HH:MM:SS [ampm] [zone]
+mm/dd/yy[yy] HH:MM [ampm] [zone]
+yy[yy]-mm-dd hh:nn:ss [ampm] [zone]
+yy[yy]-mm-dd hh:nn:ss [ampm] [zone]
+mm/dd/yy[yy]
+yy[yy]-mm-dd
+mm/dd hh:ss aa
+mm/dd hh:ss
+mm/dd
+HH:MM:SS ampm zone N mth YYYY
+HH:MM ampm N mth YYYY
+HH:MM:SS ampm N mth YYYY
+HH:MM ampm N mth YYYY
+wdy\, N mth YYYY HH:MM:SS ampm zone
+wdy\, N mth YYYY HH:MM ampm zone
+wdy\, N mth YYYY HH:MM:SS ampm
+wdy\, N mth YYYY HH:MM ampm
+wdy mth N HH:MM:SS ampm zone YYYY
+wdy mth N HH:MM ampm zone YYYY
+N mth YYYY
+N mth YYYY
+mth [\,] YY[YY]
+mth
+HH:MM:SS ampm
+HH:MM
+yymmdd
+yyyymmdd)
+%set(author,)
+%set(example,%%dparse(1/2/1998)
+Returns: 
+883717200 
+
+%%fmtltime(%%dparse(1/2/1998)\,"wwww\, mmmm d\, yyyy")
+Returns: 
+Friday\, January 2\, 1998)
+%set(seealso,)

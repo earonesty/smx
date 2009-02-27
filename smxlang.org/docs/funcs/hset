@@ -1,0 +1,6 @@
+%set(name,hset)
+%set(syntax,%%hset(name\,string))
+%set(description,Associates string with name\, string is retrievable using %%hget(name) to return it.  This information is not persistant past reboots and also times out after a system definded amount of time.  Usually used for temporary single session variables.  %%hset is hierarchical\, with levels delimited by '/'. If you need a more persistent hash\, see pset.)
+%set(author,)
+%set(example,)
+%set(seealso,)

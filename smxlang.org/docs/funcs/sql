@@ -1,0 +1,32 @@
+%set(name,sql)
+%set(description,"Query an ODBC datasource with the given SQL statement, optionally formatting the result.
+
+%%dsn is the name of the datasource. If a username and password are needed to access the data source, they should be appended to dsn, separated by semicolons:
+
+     datasource;user;password.
+
+     You can use a dsn which is not registered with ODBC if you begin the dsn odbc; everything after that is passed to SQLDriverConnect, which parses the remainder of the string. Minimally, it should have driver={driver description};DBQ=<database>;. Some DBMSs, may require additional parameters \(username, password, directory, etc.\)
+
+     This doesn't require that the default DSNs be installed; all that's needed is the driver.
+
+     There is no performance penalty for using this approach vs. using a DSN once theconnection is made and cached, and it's just as fast as using DSNs.
+
+     %%qry can be any SQL statement recognized by the ODBC driver. Consult the ODBC driver's documentation for information on which SQL statements it supports.
+
+     Since rowpattern, header, and footer are expanded by the %%sql\(\) macro, they should typically be quoted to defer expansion.
+
+     rowpattern is expanded for each row of the SQL query result.  The %%column, %%column-name, %%column-width, and %%sql-quote macros are useful for this parameter.  The results of each expansion of rowpattern are concatenated together in the order the rows appear in the query result. 'header' is expanded before the first result row. 
+     The %%column-name and %%column-width macros are useful for this parameter. 
+
+     %%footer is expanded after the last result row. 
+     The %%column-name, %%num-rows, and %%column-width macros are useful for this parameter.  This macro is auto-quoting, so you don't need to type in a single quote mark in front of the rowpattern, header and footer.
+
+     To improve performance, smx caches ODBC connections. Some ODBC drivers have known memory leaks, so it may be advantageous to close a connection occasionally. %%sql-flushconnection%% performs this function. 
+
+     If expanded in a try block, it will throw an exception instead of displaying error text. The exception can be handled in the catch block.")
+%set(syntax,"%%sql\(dsn,qry[,'rowpattern[,'header[,'footer]]\)")
+%set(example,)
+%set(seealso,sql-quote)
+%set(authorip,64.131.154.83)
+%set(authorlogin,admin)
+%set(author,)

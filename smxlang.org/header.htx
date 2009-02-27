@@ -1,0 +1,27 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- layout by 404 creative studios. http://www.404creative.com -->
+<html>
+<head>
+<title>SMX: Server Macro Expansion</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<meta name="keywords" content="smx, dynamic html, odbc, server macro, scripting language" />
+<meta name="description" content="SMX: Dynamic HTML generation via a simple server macro language with full ODBC support." />
+<link href="/boldblue1.css" type="text/css" rel="stylesheet" />
+</head>
+<body>
+<div id="container">
+	<!-- begin top rounded corner styles -->
+	<b class="rtop"><b class="r1"></b><b class="r2"></b> <b class="r3"></b> <b class="r4"></b></b>
+	<!-- end top rounded corner styles -->
+	<div id="pageHeader">SMX: Server Macro Expansion</div>
+	<div id="divPageContent">
+		<table border="0" cellpadding="5" cellspacing="0">
+			<tr>
+					<td valign="top" class="leftColumn">
+						%if(%invoke(leftcol)
+							,%leftcol%
+							,%expand(%include(%fqppath(leftcol.htx)))
+						)
+					</td>
+					<td valign="top" class="rightColumn">

@@ -1,0 +1,44 @@
+%set(name,sqlg)
+%set(syntax,%%sqlg(dsn\,query\,group1;group2;...
+    \,detail
+    \,head
+    \,foot
+    \,group1-head
+    \,group1-foot
+    \,group2-head
+    \,group2-foot
+))
+%set(description,Identical to %%sql\, with the exception that the "group" fields are consulted 
+for every row.  Each time the "group field" changes\, the respective "header" 
+and "footer" rows are expanded.   
+This eases the creation of grouped reports.)
+%set(author,)
+%set(example,Name  \, Color\, Cost
+Henry \, Blue \, 5  
+Henry \, Red  \, 2
+Bob   \, Blue \, 4
+Bob   \, Green\, 2
+
+%%set(tot-cost\,0)
+%%sqlg(dsn;sa;\,"select * from NameColors order by Name\,Color"\,Name
+    \,<table>                                           <!--head-->
+    \,</table>                                          <!--foot-->
+    \,<tr><td>%%col(color)</td><td>%%col(cost)</td></tr>  <!--detail-->
+     %%+=(tot-cost\,%%col(cost))                          
+    \,<tr><th colspan=2>%%col(name)</th></tr>            <!--begin each name-->
+    \,<tr><th>Total:</th><th>%%tot-cost%%</th></tr>       <!--end each name-->
+     %%let(tot-cost\,0))
+
+Resulting in:
+
+    <table>                                           <!--head-->
+	<tr><th colspan=2>Henry</th></tr>            <!--begin each name-->
+	<tr><td>Blue</td><td>5</td></tr>  <!--detail-->
+	<tr><td>Red</td><td>2</td></tr>  <!--detail-->
+	<tr><th>Total:</th><th>7</th></tr>       <!--end each name-->
+	<tr><th colspan=2>Bob</th></tr>            <!--begin each name-->
+	<tr><td>Blue</td><td>4</td></tr>  <!--detail-->
+	<tr><td>Green</td><td>2</td></tr>  <!--detail-->
+	<tr><th>Total:</th><th>6</th></tr>       <!--end each name-->
+    </table>                                          <!--foot-->)
+%set(seealso,)

@@ -1,0 +1,15 @@
+%set(name,let)
+%set(description,"Replaces an existing varialbe, with the value.  The variable is searched all the way up to the session level.  This is a way of creating \"side effect\" functions.  Empty values delete the variable.")
+%set(syntax,"%%let\(var[,value]\)")
+%set(example,"%%set\(x,5\)
+
+%%define\(randomize-x,%%let\(x,%%rand\(1,10\)\)
+
+%%randomize-x\(\)
+
+x is now random
+")
+%set(seealso,gset)
+%set(authorip,64.131.154.83)
+%set(authorlogin,admin)
+%set(author,)

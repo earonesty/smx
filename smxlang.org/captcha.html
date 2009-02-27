@@ -1,0 +1,48 @@
+%expand%%trim(
+%if(%form(gif)
+	,%content-type:(image/gif)
+)
+
+)%if(
+	%form(gif),
+	%create-image(
+		%set(str,%for(i,1,10,%asc(%rand(97,122))))
+		%hset(/cap/%client-ip%,%str%)
+		%text(%str%)
+		%rect(0,0,%isub(%width%,1),%isub(%height%,1))
+	)
+,
+{
+<html>
+
+<h1>Simple Captcha</h1>
+
+Example of using SMX to perform "real person" authentication.
+
+<P>
+%if(%form(captcha)
+	,
+	<font color="red">
+	<b>
+	%if(%equal(%form(captcha),%hget(/cap/%client-ip%))
+		,"OK, you're a real person"
+		,"Sorry, but the text didn't match"
+	)
+	</b>
+	</font>
+)
+
+<form method=post action="%client-url%">
+<img src="%client-url%?gif=t">
+<p>
+Enter the text you see above: 
+<input type=text name=captcha value="">
+<p>
+<input type=submit value="Go!">
+</form>
+
+Note: In real life you would randomize fonts, colors, size, angle, and draw confusing shapes in order to defeat OCR techniques.
+
+</html>
+
+})

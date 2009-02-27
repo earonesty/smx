@@ -1,0 +1,6 @@
+%set(name,delete)
+%set(syntax,%%delete(pathname))
+%set(description,Deletes the given file.)
+%set(author,)
+%set(example,)
+%set(seealso,)

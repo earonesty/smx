@@ -1,0 +1,6 @@
+%set(name,text-append)
+%set(syntax,%%text-append(filename\,text))
+%set(description,Adds text at the end of file specified by filename.)
+%set(author,)
+%set(example,)
+%set(seealso,)

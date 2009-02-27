@@ -1,0 +1,14 @@
+%expand%
+%set(dsn,sqlite:%data-dir%/fdata.sq3)
+%if(%not(%exists(%data-dir%/fdata.sq3))
+	,%sql(%dsn%,"create table fdat (date text default current_timestamp, vals text)")
+)
+%set(vals,%enumform(%name%=%value%%lf%))
+%if(%vals%,         
+	%sql(%dsn%,"insert into fdat (vals) values (%sqlq(%vals%))")
+)
+<form>
+<p>test1: <input name=test1>
+<p>test2: <input name=test2>
+<p><input type=submit value=save>
+</form>

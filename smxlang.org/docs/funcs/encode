@@ -1,0 +1,9 @@
+%set(name,encode)
+%set(syntax,%%encode(arg1[\,algorithm]))
+%set(description,Takes a binary data argument and encodes it to ASCII with either the base-64 or hex algorithms.  Base-64 is "standard" on the internet\, and is often (mistakenly) referred to as "uuencode".   Hex encoding is "easier to decode" for programmers who may not have a base-64 decoding algorithm lying around.
+
+You can use this for binary file transfer\, or for encoding the binary results of the %%encrypt() macro\, or any other situation in which ASCII encoding is useful.)
+%set(author,)
+%set(example,"%%encode(hello\,hex)" = "aGVsbG8="
+"%%encode(hello\,b64)" = "68656c6c6f")
+%set(seealso,)
