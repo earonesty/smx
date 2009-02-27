@@ -92,9 +92,20 @@ XS(XS_SmxPerl_export)
     {
         dMY_CXT;
         char * name = SvPV_nolen(ST(0));
-	char * cp_name = (char *) MY_CXT.pCtx->Alloc(strlen(name)+1);
-	strcpy(cp_name, name);
-        MY_CXT.pCtx->MapFunc(cp_name, (SMXUSERFUNC) &call_perl_func, name);
+	if (name && *name) {
+		if (*name == '$') {
+			++name;
+			SV *val = get_sv(name, 0);
+			if (val) {
+				MY_CXT.pCtx->MapString(SvPV_nolen(val), name);
+			}
+		} else {
+			if (*name == '&') ++name;
+			char * cp_name = (char *) MY_CXT.pCtx->Alloc(strlen(name)+1);
+			strcpy(cp_name, name);
+			MY_CXT.pCtx->MapFunc(cp_name, (SMXUSERFUNC) &call_perl_func, name);
+		}
+	}
     }
     XSRETURN_EMPTY;
 }
