@@ -20,8 +20,6 @@ THIS SOFTWARE IS PROVIDED 'AS IS' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDI
 #include "perl.h"
 #include "XSUB.h"
 
-#include "ppport.h"
-
 /* declare thread-safe storage */
 
 #define XS_VERSION
