@@ -2,6 +2,10 @@
 %expand(%include(%fqppath(header.htx)))
 
 						<h2>SMX News</h2>
+						<p class="subHeader">2009-02-27 SMX adds %perl support</p>
+						<p>%%module(libextperl.so)  (or %%module(extperl.dll)) now export the %%perl() function which opens up the ability to 'use' all the modules on CPAN.... natively in your SMX code.    
+						<p class="subHeader">2009-02-25 SMX extension code</p>
+						<p>%%module(...) now can load SMX extensions.  These are easy to build in C, using the supplied "smxext.h" header file. 
 						<p class="subHeader">2006-02-27 SMX adds sqlite support</p>
 						<p>Try %%sql(sqlite:filename) as your datasource.  Easily integrate database apps without a server.</P>
 						<p class="subHeader">2006-02-27 SMX 1.2 Release</p>
