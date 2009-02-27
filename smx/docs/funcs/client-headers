@@ -1,6 +1,0 @@
-%set(name,client-headers)
-%set(syntax,%%client-headers%%)
-%set(description,Returns all HTTP headers separated by %%crlf%%.)
-%set(author,)
-%set(example,)
-%set(seealso,)
