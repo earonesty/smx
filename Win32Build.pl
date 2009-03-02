@@ -119,6 +119,8 @@ sub make {
 
 	my $make = readam();
 
+	print "Skipping $dir\n" if !$make;
+	
 	for my $sub (split(/\s+/, $make->{SUBDIRS})) {
 		make($sub);
 	}
@@ -160,6 +162,7 @@ sub make_target {
 			my $shared = ' -shared' if $target =~ /.dll$/;
 			my $cmd = "$ld_cmd " . $make->{$target}->{objs} . "$shared -o $target";
 			$make->{$target}->{ldflags} =~ s/`([^`]+)`/`$1`/ge;
+			$make->{$target}->{ldflags} =~ s/-lperl/-lperl510/;	# bad hardcode among many!
 			$cmd .= " $ld_libs $make->{$target}->{ldadd} $make->{$target}->{ldflags}";
 			print "$cmd\n";
 			system($cmd) && die;
@@ -284,8 +287,10 @@ sub readam {
 		chomp;
 		next if /^\s*#/;
 		next if /^\s*$/;
+		if (/if (\w+)/) {
+			return undef if ($1 =~ /perl/i && !lookfor('perl.exe'));
+		}
 		next if ! /=/;
-		
 		die "Can't understnd this Makefile.am, don't use multiline assignments" if !/=/;
 		my ($name, $val) = split(/\s*=\s*/,$_);
 		$am{$name} = $val;
