@@ -137,4 +137,9 @@ void LoadIO(qCtx *ctx) {
 	ctx->MapObj(EvalCommOpen,  "comm-open");
 }
 
+#else // #ifndef unix
+
+void LoadIO(qCtx *ctx) {
+}
+
 #endif //#ifndef unix

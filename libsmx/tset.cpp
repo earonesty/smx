@@ -17,6 +17,8 @@ THIS SOFTWARE IS PROVIDED 'AS IS' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDI
 #include "qobj-ctx.h"
 #include "tset.h"
 
+#ifdef WIN32
+
 /////////////////// %tset/%tget //////////////////
 
 void qObjTCtx::Eval(qCtx *ctx, qStr *out, qArgAry *args)
@@ -329,3 +331,10 @@ void LoadTSet(qCtx *ctx) {
 	ctx->MapObj(hCtx, EvalTEnumKeys,    "tenumkeys","01");
 
 }
+
+#else
+
+void LoadTSet(qCtx *ctx) {
+}
+
+#endif

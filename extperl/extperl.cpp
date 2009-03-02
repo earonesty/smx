@@ -14,7 +14,9 @@ THIS SOFTWARE IS PROVIDED 'AS IS' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDI
 
 #include "smxext.h"
 
-#include <dlfcn.h>
+#ifdef unix
+	#include <dlfcn.h>
+#endif
 
 #include "EXTERN.h"
 #include "perl.h"

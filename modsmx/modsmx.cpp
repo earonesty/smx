@@ -49,7 +49,7 @@ THIS SOFTWARE IS PROVIDED 'AS IS' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDI
 #include "http_request.h"
 #include "http_core.h"
 
-#ifdef APACHE2
+#if AP_SERVER_MAJORVERSION_NUMBER == 2
 	#include "apr_strings.h"
 #endif
 // #define _DWINMEM // define if you want to test memory allocation

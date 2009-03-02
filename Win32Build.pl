@@ -4,6 +4,7 @@
 use strict;
 use Getopt::Long;
 use Cwd qw(cwd);
+use Carp qw(confess);
 
 ### change these or reply to prompts
 $ENV{PATH}   .= ';\MinGW\bin';
@@ -24,6 +25,9 @@ if ($unixconf =~ m/(PACKAGE_VERSION=[^\n]+)/) {
 	die "Can't get PACKAGE_VERSION from configure";
 }
 
+push @def, 'HAVE_SQLITE3_H';
+push @def, 'HAVE_OPENSSL';
+
 ### find compiler
 my $cl;
 $cl = lookfor("g++.exe") if !$cl;
@@ -39,7 +43,9 @@ die "Can't find ld.exe" unless $ld;
 my @inc;
 
 ### look for various directories, prompt if necessary
-push @inc, lookfor('include'  , $ENV{APPATH}, prompt=>'Apache Directory');
+my $APACHEDIR = lookfor('include' , $ENV{APPATH}, prompt=>'Apache Directory', pathonly=>1);
+
+push @inc, "$APACHEDIR\\include";
 push @inc, lookfor('winbase.h', $ENV{INC}, pathonly=>1, prompt=>'MinGW or Visual C++ includes');
 push @inc, lookfor('sqlite3.h', $ENV{INC} . ';sqlite', pathonly=>1);
 push @inc, lookfor('openssl\evp.h', '\openssl\include;..\openssl\include', pathonly=>1, prompt=>'OpenSSL Directory');
@@ -62,7 +68,7 @@ for (@def) {
 
 
 my $ld_cmd = $cl;
-my $ld_libs = " -lwsock32 -lws2_32 -lodbc32 -lshlwapi -Lc:\\dev\\openssl -llibeay32";
+my $ld_libs = " -lwsock32 -lws2_32 -lodbc32 -lshlwapi  -Lc:\\dev\\openssl -llibeay32 -L\"$APACHEDIR\\bin\" -lapr-1 -lhttpd \"$APACHEDIR\\lib\\libapr-1.lib\"  \"$APACHEDIR\\lib\\libhttpd.lib\"";
 
 make('.');
 
@@ -77,7 +83,15 @@ sub make_gettargets {
 	for my $target (split /\s+/, $make->{$name}) {
 		my $src = delete $make->{amname($target) . "_SOURCES"};
 		my $ldadd = delete $make->{amname($target) . "_LDADD"};
-		$ldadd =~ s/\.la/\.dll/g;	
+
+		   $ldadd .= delete $make->{amname($target) . "_LIBADD"};
+
+		$ldadd =~ s/\.la/\.dll/g;
+
+		my $cflags = delete $make->{amname($target) . "_CXXFLAGS"};
+		my $ldflags = delete $make->{amname($target) . "_LDFLAGS"};
+		$ldflags =~ s/-version-info \S+//;
+		
 		if (!$src) {
 			die "Can't find SOURCES for $target in $make->{AMFILE}";
 		}
@@ -86,12 +100,16 @@ sub make_gettargets {
 			$target =~ s/\.la$/.dll/;
 			push @{$make->{libs}}, $target;
 		} elsif ($type eq 'exe') {
-			$name =~ s/$/.exe/;
+			$target =~ s/$/.exe/;
 			push @{$make->{exes}}, $target;
+		} else {
+			die "Unknown target type $type\n"
 		}
 		
 		$make->{$target}->{sources} = $src;
 		$make->{$target}->{ldadd} = $ldadd;		
+		$make->{$target}->{cflags} = $cflags;		
+		$make->{$target}->{ldflags} = $ldflags;		
 	}
 }
 
@@ -114,43 +132,52 @@ sub make {
 		}
 	}
 
-	for (@{$make->{libs}}) {
-		make_target($make, $_);		
+	for my $target (@{$make->{libs}}) {
+		make_target($make, $target);		
 	}
 
-	for (@{$make->{exes}}) {
-		make_target($make, $_);		
+	for my $target (@{$make->{exes}}) {
+		make_target($make, $target);		
 	}
+
+	popdir();
 }
 
 sub make_target {
 	my ($make, $target) = @_;
+	
+	my $mtime;
 	die "No sources for target $target\n" unless $make->{$target}->{sources};
 	for (split(/\s+/, $make->{$target}->{sources})) {
 		my $obj;
-		$obj = make_cpp($make, $_) if $_ =~ /\.cp?p?$/;
+		$obj = make_cpp($make, $_, $make->{$target}->{cflags}) if $_ =~ /\.cp?p?$/;
 		$make->{$target}->{objs} .= "$obj " if $obj;
+		$mtime = (stat($obj))[9] if (stat($obj))[9] > $mtime;
 	}
-	$make->{$target}->{objs} =~ s/^ //;
-	if ($make->{$target}->{objs}) {
-		my $shared = ' -shared' if $target =~ /.dll$/;
-		my $cmd = "$ld_cmd " . $make->{$target}->{objs} . "$shared -o $target";
-		$cmd .= " $ld_libs $make->{$target}->{ldadd}";
-		print "$cmd\n";
-		system($cmd) && die;
+	if ($mtime > (stat($target))[9]) {
+		$make->{$target}->{objs} =~ s/^ //;
+		if ($make->{$target}->{objs}) {
+			my $shared = ' -shared' if $target =~ /.dll$/;
+			my $cmd = "$ld_cmd " . $make->{$target}->{objs} . "$shared -o $target";
+			$make->{$target}->{ldflags} =~ s/`([^`]+)`/`$1`/ge;
+			$cmd .= " $ld_libs $make->{$target}->{ldadd} $make->{$target}->{ldflags}";
+			print "$cmd\n";
+			system($cmd) && die;
+		}
 	}
 }
 
 sub make_cpp {
-	my ($make, $fil) = @_;
+	my ($make, $fil, $cflags) = @_;
 	my $fbase = $fil; $fbase =~ s/\.[^.]+$//;
 	my $obj = "$fbase.o";
 	my $ft = (stat($fil))[9];
 	my $tt = (stat($obj))[9];
 	return $obj if $tt >= $ft;
-	my $fcmd = "$cl_cmd \"$fil\" -c -o \"$obj\"";
+	$cflags =~ s/`([^`]+)`/`$1`/ge;
+	my $fcmd = "$cl_cmd $cflags \"$fil\" -c -o \"$obj\"";
 	print "$fcmd\n";
-	system($fcmd) && die $!;
+	system($fcmd) && die;
 	return $obj;
 }
 
@@ -257,6 +284,8 @@ sub readam {
 		chomp;
 		next if /^\s*#/;
 		next if /^\s*$/;
+		next if ! /=/;
+		
 		die "Can't understnd this Makefile.am, don't use multiline assignments" if !/=/;
 		my ($name, $val) = split(/\s*=\s*/,$_);
 		$am{$name} = $val;

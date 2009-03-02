@@ -412,5 +412,12 @@ void LoadPSet(qCtx *ctx) {
 
 }
 
+#else 
+
+void LoadHSet(qCtx *ctx) {
+}
+
+void LoadPSet(qCtx *ctx) {
+}
 
 #endif  // HAVE_LIBTDB/SQLITE3
