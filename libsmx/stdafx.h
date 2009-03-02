@@ -57,6 +57,7 @@ THIS SOFTWARE IS PROVIDED 'AS IS' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDI
 #else
 	#ifdef WIN32
 		#include <windows.h>
+		#include <shlwapi.h>
 	#else
 		#include "unix.h"
 	#endif

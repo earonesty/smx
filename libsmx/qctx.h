@@ -638,11 +638,11 @@ public:
 	}
 
 	void AddRef() {
-		InterlockedIncrement(&myRefs);
+		InterlockedIncrement((LONG *) &myRefs);
 	}
 
 	void Free() {
-		if (InterlockedDecrement((int *) &myRefs) == 0) {
+		if (InterlockedDecrement((LONG *) &myRefs) == 0) {
 			delete this;
 		}
 	}

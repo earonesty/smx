@@ -16,6 +16,9 @@ THIS SOFTWARE IS PROVIDED 'AS IS' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDI
 #ifndef _CRIT_WIN_H
 #define _CRIT_WIN_H
 
+#include <windows.h>
+#include <winbase.h>
+
 class CCrit {
 friend class CLock;
 	CRITICAL_SECTION  m_crit;

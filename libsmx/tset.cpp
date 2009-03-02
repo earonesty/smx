@@ -137,7 +137,7 @@ bool qObjTCtx::TExists(const char *path)
 
 bool qObjTCtx::TDel(CStr &path) 
 {
-	char *last = path ? (char *) path.GetBuffer() : "";
+	char *last = (char *) (path ? (char *) path.GetBuffer() : "");
 	last = strrchr(path, '/');
 	if (last) 
 		*last++ = '\0';
@@ -190,7 +190,7 @@ qObjTCtx *qObjTCtx::TSet(char *path, CStr &val, qObjTSRef &ref)
 	// make sure i don't die
 	ref = GetRef();
 
-	char *b = path ? path : "";
+	char *b = (char *) (path ? path : "");
 	char *p = b;
 	
 	while (*p == '/')
@@ -320,10 +320,10 @@ void LoadTSet(qCtx *ctx) {
 	qObjTCtx *hCtx = new qObjTCtx;
 
 	ctx->MapObj(hCtx,      "hctx");
-	ctx->MapObj(hCtx, (QOBJMETH) &(qObjTCtx::_TSet),   "tset");
-	ctx->MapObj(hCtx, (QOBJMETH) &(qObjTCtx::_TGet),   "tget");
-	ctx->MapObj(hCtx, (QOBJMETH) &(qObjTCtx::_TExists),"texists");
-	ctx->MapObj(hCtx, (QOBJMETH) &(qObjTCtx::TOpen),  "topen");
+	ctx->MapObj(hCtx, (QOBJMETH) &qObjTCtx::_TSet,   "tset");
+	ctx->MapObj(hCtx, (QOBJMETH) &qObjTCtx::_TGet,   "tget");
+	ctx->MapObj(hCtx, (QOBJMETH) &qObjTCtx::_TExists,"texists");
+	ctx->MapObj(hCtx, (QOBJMETH) &qObjTCtx::TOpen,  "topen");
 
 	ctx->MapObj(hCtx, EvalTEnumValues,  "tenumvalues","01");
 	ctx->MapObj(hCtx, EvalTEnumKeys,    "tenumkeys","01");

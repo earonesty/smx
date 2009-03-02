@@ -72,6 +72,10 @@ inline char *strupr(char * a) {if (a) {char *p; for(p=a;*p;++p) *p=toupper(*p); 
 #define DWORD unsigned long
 #endif
 
+#ifndef LONG
+#define LONG long
+#endif
+
 char *itoa(int num, char *buf, int radix);
 char *ltoa(long num, char *buf, int radix);
 char *ultoa(unsigned long num, char *buf, int radix);
