@@ -1,0 +1,7 @@
+%setenv(QUERY_STRING=x=1&y=3&x=4)
+%getenv(QUERY_STRING)
+%collate-enumform(T)
+%form(x)
+%form(x,0)
+%form(x,2)
+%enumform(%name%=%value%)

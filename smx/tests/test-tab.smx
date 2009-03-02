@@ -1,0 +1,9 @@
+%table(
+
+%rowdef(r.2sz-,r.2sz-)
+%row(1,2)
+%row(3,4)
+%row(5,6)
+%row(7,8)
+)
+

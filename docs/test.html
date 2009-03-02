@@ -1,0 +1,85 @@
+%expand%%null(
+
+%expand(%include(%fqppath(/inc/init.htx)))
+
+%if(%invoke(auth-ip),,%redirect(index.html))
+
+%gset(save-func,%form(func))
+%fset(func,)
+
+%if(%not(%header(host))
+	,%authenticate:(SMX Documentation)
+)
+
+)%expand(%include(%fqppath(/header.htx)))
+
+%decode(%gettoken(%header(Authorization)," ",1))
+
+%fset(func,%save-func%)
+
+<h2>Edit %if(%form(func),Documentation for %form(func),%form(group),Membership for %form(group), Documentation)</h2>
+
+%if(%form(save)
+	,
+        %if(%form(func)
+		,%create-file(%fqppath(funcs/%replace(%form(func),:,_C_)),
+			%%set(name,%form(func))
+			%%set(description,%macro-quote(%form(description)))
+			%%set(syntax,%macro-quote(%form(syntax)))
+			%%set(example,%macro-quote(%form(example)))
+			%%set(seealso,%macro-quote(%form(seealso)))
+			%%set(authorip,%client-ip%)
+                 )
+		 saved %form(func)
+		 %fset(func,)
+	)
+        %if(%form(group)
+                ,%if(%form(members)
+		 	,%create-file(%fqppath(groups/%replace(%form(group),/,_S_)),%form(members))
+		 	,%delete(%fqppath(groups/%replace(%form(group),/,_S_)))
+		 )
+		 %fset(group,)
+                 saved %form(group)
+         )
+
+)
+
+<form action=edit.html method=POST>
+%set(func,)
+%set(group,)
+
+%if(%form(func)
+	,%expand(%include(%fqppath(funcs/%replace(%form(func),:,_C_))))
+	 <input type=hidden value="%form(func)" name=func>
+
+	 <p class=subHeader>Description</p>
+	 <textarea name=description rows=8 cols=60>%html-quote(%invoke(description))</textarea>
+	 <p class=subHeader>Syntax</p>
+	 <textarea name=syntax rows=8 cols=60>%html-quote(%invoke(syntax))</textarea>
+	 <p class=subHeader>Example</p>
+	 <textarea name=example rows=8 cols=60>%html-quote(%invoke(example))</textarea>
+	 <p class=subHeader>See Also*</p>
+	 <textarea name=seealso rows=8 cols=60>%html-quote(%invoke(seealso))</textarea>
+	 <P>* must be a pipe-delmited list of function names</P>
+	 <p><input name=save type=submit value="Save"> <input name=delete type=submit value="Delete"></p>
+   ,%form(group)
+	,
+	 <input type=hidden value="%form(group)" name=group>
+
+	 <p class=subHeader>Group Members</p>
+	 <textarea name=memebers rows=8 cols=60>%html-quote(%include(%fqppath(groups/%replace(%form(group),/,_S_))))</textarea>
+	 <p>* deleting all memebers will delete the group file</p>
+	 <p><input name=save type=submit value="Save"></p>
+   ,
+	<table>
+	<tr><th align=left>Edit Function:</td><td><input name=func type=text value="%form(func)"></td></tr>
+	<tr><th align=left>Edit Group:</td><td><input name=group type=text value="%form(group)"></td></tr>
+	</table>
+	<input name=edit type=submit value="Edit">
+)
+
+
+</form>
+
+%expand(%include(%fqppath(/footer.htx)))
+

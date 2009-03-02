@@ -1,0 +1,10 @@
+%set(name,collate)
+%set(syntax,%%collate(str1\,str2))
+%set(description,Compares two strings lexographically\, and expands to a negative number if str1 
+< str2\, 0 if str1 == str2\, or a positive number if str1 > str2. %%xcollate() is 
+case-sensitive\, %%collate() is not.)
+%set(author,)
+%set(example,%%collate(asdf\,qwer) => -1 
+%%collate(asdf\,asdf) => 0 
+%%collate(qwer\,asdf) => 1)
+%set(seealso,)

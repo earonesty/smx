@@ -1,0 +1,4 @@
+%set(a,%time%)
+%for(i,1,1000,%null(%iadd(%a%,%b%))%null(%iadd(%a%,%b%))%null(%iadd(%a%,%b%)))
+%set(res,%isub(%time%,%a%))
+%lt(%res%,5)

@@ -1,0 +1,23 @@
+%set(name,safe-expand)
+%set(description,"%%safe-expand expands its argument as a macro \(code\), but it only allows those functions to be called that have been explicitly specified as arguments to safe-expand.
+
+Typical usage for %%safe-expand is to allow users/clients to run basic macros in their code, or to protect code from side-effects.
+
+With NO argumets, safe-expand gets its comma-delimited list of allowed macros from the variable \"safe-expand-macros\"")
+%set(syntax,"%%safe-expand\(<code>,[var1,[var2,[...]]]
+
+OR
+
+%%set\(safe-expand-macros,\"macro1,macro2,...\"\)
+
+%%safe-expand\(<code>\)
+")
+%set(example,"<form action=expr.html>
+<P>Expression: <input name=expr value=\"%%form\(expr\)\">
+<P>Results: %%safe-expand\(%%form\(expr\),expr\)
+</form>
+")
+%set(seealso,expand)
+%set(authorip,64.131.154.83)
+%set(authorlogin,erik)
+%set(author,Erik Aronesty <erik@q32.com>)

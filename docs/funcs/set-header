@@ -1,0 +1,8 @@
+%set(name,set-header)
+%set(description,"Sets or overwrites the HTTP header of the response.")
+%set(syntax,"%%set-header\(name, value\)")
+%set(example,"%%set-header\(Location, http://wherever.com\)")
+%set(seealso,append-header)
+%set(authorip,24.211.245.174)
+%set(authorlogin,erik)
+%set(author,)

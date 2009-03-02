@@ -1,0 +1,11 @@
+%set(name,throw)
+%set(syntax,%%throw(exception-num\, exception-name))
+%set(description,This macro throws an exception.  The default behavior of exceptions is to simply print the exception at the current location UNLESS it is in a %%try() block.  Inside of a try block\, the processing will be halted\, and the "catch" handler will be expanded instead. 
+
+You can put ALL of your pages in a try block by setting %%http-exception to a function which handles all exceptions in yout INIT macro for your web server.  In this way the throw macro will always abort processing.)
+%set(author,)
+%set(example,%%try(
+    'You won't see this because %%throw(255\, an exception has occured)
+   \,'You'll see this instead: %%exception-num%% : %%exception-msg%%
+))
+%set(seealso,)

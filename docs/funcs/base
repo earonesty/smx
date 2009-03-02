@@ -1,0 +1,6 @@
+%set(name,base)
+%set(syntax,%%base(pathname))
+%set(description,Expands to the base pathname (no extension) of the filename.)
+%set(author,)
+%set(example,)
+%set(seealso,)

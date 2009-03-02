@@ -1,0 +1,6 @@
+%set(name,filepath)
+%set(syntax,%%filepath(filename))
+%set(description,filepath filename Expands to the path (including the / or \\) of the filename.)
+%set(author,)
+%set(example,)
+%set(seealso,)

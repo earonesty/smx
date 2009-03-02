@@ -1,0 +1,14 @@
+%set(name,wcmatch)
+%set(syntax,%%wcmatch(string\,pattern))
+%set(description,Compare a string against a wildcard pattern using the "*" and "?" characters. 
+Return T if there is a match and %%null%% if there isn't. 
+
+- The comparison is case-insensitive 
+- "?" represents exactly one character 
+- "*" represents zero or more characters)
+%set(author,)
+%set(example,%%wcmatch(36.78.0.19\,36.78.0.*) => T
+%%wcmatch(36.78.1.19\,36.78.0.*) => %%null%%
+%%wcmatch(36.78.0.19\,36.78.0.1?) => T
+%%wcmatch(36.78.0.8\,36.78.0.1?) => %%null%%)
+%set(seealso,)

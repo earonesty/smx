@@ -1,0 +1,14 @@
+%set(name,rand)
+%set(syntax,%%rand(a))
+%set(description,Returns a pseudo-random integer between 0 and a - 1. 
+
+- a must be less than 2^32 - 1. A random number can be combined with a unique\, 
+sequential value (generated with %%counter()) to create a unique\, random key. 
+
+- If a is not a valid number\, or is less than 1\, %%rand() returns %%null%%.)
+%set(author,)
+%set(example,%%set(UID\,%%rand(10000)-%%counter(UID)-%%rand(10000))
+%%UID%%
+
+1803-79-3594)
+%set(seealso,)

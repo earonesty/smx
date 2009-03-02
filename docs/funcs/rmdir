@@ -1,0 +1,6 @@
+%set(name,rmdir)
+%set(syntax,%%rmdir(directory))
+%set(description,removes a directorys)
+%set(author,)
+%set(example,)
+%set(seealso,)

@@ -1,0 +1,10 @@
+%set(name,isub)
+			%set(description,"Returns the substraction of zero or more integer or floating-point integers from the first argument.
+Invalid arguments default to zero.
+Integer arguments to %%isub\(\) are promoted to floating point.
+Floating point arguments to %%isub\(\) are truncated before adding.")
+			%set(syntax,"%%isub\([a[,b[,...]]]\)
+%%iadd\([a[,b[,...]]]\)")
+			%set(example,)
+			%set(seealso,)
+			%set(authorip,209.21.110.205)

@@ -1,0 +1,4 @@
+%define(trim, %:trim(%arg(0)-%arg(1))!)
+1: %trim(hello,world) = hello-world!
+%define(trim, %:trim(%a%-%b%!),a,b)
+2: %trim(hello,world) = hello-world!

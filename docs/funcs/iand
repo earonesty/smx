@@ -1,0 +1,7 @@
+%set(name,iand)
+%set(syntax,%%iand(a\,b))
+%set(description,Boolean operation of binary values of a and b.<BR>
+Invaid arguments are valued as zero.)
+%set(author,)
+%set(example,)
+%set(seealso,)

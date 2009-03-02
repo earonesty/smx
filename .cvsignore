@@ -1,0 +1,12 @@
+.deps
+autom4te.cache
+Makefile
+*.log
+*.cache
+*.status
+config.h
+*.plg
+*.local
+libtool
+smx.spec
+*.tar.gz

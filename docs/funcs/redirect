@@ -1,0 +1,6 @@
+%set(name,redirect)
+%set(syntax,%%redirect(url))
+%set(description,Issues a redirection to the client's browser requesting that it load url.   This immediately aborts processing of the page (similar to %%abort%%))
+%set(author,)
+%set(example,)
+%set(seealso,)

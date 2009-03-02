@@ -1,0 +1,6 @@
+%set(name,year)
+%set(syntax,%%year%%)
+%set(description,Four digit integer representation of the current year.)
+%set(author,)
+%set(example,)
+%set(seealso,)

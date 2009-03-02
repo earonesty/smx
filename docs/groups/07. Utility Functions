@@ -1,0 +1,1 @@
+|sleep|exec|smtp-mail|comm-open|create-file|text-append|flush|pack|getenv|setenv|url-encode|create-image

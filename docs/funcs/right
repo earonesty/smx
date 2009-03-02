@@ -1,0 +1,10 @@
+%set(name,right)
+%set(description,"Returns no more than \"length\" characters in \"string\", right aligned.")
+%set(syntax,"%%right\(string,length\)
+")
+%set(example,"%%right\(xyz,2\) => yz
+")
+%set(seealso,mid|left|pos)
+%set(authorip,71.111.229.37)
+%set(authorlogin,erik)
+%set(author,)

@@ -1,0 +1,34 @@
+%set(name,do)
+%set(syntax,%%do('body\,'cond))
+%set(description,Iteratively expands the body argument while cond evaluates to non-null. Returns 
+the concatenated result of the evaluated bodies.
+
+- Both arguments should be quoted to defer evaluation. 
+
+- cond is not evaluated until body has been expanded at least once. 
+
+- %%do() is patterned after the C do loop. 
+
+- %%do() and while differ in that %%do() will immediately expand body and then 
+checks the condition to see if body needs to be done again\, whereas while 
+checks cond first\, and will not expand body unless cond returns true 
+
+- %%do() does not have a local context\, so you don't need to use %%gset(). 
+
+- If the macro max-iteration is defined\, it sets an upper limit to the number 
+of loop iterations that will be allowed\, regargless of the loop's condition 
+statement. This macro can be useful for debugging potentially infinite loops\, 
+or in a production environment where an accidental infinite loop's impact on 
+server performance would be problematic.)
+%set(author,)
+%set(example,%%set(i\,3)
+  %%do('I=%%i%%<br>%%crlf%%
+  %%set(i\,%%iadd(1\,%%i%%))\,
+      '%%lt(%%i%%\,6))
+"At the end\, I=%%i%%"
+
+I=3
+I=4
+I=5
+"At the end\, I=6")
+%set(seealso,)

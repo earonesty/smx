@@ -1,0 +1,23 @@
+%set(name,try)
+%set(description,"Expands block within an error-handling context, expanding catch to handle any exceptions thrown while expanding block. 
+
+Both arguments are auto-quoted, but you should quote them since explicit quoting indicates more clearly that they are not expanded until evaluation.
+
+Both block and catch are expanded within local contexts. This means you will need to use let or gset instead of set, if you want to use variables which are known after the %%try\(\) block is finished.
+
+catch can be used to handle any exceptions thrown by either the throw macro or an internal SMX macro \(like %%sql\(\)\). catch cannot catch exceptions thrown by http-exception.
+
+If %%csv-append\(\), %%delete\(\), %%tab-append\(\), %%mkdir\(\), %%rmdir\(\), %%sql\(\) or %%exec\(\) are expanded as part of block, they will throw exceptions that can be handled in the catch block, instead of their normal behavior of displaying error text.
+
+When block is expanded, the in-try macro is defined to T, so you always can know if you are in a try block.
+
+Inside of the catch block, %%exception-msg%% and %%exception-num%% are set to the number and description of the exception.")
+%set(syntax,"%%try\('block,'catch\)")
+%set(example,"%%try\( 
+   '%%sql\(DSN,\"SELECT * FROM [MyTable]\",'%%column\(1\)<br>\), 
+   '<font color=ff0000>Error num: %%exception-num%%<br>%%exception-msg%%</font>
+\)")
+%set(seealso,)
+%set(authorip,24.193.44.12)
+%set(authorlogin,mkrebs)
+%set(author,)

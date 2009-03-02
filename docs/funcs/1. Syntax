@@ -1,0 +1,61 @@
+%set(name,1. Syntax)
+%set(syntax,At the beginning of every page that you want to have "expanded" or made
+"dynamic" by SMX put "%%expand%%" or &lt;!--%%expand%%--&gt;.  
+This is required to tell the parser that the page may contain code.
+
+<B>Basic Syntax:</B>
+
+All functions and variables begin with a "%%".
+The "%%" is followed by the name of the function\, IE: %%func
+Finally\, you can either finish with a closing "%%" or pass the function 
+parameters.
+
+- Parameters are passed in parenthesis\, seperated by commas\, IE: %%func(1\,2)
+
+- All parameters should be regarded as "strings".
+- All parameters are "trimmed".  Leading and trailing whitespace are removed.
+
+For a simple example\, try this:
+
+%%expand%%
+
+This page has had %%counter(home) hits\, since whenever.
+
+<B>Annoying Details:</B>
+
+<LI> Escaping: If you want to pass parenthesis and commas to the parser\, you 
+can "escape" them by putting a "\\" in front.  This function\, for example\, has 2 
+parameters: %%func(\\ 33\\\,4\,\\\\5).
+<LI> To simplify passing "whitespace" (or strings with lots of commas) in the 
+argument of a function\, you can double-quote an argument\, 
+IE: %%func(" 33\,4"\,\\\\5).
+
+<LI>Quoting:  To prevent an argument from being expanded or pre-parsed (unless 
+it is a special "block argument")\, you put a single quote at the beginning of 
+the argument. For example: %%func('%%this-wont-be-parsed(x)\,%%this-will(y))
+
+<LI>Context-Popping:  Suppose you redefine the function "%%add" on your page.  
+%%add ordinarily adds two numbers\, but for whatever unlikely reason\, you've 
+rewritten it.  In the event that you want to use the original "add" function\, 
+you can "pop" back to the previous "add" function using "%%:add" instead.  
+Multiple ":"'s at the beginning of a function cause the context to be popped 
+multiple times.  If you want to pop to the "root" context\, you use "%%/add()".
+
+That's mostly it.  
+
+<B>Reserved Characters:</B>
+
+There are certain characters you cannot use at the beginning of function names\, 
+most noteably nonprintable characters and the "/"\, "<" and ">" characters.
+
+The following characters : alphanumeric\, "-"\, "_"\, "~"\, and " " are never going 
+to be reserved.  
+
+Most characters can inhabit function names for now\, but we can imagine certain 
+ones\, noteably "/"\, "."\, and ">"\, may be used in the not too distant future for 
+other things.  This is a nicer way of saying that the aforementioned characters 
+are deprecated for use in function names.)
+%set(description,)
+%set(author,)
+%set(example,)
+%set(seealso,)

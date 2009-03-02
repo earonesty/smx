@@ -1,0 +1,6 @@
+%set(name,day)
+%set(syntax,%%day%%)
+%set(description,Day of the month as an integer.)
+%set(author,)
+%set(example,)
+%set(seealso,)

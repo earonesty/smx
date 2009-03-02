@@ -1,0 +1,6 @@
+%set(name,copy)
+%set(syntax,%%copy(src\,dst))
+%set(description,Copies a file src to the specified destination dst.)
+%set(author,)
+%set(example,)
+%set(seealso,)

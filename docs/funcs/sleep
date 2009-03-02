@@ -1,0 +1,6 @@
+%set(name,sleep)
+			%set(description,"Causes the interpreter to pause for delay milliseconds.")
+			%set(syntax,"%%sleep\(delay\)")
+			%set(example,)
+			%set(seealso,)
+			%set(authorip,209.21.110.205)

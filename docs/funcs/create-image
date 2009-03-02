@@ -1,0 +1,47 @@
+%set(name,create-image)
+%set(description,"Creates an image using the excellent %%href\(http://www.boutell.com/gd/,GD web graphics library\). This command is in beta and suggestions are welcome:
+
+* image commands are \(so far\):
+
+%%text\(string,options\)
+%%line\(x,y,x2,y3,options\)
+%%rect\(x,y,x2,y3,options\)
+%%poly\(x,y,x2,y3,options\)
+
+\(todo: circle, arc, etc.\)
+
+options are whitespace delimited.  text options only apply to the %%text command. most options set at the image level are inherited to drawing commands.
+
+font:facename - set font
+##pt - set font size to num points
+##deg - set angle for rotation
+##rad - set angle in radians
+##x## - set size or corner to numX/numY
+bg:colorspec - set background color/fill-mode
+fg:colorspec - foreground color
+fill:colorspec - set background color/fill-mode
+thick:number - line thickness
+dashed - dashed line
+dotted - dotted line
+
+colorspec is in #RRGGBB format, or it can be a named color \(black, white, gray, red, green, blue\).
+
+* input file allows you to draw on an existing image. it can be a filename or binary image data. not tested yet
+
+creation options:
+
+##x## - set image size
+png - set image output to png
+gif - set image output to gif
+jpeg - set image output to jpeg
+gd2 - set image output to gd2
+
+* output file can be just a filename \(format set previously or interpreted from the extension\), or :. if you filename has a colon in it, you can use the : output format, just to be safe. \(single letters and slashes wont ever be image formats\) 
+")
+%set(syntax,"%%create-image\(image-commands,[input-file|input-opts],[output-file]\)
+")
+%set(example,"%%create-image\(%%text\(hello world\),,file.gif\)")
+%set(seealso,)
+%set(authorip,64.131.154.83)
+%set(authorlogin,admin)
+%set(author,)

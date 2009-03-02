@@ -1,0 +1,17 @@
+%set(name,for)
+%set(syntax,%%for(var\,a\,b\,'body[\,step]))
+%set(description,var is set to a\, then body is repeatedly expanded\, and var incremented\, until 
+a = b. (var will be decremented if a > b). step can be used to cause the 
+increment to be other than +/- 1; its sign will automatically be adjusted to 
+make sure the loop terminates. 
+
+If the macro max-iteration is defined\, it sets an upper limit to the number of 
+loop iterations that will be allowed\, regargless of the loop's condition 
+statement. This macro can be useful for debugging potentially infinite loops\, 
+or in a production environment where an accidental infinite loop's impact on 
+server performance would be problematic.
+
+%%for(i\, 12\, 3\, %%i%%-\, 2) => 12-10-8-6-4-)
+%set(author,)
+%set(example,)
+%set(seealso,)

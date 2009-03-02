@@ -1,0 +1,71 @@
+%set(name,define)
+%set(description,"%%define creates a new macro
+
+Use %%define to group together or simplify macros that you use a lot.  The macro 
+you create is used just like any other macro, you can pass it arguments, etc.
+
+The first parameter is the macro name you want to define, and the second argument 
+is SMX code you want to run. After you define a macro \"test\" using %%define\(test,body\) 
+then expanding %%test%% or %%test\(\) would have the same effect as calling %%expand\(body\). 
+The \"body\" argument can be any text, including SMX code.
+
+Passing arguments works because \"body\" is expanded in a context in which the parameter 
+names are set to the arguments passed in the parentheses when the macro is called. So, 
+if you define a macro \"test\" using %%define\(test,body,arga,argb\), then expanding 
+\"%%test\(1,2\)\" is approximately the same as \"%%set\(arga,1\)%%set\(argb,2\)%%expand\(body\)\"
+
+Besides the parameters, there are a few other macros that are available when the body 
+is expanded. %%arg\(0\) evaluates to the first argument passed \(which would be equivalent 
+to %%arga%% in the previous example\), and %%arg\(1\) would be the second, and so on. 
+%%num-args%% expands to the total number of arguments passed when the macro was called, 
+allowing you to %%define a macro that takes a variable number of unnamed arguments.
+
+Be careful with commas when making long macros.  If you want a comma to show up in the 
+body, remember to put the body in quotes : \",\" or to excape your commas: \\,.  Smx tries 
+to figure out what you meant, but these really help.
+
+You can make an \"autoquoted\" argument by putting a quote before the variable name. 
+Arguments passed to autoquoted parameters are not expanded when the macro is called, 
+meaning that the argument must then be explicitly expanded inside the body.
+
+Autoquoting is good for creating a \"wrapper\" around another function, which allows
+you to add additional functionality to built-in macros. See the %%sqltry macro defined
+in the examples below for a macro that uses autoquoting to expand the functionality 
+of the %%sql built-in macro.
+
+
+")
+%set(syntax,"%%define\(macro,'body[,name-1][,name-2][,...]\)
+
+OR 
+
+%%gdefine\(macro,'body[,name-1][,name-2][,...]\)")
+%set(example,"a nice login macro...
+
+%%define\(login-user
+    ,%%try\(%%sql\(dsn;sa;
+              ,\"select access from users 
+                 where user=%%sql-quote\(%%username%%\)
+                   and pass=%%sha\(%%sql-quote\(%%password%%\)\)\"
+              ,%%column\(1\)
+          \)
+     \)
+\)
+
+This example of autoquoting allows you to create a macro that acts like %%sql in every respect, except that it logs  every SQL call that throws an exception \(which happens when there is a syntax error in the SQL query\) along with the query that caused the error. Just create these macros as %%define'd below, and replace %%sql with %%sqltry anywhere it appears in your SMX.
+
+%%define\(log-sql-error,%%text-append\(sql-error.txt,%%fmtltime\(%%time%%\) err#%%exception-num%%:\(%%exception-msg%%\) qry:\(%%qry%%\)%%crlf%%\)\)
+%%define\(sqltry,%%try\(%%sql\(%%dsn%%,%%qry%%,%%expand\(%%rowpattern%%\),%%expand\(%%header%%\),%%expand\(%%footer%%\)\),%%log-sql-error\(\)%%throw\(%%exception-num%%,%%exception-msg%%\)\),dsn,qry,'rowpattern,'header,'footer\)
+
+This example of variable arguments prints each argument with a counter in front:
+
+%%define\(showlist,%%for\(i,1,%%num-args%%,%%i%%: %%arg\(%%isub\(%%i%%,1\)\)%%lf%%\)\)%%showlist\(a,b,c\)
+expands to:
+1: a
+2: b
+3: c
+")
+%set(seealso,)
+%set(authorip,98.14.94.76)
+%set(authorlogin,mkrebs)
+%set(author,)

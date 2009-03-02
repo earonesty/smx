@@ -1,0 +1,8 @@
+.deps
+Makefile
+*.lo
+.libs
+*.la
+test_perl
+*.plg
+extperl.loT

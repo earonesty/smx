@@ -1,0 +1,8 @@
+%set(name,wday)
+%set(syntax,%%wday%%)
+%set(description,Obsolete. Try:
+
+%%fmtltime(%%localtime%%\,w))
+%set(author,)
+%set(example,)
+%set(seealso,)

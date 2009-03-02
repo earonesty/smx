@@ -1,0 +1,7 @@
+%set(name,client-host)
+%set(syntax,%%client-host%%)
+%set(description,Returns clients host name.
+See also %%client-ip%%)
+%set(author,)
+%set(example,)
+%set(seealso,)

@@ -1,0 +1,3 @@
+%html-clean(Testing quoting twice. <blockquote class=quote><b>admin:</b><div class="quotebody"><blockquote class=quote><b>admin:</b><div class="quotebody">It's not threaded.</div></blockquote> Why not? It could be.</div></blockquote>,,,blockquote)
+
+%html-clean(<blockquote class=quote><b>admin:</b><div class="quotebody">It's not threaded.</div></blockquote> Why not? It could be.,,,blockquote)

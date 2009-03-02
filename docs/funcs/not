@@ -1,0 +1,10 @@
+%set(name,not)
+%set(description,"Returns %%null%% if the variable is non null, returns T if the variable is %%null%%.  Bear in mind that whitespace is considered \"true\".")
+%set(syntax,"%%not\(var\)")
+%set(example,"*%%not\(T\)*   = **
+%%set\(x,\)
+*%%not\(%%x%%\)* = *T*")
+%set(seealso,if|or|and)
+%set(authorip,64.131.154.83)
+%set(authorlogin,admin)
+%set(author,)

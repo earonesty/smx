@@ -1,0 +1,11 @@
+
+fs: 
+x: 5
+header_host: 127.0.0.1:55558
+port: 55558
+proto: [%protocol% not supported by your server]
+exp: 
+cu: /test-02-apache.html
+cq: 
+
+

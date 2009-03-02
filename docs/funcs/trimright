@@ -1,0 +1,15 @@
+%set(name,trimright)
+%set(description,"Removes the whitespace from the end of a string.")
+%set(syntax,"%%trimright\(string\)")
+%set(example,"-%%asc\(32\)hi%%asc\(32\)-
+-%%trimright\(%%asc\(32\)hi%%asc\(32\)\)-
+
+Returns
+
+- hi -
+- hi-
+")
+%set(seealso,trim|rtrim|ltrim|trimleft)
+%set(authorip,24.193.44.12)
+%set(authorlogin,mkrebs)
+%set(author,)

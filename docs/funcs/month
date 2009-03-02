@@ -1,0 +1,6 @@
+%set(name,month)
+%set(syntax,%%month%%)
+%set(description,Month of the year as an integer.)
+%set(author,)
+%set(example,)
+%set(seealso,)

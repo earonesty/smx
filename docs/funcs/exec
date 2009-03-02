@@ -1,0 +1,13 @@
+%set(name,exec)
+%set(syntax,%%exec(command)
+%%exec(command[\,stdin[\,stderr]]))
+%set(description,stdin is passed to the standard input of the app
+
+stderr defines the following macros
+
+     %%err-out%%
+and  %%err-code%%
+whch contain the "standard output stream" and the "return value" of the app)
+%set(author,)
+%set(example,)
+%set(seealso,)

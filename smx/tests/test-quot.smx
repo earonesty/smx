@@ -1,0 +1,10 @@
+<pre>
+
+1- %set(x,%%trimright(!\)!))
+2- %x%
+3- %expand(%x%)
+
+%Macro(Bug,'%if(%defined(Debug),'<font color=ff00ff>%Stuff%</font>),Stuff)
+%set(debug,T)
+%Bug(!!!stuff!!!)
+</pre>

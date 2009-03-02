@@ -1,0 +1,95 @@
+%expand%%null(
+
+** auth module
+%module(%fqppath(/docs/inc/init.htx))
+
+** default, show syntax page
+%if(%not(%form(func))
+	,%fset(func,1. Syntax)
+)
+
+%fset(func,%replace(%form(func),:,_C_))
+
+** show header and left bar
+)%expand(%include(%fqppath(/header.htx)))
+
+
+%if(%not(%exists(%fqppath(funcs/%form(func))))
+	,
+	 %null(** search for functions starting with the string specified)
+	 %set(count,0)
+	 %set(results,
+           %try(%dir(%fqppath(funcs)/%form(func)*
+		,<li><a href="index.html?group=%form(group)&func=%fname%">%fname%</a>%++(count)%fset(func,%fname%)
+	   ))
+	 )
+	
+	 %if(%equ(%count%,0)
+		,
+	    %set(results,
+           	%try(%dir(%fqppath(funcs)/*
+			,%if(%wcmatch(%include(%fqppath(funcs)/%fname%),*%func%*)
+				,<li><a href="index.html?group=%form(group)&func=%fname%">%fname%</a>%++(count)%fset(func,%fname%)
+			 )
+	   	))
+	    )
+	 )
+	 %if(%equ(%count%,0)
+		 ,<h2>Function '%form(func)' not found</h2>
+	    ,%equ(%count%,1)
+		 ,%redirect(index.html?group=%url-encode(%form(group))&func=%url-encode(%form(func)))
+	         ,<h2>Search results</h2>
+                  <ul>%results%</ul>
+         )
+	,
+
+%null(** else load function documentation, since it is available)
+
+%set(func,)
+%set(group,)
+%set(name,)
+
+%expand(%include(%fqppath(funcs/%form(func))))
+<h2>%name%</h2>
+
+%if(%or(%description%,%example%)
+	,<p class="subHeader">Syntax</p>
+)
+
+<PRE>%syntax%</PRE>
+
+%if(%description%
+,
+%set(prevdl,)
+<p class="subHeader">Description</p>
+%define(href,<a href="%url%">%name%</a>,url,name)
+<TT>%replace(%rxsplit(%safe-expand(%html-quote(%replace(%description%,<br>,%lf%)),href),[%cr%]?[%lf%]
+			,%if(%equal(%left(%token%,2),"  ")
+				 ,&nbsp;&nbsp;&nbsp;%token%<br>
+			 	 ,%token%<br>
+			 )
+	             )
+	,<br><br>,<p>,<br><br>,<p>,<br><br>,<p>,<p><br>,<p>
+    )</TT>
+)
+
+%if(%example%
+,
+<p class="subHeader">Example</p>
+<PRE>%html-quote(%example%)
+</PRE>
+)
+
+%if(%seealso%,
+<p class="subHeader">See Also</p>
+%mid(%enumtoken(%seealso%,|
+	,| <A HREF=index.html?group=%url-encode(%form(group))&func=%url-encode(%token%)>
+	 %token%
+	 </A>
+),1)
+)
+
+)
+
+%null(** include page footer)
+%expand(%include(%fqppath(/footer.htx)))

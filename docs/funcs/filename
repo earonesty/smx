@@ -1,0 +1,6 @@
+%set(name,filename)
+%set(syntax,%%csv-appendq(pathname[\,val1[\,val2[\,...]]]))
+%set(description,Appends a record to a text file using comma-delimited format with all fields quoted.)
+%set(author,)
+%set(example,)
+%set(seealso,)

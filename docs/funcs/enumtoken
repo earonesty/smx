@@ -1,0 +1,18 @@
+%set(name,enumtoken)
+%set(syntax,%%enumtoken(string\,separators\,'body))
+%set(description,Expands body for each token\, delimited by one or more characters in tokens\, setting %%token%% to the token. 
+
+- %%enumtoken() is useful when processing a list of string values delimited by 
+special characters\, such as spaces\, tabs\, or commas. 
+- string is the list of string values. 
+separators is a string which contains all characters that should be 
+considered as token delimiters. 
+-  Note that one or more delimiters in a row are considered to be one 
+delimiter\, e.g. for the list one\, three is the second token. 
+- The body argument is auto-quoted)
+%set(author,)
+%set(example,%%enumtoken('this is a test\," "\,'%%toupper(%%token%%))
+
+returns:      
+THISISATEST)
+%set(seealso,)

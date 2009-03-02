@@ -1,0 +1,13 @@
+%set(name,expr)
+%set(description,"Evaluates the string as a \"expression\".  the tring can contain any number of statements and values, with the same syntax as \"C\" or other expression-style languages.  
+<br>This can be useful for evaluating user-entered mathematical functions.  \(In that case it's beter to use %%safe-expand\(%%expr\(\),var1,var2\) since the %%safe-expand function turns off all macros except those explicitly defined in the argument list\).
+<br>It's ok to use most macros as functions inside of the expression.")
+%set(syntax,"%%expr\(string\)")
+%set(example,"%%expr\(1+4\)          => 5
+%%expr\(1+4+\(9-3\)\)    => 11
+%%expr\(1+4+sub\(9,3\)\) => 11
+%%set\(y,2\)%%expr\(y*\(x=5*10\)\)   => 100")
+%set(seealso,)
+%set(authorip,64.131.154.83)
+%set(authorlogin,erik)
+%set(author,Erik Aronesty <erik@q32.com>)

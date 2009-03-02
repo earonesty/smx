@@ -1,0 +1,26 @@
+%set(name,smtp-mail)
+%set(description,"Send mail using SMTP
+
+SMTP is the main e-mail protocol for the Internet. 
+
+%%smtp-mail\(\) requires that you have access to an SMTP server. 
+
+   %%server should be the hostname or IP address of the SMTP gateway. 
+   %%acct should be your POP account information. 
+   %%from should be the e-mail address of the message's sender. 
+   %%to should be the semicolon-delimited list of the message's recipients. 
+   %%subject should be the message's subject, and body its body. 
+
+Do not include any SMTP headers in either parameter -- they will be added automatically by %%smtp-mail\(\).
+")
+%set(syntax,"%%smtp-mail\(server,acct,from,to,subject[,body[,attach1[,attach2...]]]\)
+")
+%set(example,"%%smtp-mail\(mail.smxlang.org,root,smx@q32.com, erik@primedata.org,\"Hello!%%crlf%%I just want to say hi!\"\)
+
+For now, attachements are filenames, not file content. 
+
+We may support some syntax that signified literal text inserted as an attachment, with a specified disposition, etc, if anyone asks for it.")
+%set(seealso,)
+%set(authorip,209.21.110.205)
+%set(authorlogin,erik)
+%set(author,Erik Aronesty <erik@q32.com>)
