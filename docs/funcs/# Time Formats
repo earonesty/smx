@@ -1,4 +1,4 @@
-%set(name,* Time Formats)
+%set(name,# Time Formats)
 			%set(description,"Time macros use format specifiers based on those used in various Microsoft applications. 
 ")
 			%set(syntax,)
