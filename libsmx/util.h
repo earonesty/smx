@@ -17,6 +17,7 @@ THIS SOFTWARE IS PROVIDED 'AS IS' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDI
 #define _UTIL_H
 
 #include <time.h>
+#include <io.h>
 
 #ifdef WIN32 
 	#ifndef TLS
@@ -41,7 +42,7 @@ THIS SOFTWARE IS PROVIDED 'AS IS' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDI
 CStr ReplaceStr(CStr in, CStr from, CStr to);
 CStr ReplaceStrI(CStr in, CStr from, CStr to);
 
-// reallocates the out_p and format's it using vsprintf with the addition of a %y which is GetLastError string
+// reallocates the out_p and format's it using vsprintf with the addition of a %y which is GetLastError (or errno) string
 void exvsprintf(char **out_p, const char *msg_p, va_list vargs);
 
 char *bslash(char *f);
@@ -78,6 +79,12 @@ int setenv(const char *name, const char *value, int overwrite);
 #define DIRSEP ((char)'\\')
 #else
 #define DIRSEP ((char)'/')
+#endif
+
+#ifdef WIN32
+#ifndef mkdir
+        #define mkdir(a,b) _mkdir(a)
+#endif
 #endif
 
 #endif // #ifndef _UTIL_H

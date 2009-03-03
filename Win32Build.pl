@@ -1,10 +1,15 @@
 ### reads in Makefile.am's and attempts to build on Win32
-###
+### LOTS of crappy hardcoded stuff, will put everything in a Win32.config or something
 
 use strict;
 use Getopt::Long;
 use Cwd qw(cwd);
 use Carp qw(confess);
+use Data::Dumper;
+
+our $opt_remake;
+our $opt_debug;
+GetOptions("remake", "debug");
 
 ### change these or reply to prompts
 $ENV{PATH}   .= ';\MinGW\bin';
@@ -18,8 +23,10 @@ my $unixconf = grab('configure');
 die "Need 'configure', even if i'm not going to run it\n" unless $unixconf;
 
 ### extract package version, add to defs
+my $PACKAGE_VERSION;
 my @def;
-if ($unixconf =~ m/(PACKAGE_VERSION=[^\n]+)/) {
+if ($unixconf =~ m/(PACKAGE_VERSION=([^\n]+))/) {
+	$PACKAGE_VERSION = eval($2);
 	push @def, $1;
 } else {
 	die "Can't get PACKAGE_VERSION from configure";
@@ -57,6 +64,7 @@ if (!lookfor('atlbase.h', $ENV{INC})) {
 }
 
 my $cl_cmd = $cl;
+$cl_cmd .= " -g" if $opt_debug;
 for (@inc) {
 	next unless $_;
 	$cl_cmd .= " -I\"$_\"";
@@ -68,9 +76,39 @@ for (@def) {
 
 
 my $ld_cmd = $cl;
-my $ld_libs = " -lwsock32 -lws2_32 -lodbc32 -lshlwapi  -Lc:\\dev\\openssl -llibeay32 -L\"$APACHEDIR\\bin\" -lapr-1 -lhttpd \"$APACHEDIR\\lib\\libapr-1.lib\"  \"$APACHEDIR\\lib\\libhttpd.lib\"";
+$ld_cmd .= " -g" if $opt_debug;
 
-make('.');
+my $ld_libs = " c:\\bin\\sqlite3.dll -lwsock32 -lws2_32 -lodbc32 -lshlwapi -Lc:\\dev\\openssl -llibeay32 -L\"$APACHEDIR\\bin\" -lapr-1 -lhttpd \"$APACHEDIR\\lib\\libapr-1.lib\"  \"$APACHEDIR\\lib\\libhttpd.lib\"";
+
+my $make = make('.');
+
+if ($ARGV[0] eq 'release') {
+	my $cmd = "tar -cvf smx-$PACKAGE_VERSION-win32-x86.tar " . join ' ', release_targets($make);
+	print "$cmd\n";
+	system($cmd);
+
+	my $cmd = "gzip smx-$PACKAGE_VERSION-win32-x86.tar";
+	print "$cmd\n";
+	system($cmd);
+}
+
+sub release_targets {
+	my ($make, $dir) = @_;
+	my @targ;
+	$dir = '.' if !$dir;
+	for (split /\s+/, $make->{SUBDIRS}) {
+		push @targ, release_targets($make->{$_}, $_);
+	}
+	for (@{$make->{exes}}) {
+		next if /test_/;
+		push @targ, "$dir\\$_";
+	}
+	for (@{$make->{libs}}) {
+		next if /test_/;
+		push @targ, "$dir\\$_";
+	}
+	return @targ;
+}
 
 sub amname {
 	my $n = shift;
@@ -122,7 +160,7 @@ sub make {
 	print "Skipping $dir\n" if !$make;
 	
 	for my $sub (split(/\s+/, $make->{SUBDIRS})) {
-		make($sub);
+		$make->{$sub} = make($sub);
 	}
 
 	for (keys(%$make)) {
@@ -143,6 +181,8 @@ sub make {
 	}
 
 	popdir();
+
+	return $make;
 }
 
 sub make_target {
@@ -151,16 +191,27 @@ sub make_target {
 	my $mtime;
 	die "No sources for target $target\n" unless $make->{$target}->{sources};
 	for (split(/\s+/, $make->{$target}->{sources})) {
-		my $obj;
-		$obj = make_cpp($make, $_, $make->{$target}->{cflags}) if $_ =~ /\.cp?p?$/;
-		$make->{$target}->{objs} .= "$obj " if $obj;
-		$mtime = (stat($obj))[9] if (stat($obj))[9] > $mtime;
+		$mtime = (stat($_))[9] if (stat($_))[9] > $mtime;
+		if ($_ =~ /\.cp?p?$/) {
+			my $obj = make_cpp($make, $_, $make->{$target}->{cflags});
+			$make->{$target}->{objs} .= "$obj ";
+			die unless $obj;
+		}
 	}
+
+	for (split (/\s+/, $make->{$target}->{ldadd})) {
+		$mtime = (stat($_))[9] if (stat($_))[9] > $mtime;
+	}
+
+	$mtime = (time()+1) if $opt_remake;	
+	
 	if ($mtime > (stat($target))[9]) {
 		$make->{$target}->{objs} =~ s/^ //;
 		if ($make->{$target}->{objs}) {
 			my $shared = ' -shared' if $target =~ /.dll$/;
-			my $cmd = "$ld_cmd " . $make->{$target}->{objs} . "$shared -o $target";
+			my $out = $target;
+			$out =~ s/\./_dbg\./ if $opt_debug;
+			my $cmd = "$ld_cmd " . $make->{$target}->{objs} . "$shared -o $out";
 			$make->{$target}->{ldflags} =~ s/`([^`]+)`/`$1`/ge;
 			$make->{$target}->{ldflags} =~ s/-lperl/-lperl510/;	# bad hardcode among many!
 			$cmd .= " $ld_libs $make->{$target}->{ldadd} $make->{$target}->{ldflags}";
@@ -176,7 +227,7 @@ sub make_cpp {
 	my $obj = "$fbase.o";
 	my $ft = (stat($fil))[9];
 	my $tt = (stat($obj))[9];
-	return $obj if $tt >= $ft;
+	return $obj if $tt >= $ft && !$opt_remake;
 	$cflags =~ s/`([^`]+)`/`$1`/ge;
 	my $fcmd = "$cl_cmd $cflags \"$fil\" -c -o \"$obj\"";
 	print "$fcmd\n";

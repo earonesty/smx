@@ -22,7 +22,7 @@ if errorlevel 1 goto :error
 goto :end
 
 :cleanup
-del /Q *.tmp
+REM del /Q *.tmp
 
 popd
 
