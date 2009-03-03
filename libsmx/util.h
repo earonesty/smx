@@ -17,9 +17,9 @@ THIS SOFTWARE IS PROVIDED 'AS IS' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDI
 #define _UTIL_H
 
 #include <time.h>
-#include <io.h>
 
 #ifdef WIN32 
+	#include <io.h>
 	#ifndef TLS
 		#define TLS _declspec(thread) 
 	#endif
