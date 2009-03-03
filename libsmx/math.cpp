@@ -22,10 +22,8 @@ THIS SOFTWARE IS PROVIDED 'AS IS' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDI
 #include "qctx.h"
 #include "util.h"
 
-#ifdef unix
 #include <signal.h>
 #include <setjmp.h>
-#endif
 
 class qObjLVal {
 
@@ -203,19 +201,14 @@ void EvalISub(const void *data, qCtx *ctx, qStr *out, qArgAry *args) {
 	out->PutN(acc);
 }
 
-#ifdef unix
 jmp_buf sigenv;
 static void signal_handler(int sig)
 {
 	longjmp(sigenv,sig);
 }
 
-#define BEGINFPE if (setjmp(sigenv)!=0) {return;} sigset(SIGFPE, signal_handler);
+#define BEGINFPE if (setjmp(sigenv)!=0) {return;} signal(SIGFPE, signal_handler);
 #define ENDFPE signal(SIGFPE, SIG_DFL);
-#else
-#define BEGINFPE
-#define ENDFPE 
-#endif
 
 void EvalIDiv(const void *data, qCtx *ctx, qStr *out, qArgAry *args) {
 	VALID_ARGC("idiv", 2, 2);

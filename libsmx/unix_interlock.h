@@ -90,7 +90,7 @@ THIS SOFTWARE IS PROVIDED 'AS IS' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDI
 		return ret;
 	}
 
-	inline int InterlockedExchangeAdd(volatile int *val, int add)
+	inline int InterlockedExchangeAdd(volatile long *val, int add)
 	{
 		int ret;
 		
@@ -102,12 +102,12 @@ THIS SOFTWARE IS PROVIDED 'AS IS' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDI
 	}
 
 
-	inline long InterlockedIncrement( volatile int * dest )
+	inline long InterlockedIncrement( volatile long * dest )
 	{
 		return InterlockedExchangeAdd( dest, 1 ) + 1;
 	}
 
-	inline long InterlockedDecrement( volatile int * dest )
+	inline long InterlockedDecrement( volatile long * dest )
 	{
 		return InterlockedExchangeAdd( dest, -1 ) - 1;
 	}

@@ -22,7 +22,9 @@ THIS SOFTWARE IS PROVIDED 'AS IS' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDI
 
 #ifndef _WINDOWS_
 typedef unsigned char BYTE;
-typedef long int LONG;
+#ifndef LONG
+	typedef long int LONG;
+#endif
 #endif
 
 #define SHA_BLOCKSIZE       64
