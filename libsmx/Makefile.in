@@ -64,7 +64,7 @@ am_libsmx_la_OBJECTS = base64.lo qmail.lo buf_ref.lo pscache.lo \
 	pstable.lo proto.lo process.lo opt.lo open-enc.lo map.lo \
 	hset.lo file.lo ex.lo dparse.lo dbh.lo dbd_sqlite3.lo \
 	dbd_tdb.lo crit_unix.lo core.lo cgi.lo card.lo hash.lo \
-	mapstr.lo smx_sqlite.lo psxutil.lo gd.lo
+	mapstr.lo smx_sqlite.lo psxutil.lo gd.lo io.lo tset.lo
 libsmx_la_OBJECTS = $(am_libsmx_la_OBJECTS)
 libtest_ext_la_LIBADD =
 am_libtest_ext_la_OBJECTS = test_ext.lo
@@ -224,7 +224,7 @@ top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 
 ####### kdevelop will overwrite this part!!! (begin)##########
-lib_LTLIBRARIES = libsmx.la libtest_ext.la
+lib_LTLIBRARIES = libsmx.la
 
 # include_HEADERS = crit.h qctx.h qobj-cache.h unix.h qmail_resource.h qobj-ctx.h pstime.h qobj.h qenv.h ary.h qarg.h str.h buf.h buf_ref.h qlib.h unix_interlock.h opt.h libs.h stdafx.h map.h lst.h hash.h crit_win.h crit_unix.h qstr.h smximpl.h smxext.h psxutil.h
 libsmx_la_SOURCES = base64.cpp qmail.cpp buf_ref.cpp pscache.cpp \
@@ -247,7 +247,8 @@ libsmx_la_SOURCES = base64.cpp qmail.cpp buf_ref.cpp pscache.cpp \
 	lst.h qgargs.h qsched.h regx.h strex.h dbh.h lstx.h qarg.h \
 	qgif.h qstr.h res.h str.h debug.h map.h qlib.h dparse.h \
 	mapstr.h qmail.h tabfmt.h psxutil.h gd.cpp dbd_sqlite3.h \
-	dbd_tdb.h dbh.h dbd.h
+	dbd_tdb.h dbh.h dbd.h io.cpp io.h tset.cpp tset.h
+check_LTLIBRARIES = libtest_ext.la
 libtest_ext_la_SOURCES = test_ext.cpp
 test_ext2_SOURCES = test_ext2.cpp
 test_ext2_LDADD = libsmx.la
@@ -290,6 +291,15 @@ $(top_srcdir)/configure: @MAINTAINER_MODE_TRUE@ $(am__configure_deps)
 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
 $(ACLOCAL_M4): @MAINTAINER_MODE_TRUE@ $(am__aclocal_m4_deps)
 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+
+clean-checkLTLIBRARIES:
+	-test -z "$(check_LTLIBRARIES)" || rm -f $(check_LTLIBRARIES)
+	@list='$(check_LTLIBRARIES)'; for p in $$list; do \
+	  dir="`echo $$p | sed -e 's|/[^/]*$$||'`"; \
+	  test "$$dir" != "$$p" || dir=.; \
+	  echo "rm -f \"$${dir}/so_locations\""; \
+	  rm -f "$${dir}/so_locations"; \
+	done
 install-libLTLIBRARIES: $(lib_LTLIBRARIES)
 	@$(NORMAL_INSTALL)
 	test -z "$(libdir)" || $(MKDIR_P) "$(DESTDIR)$(libdir)"
@@ -320,7 +330,7 @@ clean-libLTLIBRARIES:
 libsmx.la: $(libsmx_la_OBJECTS) $(libsmx_la_DEPENDENCIES) 
 	$(CXXLINK) -rpath $(libdir) $(libsmx_la_OBJECTS) $(libsmx_la_LIBADD) $(LIBS)
 libtest_ext.la: $(libtest_ext_la_OBJECTS) $(libtest_ext_la_DEPENDENCIES) 
-	$(CXXLINK) -rpath $(libdir) $(libtest_ext_la_OBJECTS) $(libtest_ext_la_LIBADD) $(LIBS)
+	$(CXXLINK)  $(libtest_ext_la_OBJECTS) $(libtest_ext_la_LIBADD) $(LIBS)
 
 clean-checkPROGRAMS:
 	@list='$(check_PROGRAMS)'; for p in $$list; do \
@@ -362,6 +372,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gd.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hash.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hset.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/io.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/map.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mapstr.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/math.Plo@am__quote@
@@ -402,6 +413,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_map.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_str.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/time.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/tset.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unix.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/util.Plo@am__quote@
 
@@ -601,7 +613,7 @@ distdir: $(DISTFILES)
 	  fi; \
 	done
 check-am: all-am
-	$(MAKE) $(AM_MAKEFLAGS) $(check_PROGRAMS)
+	$(MAKE) $(AM_MAKEFLAGS) $(check_LTLIBRARIES) $(check_PROGRAMS)
 	$(MAKE) $(AM_MAKEFLAGS) check-TESTS
 check: check-am
 all-am: Makefile $(LTLIBRARIES)
@@ -635,8 +647,8 @@ maintainer-clean-generic:
 	@echo "it deletes files that may require special tools to rebuild."
 clean: clean-am
 
-clean-am: clean-checkPROGRAMS clean-generic clean-libLTLIBRARIES \
-	clean-libtool mostlyclean-am
+clean-am: clean-checkLTLIBRARIES clean-checkPROGRAMS clean-generic \
+	clean-libLTLIBRARIES clean-libtool mostlyclean-am
 
 distclean: distclean-am
 	-rm -rf ./$(DEPDIR)
@@ -695,19 +707,19 @@ uninstall-am: uninstall-libLTLIBRARIES
 .MAKE: install-am install-strip
 
 .PHONY: CTAGS GTAGS all all-am check check-TESTS check-am clean \
-	clean-checkPROGRAMS clean-generic clean-libLTLIBRARIES \
-	clean-libtool ctags distclean distclean-compile \
-	distclean-generic distclean-libtool distclean-tags distdir dvi \
-	dvi-am html html-am info info-am install install-am \
-	install-data install-data-am install-dvi install-dvi-am \
-	install-exec install-exec-am install-html install-html-am \
-	install-info install-info-am install-libLTLIBRARIES \
-	install-man install-pdf install-pdf-am install-ps \
-	install-ps-am install-strip installcheck installcheck-am \
-	installdirs maintainer-clean maintainer-clean-generic \
-	mostlyclean mostlyclean-compile mostlyclean-generic \
-	mostlyclean-libtool pdf pdf-am ps ps-am tags uninstall \
-	uninstall-am uninstall-libLTLIBRARIES
+	clean-checkLTLIBRARIES clean-checkPROGRAMS clean-generic \
+	clean-libLTLIBRARIES clean-libtool ctags distclean \
+	distclean-compile distclean-generic distclean-libtool \
+	distclean-tags distdir dvi dvi-am html html-am info info-am \
+	install install-am install-data install-data-am install-dvi \
+	install-dvi-am install-exec install-exec-am install-html \
+	install-html-am install-info install-info-am \
+	install-libLTLIBRARIES install-man install-pdf install-pdf-am \
+	install-ps install-ps-am install-strip installcheck \
+	installcheck-am installdirs maintainer-clean \
+	maintainer-clean-generic mostlyclean mostlyclean-compile \
+	mostlyclean-generic mostlyclean-libtool pdf pdf-am ps ps-am \
+	tags uninstall uninstall-am uninstall-libLTLIBRARIES
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

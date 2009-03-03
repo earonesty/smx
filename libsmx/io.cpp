@@ -13,12 +13,12 @@ THIS SOFTWARE IS PROVIDED 'AS IS' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDI
 
 #include "stdafx.h"
 
-#ifdef WIN32
-
 #include "qstr.h"
 #include "qobj.h"
 #include "qctx.h"
 #include "util.h"
+
+#ifdef WIN32
 
 #include <assert.h>
 

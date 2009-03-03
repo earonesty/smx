@@ -22,7 +22,7 @@ BuildRequires:	openssl-devel >= 0.9
 %description
 SMX is a simple macro language that can be used to parse text files
 and replace inline macros. Contains the smx command-line and cgi 
-tool, as well as the modsmx apache module.
+tool, as well as the modsmx apache module, and extperl plugin.
 
 %package devel
 Summary: Libraries, includes to develop applications with %{name}.
@@ -59,8 +59,10 @@ rm -rf %{buildroot}
 %defattr(-,root,root)
 %doc AUTHORS ChangeLog COPYING INSTALL README TODO
 %{_bindir}/smx
-%{_libdir}/lib*smx.*
-%{_libdir}/lib*ext.*
+%{_libdir}/libsmx.*
+%{_libdir}/libmodsmx.*
+%{_libdir}/libext*
+%{_libdir}/libtest*
 %{_prefix}/share/man/man3/%*
 
 %files devel
