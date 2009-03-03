@@ -49,6 +49,10 @@ AC_CHECK_HEADERS([arpa/inet.h fcntl.h limits.h malloc.h memory.h netdb.h netinet
 
 # sets PERL var to full path
 AC_PATH_PROG(PERL, perl)
+AC_PATH_PROG(SVNVERSION, svnversion)
+
+RELEASE=`$SVNVERSION > /dev/null 2>&1 && (svnversion | sed 's/.*://' | sed 's/[[MSP]]$//' > release.txt); cat release.txt`
+AC_SUBST(RELEASE)
 
 # sets HAVE_PERL conditional
 AM_CONDITIONAL(HAVE_PERL, test -n "$PERL")

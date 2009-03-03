@@ -1,5 +1,3 @@
-if HAVE_PERL
-
 lib_LTLIBRARIES = libextperl.la
 
 libextperl_la_SOURCES = extperl.cpp
@@ -14,4 +12,3 @@ check_PROGRAMS = test_perl
 
 TESTS=test_perl
 
-endif

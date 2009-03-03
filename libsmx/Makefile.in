@@ -69,6 +69,9 @@ libsmx_la_OBJECTS = $(am_libsmx_la_OBJECTS)
 libtest_ext_la_LIBADD =
 am_libtest_ext_la_OBJECTS = test_ext.lo
 libtest_ext_la_OBJECTS = $(am_libtest_ext_la_OBJECTS)
+libtest_ext_la_LINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) \
+	$(LIBTOOLFLAGS) --mode=link $(CXXLD) $(AM_CXXFLAGS) \
+	$(CXXFLAGS) $(libtest_ext_la_LDFLAGS) $(LDFLAGS) -o $@
 am_test_eval_OBJECTS = test_eval.$(OBJEXT)
 test_eval_OBJECTS = $(am_test_eval_OBJECTS)
 test_eval_DEPENDENCIES = libsmx.la
@@ -166,10 +169,12 @@ PATH_SEPARATOR = @PATH_SEPARATOR@
 PERL = @PERL@
 POW_LIB = @POW_LIB@
 RANLIB = @RANLIB@
+RELEASE = @RELEASE@
 SED = @SED@
 SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
 STRIP = @STRIP@
+SVNVERSION = @SVNVERSION@
 VERSION = @VERSION@
 abs_builddir = @abs_builddir@
 abs_srcdir = @abs_srcdir@
@@ -250,6 +255,7 @@ libsmx_la_SOURCES = base64.cpp qmail.cpp buf_ref.cpp pscache.cpp \
 	dbd_tdb.h dbh.h dbd.h io.cpp tset.cpp tset.h
 check_LTLIBRARIES = libtest_ext.la
 libtest_ext_la_SOURCES = test_ext.cpp
+libtest_ext_la_LDFLAGS = -rpath /nowhere
 test_ext2_SOURCES = test_ext2.cpp
 test_ext2_LDADD = libsmx.la
 test_map_SOURCES = test_map.cpp
@@ -330,7 +336,7 @@ clean-libLTLIBRARIES:
 libsmx.la: $(libsmx_la_OBJECTS) $(libsmx_la_DEPENDENCIES) 
 	$(CXXLINK) -rpath $(libdir) $(libsmx_la_OBJECTS) $(libsmx_la_LIBADD) $(LIBS)
 libtest_ext.la: $(libtest_ext_la_OBJECTS) $(libtest_ext_la_DEPENDENCIES) 
-	$(CXXLINK)  $(libtest_ext_la_OBJECTS) $(libtest_ext_la_LIBADD) $(LIBS)
+	$(libtest_ext_la_LINK)  $(libtest_ext_la_OBJECTS) $(libtest_ext_la_LIBADD) $(LIBS)
 
 clean-checkPROGRAMS:
 	@list='$(check_PROGRAMS)'; for p in $$list; do \

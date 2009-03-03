@@ -32,8 +32,8 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
-@HAVE_PERL_TRUE@check_PROGRAMS = test_perl$(EXEEXT)
-@HAVE_PERL_TRUE@TESTS = test_perl$(EXEEXT)
+check_PROGRAMS = test_perl$(EXEEXT)
+TESTS = test_perl$(EXEEXT)
 subdir = extperl
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
@@ -54,17 +54,14 @@ am__installdirs = "$(DESTDIR)$(libdir)"
 libLTLIBRARIES_INSTALL = $(INSTALL)
 LTLIBRARIES = $(lib_LTLIBRARIES)
 libextperl_la_LIBADD =
-am__libextperl_la_SOURCES_DIST = extperl.cpp
-@HAVE_PERL_TRUE@am_libextperl_la_OBJECTS = libextperl_la-extperl.lo
+am_libextperl_la_OBJECTS = libextperl_la-extperl.lo
 libextperl_la_OBJECTS = $(am_libextperl_la_OBJECTS)
 libextperl_la_LINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CXXLD) $(libextperl_la_CXXFLAGS) \
 	$(CXXFLAGS) $(libextperl_la_LDFLAGS) $(LDFLAGS) -o $@
-@HAVE_PERL_TRUE@am_libextperl_la_rpath = -rpath $(libdir)
-am__test_perl_SOURCES_DIST = test_perl.cpp
-@HAVE_PERL_TRUE@am_test_perl_OBJECTS = test_perl-test_perl.$(OBJEXT)
+am_test_perl_OBJECTS = test_perl-test_perl.$(OBJEXT)
 test_perl_OBJECTS = $(am_test_perl_OBJECTS)
-@HAVE_PERL_TRUE@test_perl_DEPENDENCIES = ../libsmx/libsmx.la
+test_perl_DEPENDENCIES = ../libsmx/libsmx.la
 test_perl_LINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CXXLD) $(test_perl_CXXFLAGS) \
 	$(CXXFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
@@ -81,8 +78,7 @@ CXXLINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
 	--mode=link $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) $(AM_LDFLAGS) \
 	$(LDFLAGS) -o $@
 SOURCES = $(libextperl_la_SOURCES) $(test_perl_SOURCES)
-DIST_SOURCES = $(am__libextperl_la_SOURCES_DIST) \
-	$(am__test_perl_SOURCES_DIST)
+DIST_SOURCES = $(libextperl_la_SOURCES) $(test_perl_SOURCES)
 ETAGS = etags
 CTAGS = ctags
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
@@ -141,10 +137,12 @@ PATH_SEPARATOR = @PATH_SEPARATOR@
 PERL = @PERL@
 POW_LIB = @POW_LIB@
 RANLIB = @RANLIB@
+RELEASE = @RELEASE@
 SED = @SED@
 SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
 STRIP = @STRIP@
+SVNVERSION = @SVNVERSION@
 VERSION = @VERSION@
 abs_builddir = @abs_builddir@
 abs_srcdir = @abs_srcdir@
@@ -197,13 +195,13 @@ sysconfdir = @sysconfdir@
 target_alias = @target_alias@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-@HAVE_PERL_TRUE@lib_LTLIBRARIES = libextperl.la
-@HAVE_PERL_TRUE@libextperl_la_SOURCES = extperl.cpp
-@HAVE_PERL_TRUE@libextperl_la_CXXFLAGS = -I../libsmx `perl -MExtUtils::Embed -e ccopts`
-@HAVE_PERL_TRUE@libextperl_la_LDFLAGS = `perl -MExtUtils::Embed -e ldopts` -lperl
-@HAVE_PERL_TRUE@test_perl_SOURCES = test_perl.cpp
-@HAVE_PERL_TRUE@test_perl_LDADD = ../libsmx/libsmx.la
-@HAVE_PERL_TRUE@test_perl_CXXFLAGS = -I../libsmx
+lib_LTLIBRARIES = libextperl.la
+libextperl_la_SOURCES = extperl.cpp
+libextperl_la_CXXFLAGS = -I../libsmx `perl -MExtUtils::Embed -e ccopts`
+libextperl_la_LDFLAGS = `perl -MExtUtils::Embed -e ldopts` -lperl
+test_perl_SOURCES = test_perl.cpp
+test_perl_LDADD = ../libsmx/libsmx.la
+test_perl_CXXFLAGS = -I../libsmx
 all: all-am
 
 .SUFFIXES:
@@ -265,7 +263,7 @@ clean-libLTLIBRARIES:
 	  rm -f "$${dir}/so_locations"; \
 	done
 libextperl.la: $(libextperl_la_OBJECTS) $(libextperl_la_DEPENDENCIES) 
-	$(libextperl_la_LINK) $(am_libextperl_la_rpath) $(libextperl_la_OBJECTS) $(libextperl_la_LIBADD) $(LIBS)
+	$(libextperl_la_LINK) -rpath $(libdir) $(libextperl_la_OBJECTS) $(libextperl_la_LIBADD) $(LIBS)
 
 clean-checkPROGRAMS:
 	@list='$(check_PROGRAMS)'; for p in $$list; do \
