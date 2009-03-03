@@ -62,7 +62,6 @@ rm -rf %{buildroot}
 %{_libdir}/libsmx.*
 %{_libdir}/libmodsmx.*
 %{_libdir}/libext*
-%{_libdir}/libtest*
 %{_prefix}/share/man/man3/%*
 
 %files devel
