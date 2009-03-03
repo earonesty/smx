@@ -247,7 +247,7 @@ libsmx_la_SOURCES = base64.cpp qmail.cpp buf_ref.cpp pscache.cpp \
 	lst.h qgargs.h qsched.h regx.h strex.h dbh.h lstx.h qarg.h \
 	qgif.h qstr.h res.h str.h debug.h map.h qlib.h dparse.h \
 	mapstr.h qmail.h tabfmt.h psxutil.h gd.cpp dbd_sqlite3.h \
-	dbd_tdb.h dbh.h dbd.h io.cpp io.h tset.cpp tset.h
+	dbd_tdb.h dbh.h dbd.h io.cpp tset.cpp tset.h
 check_LTLIBRARIES = libtest_ext.la
 libtest_ext_la_SOURCES = test_ext.cpp
 test_ext2_SOURCES = test_ext2.cpp
