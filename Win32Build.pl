@@ -34,15 +34,19 @@ my %FILE = (
 
 checkfiles();
 
-my $perl_dll_base = abs_path($0);  $perl_dll_base =~ s/\\.*?$//;
-die $perl_dll_base;
+$PATH{perl} = abs_path($^X);  
+$PATH{perl} =~ s/\\[^\\]*$//;
+
+my ($perl_dll_base) = grep(/perl\d*\.dll$/, wcpath($PATH{perl} . '\perl*.dll'));
+   $perl_dll_base =~ s/.*\\//;
+   $perl_dll_base =~ s/\.dll$//;
 
 ### extract package version, add to defs
 my @def;
 
 my $PACKAGE_VERSION = getpackageversion() || die "Can't find package version";
 
-push @def, "PACKAGE_VERSION=$PACKAGE_VERSION";
+push @def, "PACKAGE_VERSION='$PACKAGE_VERSION'";
 push @def, 'HAVE_SQLITE3_H';
 push @def, 'HAVE_OPENSSL';
 push @def, 'OPENSSL_NO_IDEA';
@@ -152,6 +156,7 @@ sub make_gettargets {
 		my $cflags = delete $make->{amname($target) . "_CXXFLAGS"};
 		my $ldflags = delete $make->{amname($target) . "_LDFLAGS"};
 		$ldflags =~ s/-version-info \S+//;
+		$ldflags =~ s/-rpath \S+//;
 		
 		if (!$src) {
 			die "Can't find SOURCES for $target in $make->{AMFILE}";
@@ -176,6 +181,8 @@ sub make_gettargets {
 
 sub make {
 	my $dir = shift;
+	return undef if ! -d $dir;
+	
 	pushdir($dir);
 
 	my $make = readam();
@@ -213,6 +220,7 @@ sub make_target {
 	
 	my $mtime;
 	die "No sources for target $target\n" unless $make->{$target}->{sources};
+
 	for (split(/\s+/, $make->{$target}->{sources})) {
 		$mtime = (stat($_))[9] if (stat($_))[9] > $mtime;
 		if ($_ =~ /\.cp?p?$/) {
@@ -235,8 +243,15 @@ sub make_target {
 			my $out = $target;
 			$out =~ s/\./_dbg\./ if $opt_debug;
 			my $cmd = "$ld_cmd " . $make->{$target}->{objs} . "$shared -o $out";
+			
 			$make->{$target}->{ldflags} =~ s/`([^`]+)`/`$1`/ge;
-			$make->{$target}->{ldflags} =~ s/-lperl\b/-l$perl_dll_base/;	
+			
+			if ($make->{$target}->{ldflags} =~ /perl/i) {
+				$make->{$target}->{ldflags} =~ s/-lperl\b/-l$perl_dll_base/;
+				$make->{$target}->{ldflags} =~ s/-libpath:/-L:/;
+				$make->{$target}->{ldflags} = "-L$PATH{perl} " . $make->{$target}->{ldflags};
+			}
+			
 			$cmd .= " $make->{$target}->{ldadd} $ld_libs $make->{$target}->{ldflags}";
 			print "$cmd\n";
 			system($cmd) && die;
@@ -248,11 +263,21 @@ sub make_cpp {
 	my ($make, $fil, $cflags) = @_;
 	my $fbase = $fil; $fbase =~ s/\.[^.]+$//;
 	my $obj = "$fbase.o";
-	my $ft = (stat($fil))[9];
+	my $dep = grab("$fbase.d");
+	$dep =~ s/\\(\r?\n)/ /gs;
+	my $dt;
+	for (split(/\s+/,$dep)) {
+		next unless -e $_;
+		$dt = max($dt, ((stat($_))[9]));
+	}
+	$dt = max($dt, (stat($fil))[9]);
+	
 	my $tt = (stat($obj))[9];
-	return $obj if $tt >= $ft && !$opt_remake;
+	return $obj if $tt >= $dt && !$opt_remake;
+	
 	$cflags =~ s/`([^`]+)`/`$1`/ge;
-	my $fcmd = "$cl_cmd $cflags \"$fil\" -c -o \"$obj\"";
+	my $dep = $obj;  $dep =~ s/\.[^.]+$/.Plo/;
+	my $fcmd = "$cl_cmd $cflags \"$fil\" -c -MMD -o \"$obj\"";
 	print "$fcmd\n";
 	system($fcmd) && die;
 	return $obj;
@@ -312,7 +337,7 @@ sub lookfor {
 sub wcpath {
 	my ($path) = @_;
 	
-	if ($path =~ /^(.*?)((?:[^\\]*\*)+)(.*)/) {
+	if ($path =~ /^(.*?)((?:[^\\]*\*[^\\]*)+)(.*)/) {
 		my ($base, $pat, $rest) = ($1, $2, $3);
 		my @res;
 		my @dir = grabdir($base);
@@ -352,7 +377,7 @@ sub grab {
 sub wcmatch {
 	my ($str, $pat) = @_;
 	$pat =~ s/\*/.*/g;
-	$str =~	$pat;
+	$str =~	/$pat/i;
 }
 
 sub readam {
@@ -362,12 +387,11 @@ sub readam {
 		chomp;
 		next if /^\s*#/;
 		next if /^\s*$/;
-		if (/if (\w+)/) {
-			return undef if ($1 =~ /perl/i && !lookfor('perl.exe'));
-		}
 		next if ! /=/;
 		die "Can't understnd this Makefile.am, don't use multiline assignments" if !/=/;
+		s/^\s+//;
 		my ($name, $val) = split(/\s*=\s*/,$_);
+		$val =~ s/\$\((\w+)\)/$am{$1}/;
 		$am{$name} = $val;
 	}
 	return \%am;
@@ -443,4 +467,9 @@ sub getpackageversion {
 	} else {
 		die "Can't get PACKAGE_VERSION from configure";
 	}
+}
+
+
+sub max {
+	return $_[0] > $_[1] ? $_[0] : $_[1];
 }
