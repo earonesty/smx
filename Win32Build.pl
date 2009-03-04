@@ -10,7 +10,7 @@ use Data::Dumper;
 our $opt_remake;
 our $opt_debug;
 
-GetOptions("remake", "debug") || die "USAGE: perl Win32Build.pl [-remake] [-debug] [dist|test]";
+GetOptions("remake", "debug") || die "USAGE: perl Win32Build.pl [-remake] [-debug] [release|test|clean]";
 
 our $opt_command = shift @ARGV;
 
@@ -18,10 +18,10 @@ our $opt_command = shift @ARGV;
 my $CFG_FILE = "Win32Build.conf";                  	# location of config file
 my %CFG;
 
-loadcfg();
-checkcfg();
+loadcfg();			# load config file
+checkcfg();			# resolves all paths, prompts for them, saves the config if there are changes
 
-my %PATH = %{$CFG{paths}};                                               # path hash
+my %PATH = %{$CFG{paths}};      # path hash
 
 ### list of *required* files
 my %FILE = (
@@ -32,44 +32,52 @@ my %FILE = (
 	g_pp=>"$PATH{mingw}\\bin\\g++.exe",
 );
 
-checkfiles();
+checkfiles();			# this resolves all files down to a single file with a full path
 
-$PATH{perl} = abs_path($^X);  
+$PATH{perl} = abs_path($^X);    # add "perl's bin path" to the path hash
 $PATH{perl} =~ s/\\[^\\]*$//;
 
+				# linker name for perl's dll
 my ($perl_dll_base) = grep(/perl\d*\.dll$/, wcpath($PATH{perl} . '\perl*.dll'));
    $perl_dll_base =~ s/.*\\//;
    $perl_dll_base =~ s/\.dll$//;
 
 ### extract package version, add to defs
 my @def;
+our ($PACKAGE_NAME, $PACKAGE_VERSION, $PACKAGE_EMAIL, $PACKAGE_RELEASE) = getpackageversion();
 
-my $PACKAGE_VERSION = getpackageversion() || die "Can't find package version";
+die "Can't find package version" if ! $PACKAGE_VERSION;
 
+### add other defs for g++
 push @def, "PACKAGE_VERSION='$PACKAGE_VERSION'";
 push @def, 'HAVE_SQLITE3_H';
 push @def, 'HAVE_OPENSSL';
 push @def, 'OPENSSL_NO_IDEA';
 push @def, 'HAVE_GD' if $PATH{gd};
+push @def, 'DEBUG' if $opt_debug;
 
 my @inc;
 
-### look for various directories, prompt if necessary
-
+### add paths to g++ @inc list
 push @inc, "$PATH{apache}\\include";
 push @inc, "$PATH{mingw}\\include";
 push @inc, "sqlite";
 push @inc, "$PATH{openssl}\\include";
 push @inc, 'libsmx';
 
-checkinc();
+checkinc();			# die if any of the inc's don't exist
 
-if (!lookfor('atlbase.h', $ENV{INC})) {
+# define NOACTIVEX, if it's not availalbe
+if (!lookfor('atlbase.h', join(';', @inc))) {
 	print "Setting -DNOACTIVEX\n";
 	push @def, 'NOACTIVEX';
 }
 
-my $cl_cmd = $FILE{g_pp}; $cl_cmd .= " -g" if $opt_debug;
+# 
+my $cl_cmd = $FILE{g_pp}; 
+
+$cl_cmd .= " -g" if $opt_debug;
+$cl_cmd .= " -O2" if !$opt_debug;
 
 for (@inc) {
 	next unless $_;
@@ -86,22 +94,50 @@ $ld_cmd .= " -g" if $opt_debug;
 
 my $ld_libs = "$FILE{sqlite_dll} -lwsock32 -lws2_32 -lodbc32 -lshlwapi -L$PATH{openssl} -llibeay32 -L\"$PATH{apache}\\bin\" -lapr-1 -lhttpd \"$PATH{apache}\\lib\\libapr-1.lib\"  \"$PATH{apache}\\lib\\libhttpd.lib\"";
 
+##### ok, run the 'fake make'  #####
+
 my $make = make('.');
+
+##### making a 'release' package  #####
+
+if ($opt_command eq 'test') {
+}
+
+if ($opt_command eq 'release') {
+	mkdir "release";
 	
-if ($ARGV[0] =~ /^release|dist$/) {
-	mkdir "dist";
+	my $rel = $PACKAGE_RELEASE > 0 ? "-$PACKAGE_RELEASE" : "";
+	
 
 	for (release_targets($make)) {
-		"copy $_ dist";
+		my $fn = $_; $fn =~ s/.*\\//;		
+		if ((stat($_))[9] > (stat("release\\$fn"))[9]) {
+			system("copy \"$_\" release");
+		}
 	}
-	
-	my $cmd = "tar -cvf smx-$PACKAGE_VERSION-win32-x86.tar dist";
-	print "$cmd\n";
-	system($cmd);
 
-	my $cmd = "gzip smx-$PACKAGE_VERSION-win32-x86.tar";
-	print "$cmd\n";
-	system($cmd);
+	my $cmd = '';
+	if ($cmd = lookfor('tar.exe')) {
+		pushdir('release');
+		$cmd = "\"$cmd\" -cvf ..\\$PACKAGE_NAME-$PACKAGE_VERSION${rel}-win32.tar *";
+		print "$cmd\n";
+		system($cmd);
+		popdir();
+		
+		if ($cmd = lookfor('gzip.exe')) {
+			$cmd = "\"$cmd\" $PACKAGE_NAME-$PACKAGE_VERSION${rel}-win32.tar";
+			print "$cmd\n";
+			system($cmd);
+		}
+	}
+
+	if ($cmd = lookfor('7z.exe', "$ENV{PATH};$ENV{ProgramFiles}\\7-zip")) {
+		pushdir('release');
+		$cmd = "\"$cmd\" U ..\\$PACKAGE_NAME-$PACKAGE_VERSION${rel}-win32.zip *";
+		print "$cmd\n";
+		system($cmd);
+		popdir();
+	}
 }
 
 sub checkcfg {
@@ -208,17 +244,52 @@ sub make {
 		}
 	}
 
-	for my $target (@{$make->{libs}}) {
-		make_target($make, $target);		
+	if ($make->{libs} || $make->{exes}) {
+		mkdir('.debug') if $opt_debug;
 	}
 
-	for my $target (@{$make->{exes}}) {
-		make_target($make, $target);		
-	}
+	if ($opt_command eq 'clean') {
+		for my $target (@{$make->{libs}}) {
+			clean_target($make, $target);		
+		}
 
+		for my $target (@{$make->{exes}}) {
+			clean_target($make, $target);		
+		}
+	} else {
+		for my $target (@{$make->{libs}}) {
+			make_target($make, $target);		
+		}
+
+		for my $target (@{$make->{exes}}) {
+			make_target($make, $target);		
+		}
+	}
+	
 	popdir();
 
 	return $make;
+}
+
+sub clean_target {
+	my ($make, $target) = @_;
+	
+	print "del ";
+	for (split(/\s+/, $make->{$target}->{sources})) {
+		if ($_ =~ /\.cp?p?$/) {
+			my $fbase = $_; $fbase =~ s/\.[^.]+$//;
+			my $obj = "$fbase.o";
+			my $dep = "$fbase.d";
+			$obj =~ s/^/.debug\\/ if $opt_debug;
+			print "$obj ";
+			print "$dep ";
+			unlink $obj;
+		}
+	}
+	my $out = $target;
+	$out =~ s/^/.debug\\/ if $opt_debug;
+	print "$out\n";
+	unlink $out;
 }
 
 sub make_target {
@@ -242,14 +313,15 @@ sub make_target {
 
 	$mtime = (time()+1) if $opt_remake;	
 	
-	if ($mtime > (stat($target))[9]) {
+	my $out = $target;
+	$out =~ s/^/.debug\\/ if $opt_debug;
+	
+	if ($mtime > (stat($out))[9]) {
 		$make->{$target}->{objs} =~ s/^ //;
 		if ($make->{$target}->{objs}) {
 			my $shared = ' -shared' if $target =~ /.dll$/;
-			my $out = $target;
-			$out =~ s/\./_dbg\./ if $opt_debug;
-			my $cmd = "$ld_cmd " . $make->{$target}->{objs} . "$shared -o $out";
 			
+			my $cmd = "$ld_cmd " . $make->{$target}->{objs} . "$shared -o $out";
 			
 			$make->{$target}->{ldflags} =~ s/-lperl\b//;		# on unix this is ok, on win it isn't
 			
@@ -282,6 +354,8 @@ sub make_cpp {
 		$dt = max($dt, ((stat($_))[9]));
 	}
 	$dt = max($dt, (stat($fil))[9]);
+
+	$obj =~ s/^/.debug\\/ if $opt_debug;
 	
 	my $tt = (stat($obj))[9];
 	return $obj if $tt >= $dt && !$opt_remake;
@@ -421,6 +495,10 @@ sub loadcfg
         my $cont = new Safe;
         my $cfg = eval {
                 package CFG;
+		# copy key environment vars to the container
+		for (qw(OPENSSL_CONF LOCALAPPDATA ProgramFiles SystemRoot TEMP TMP USERPROFILE)) {
+			$cont->reval("\$ENV{$_}='$ENV{$_}'");
+		}
                 $cont->rdo($CFG_FILE);          # read in the config
         };
         if ($cfg) {
@@ -466,18 +544,46 @@ sub checkinc {
 	}
 }
 
-sub getpackageversion {
-	### read in the 'nix "configure" command
-	my $unixconf = grab('configure');
+sub quoteshell {
+	my $s = shift;
+	$s =~ s/\"/\"\"/g;
+	return $s;
+}
 
-	die "Need 'configure', even if i'm not going to run it\n" 
-		unless $unixconf;
-	my @def;
-	if ($unixconf =~ m/(PACKAGE_VERSION=([^\n]+))/) {
-		return eval($2);
-	} else {
-		die "Can't get PACKAGE_VERSION from configure";
+sub getpackageversion {
+	### munge the 'nix "configure.ac"
+	
+	my $unixconf = grab('configure.ac');
+	my ($name, $ver, $em) = $unixconf=~ m|AC_INIT\(\s*([^,\s]+)\s*,\s*([^,\s]+)\s*,\s*([^,\s\(\)]+)\s*\)|;
+	our %PROG = $unixconf=~ m|AC_PATH_PROG\(\s*([^,\s]+)\s*,\s*([^,\s\(\)]+)\s*\)|g;
+	for (keys(%PROG)) {
+		$PROG{$_} = lookfor($PROG{$_} . '.exe');
 	}
+
+	my $spec= grab($name . '.spec.in');
+	my ($rel) = $spec =~ m|%define rel (\S+)|i;
+	
+	if ($rel =~ m|\@(\S+)\@|) {
+		($rel) = $unixconf =~ m|$1\s*=\s*([^\n]+)|;
+		if ($rel =~ /svnversion/i) {
+			$rel = `svnversion`;
+			$rel =~ s/\s+$//s;
+			$rel =~ s/^(?:.*:)?(.*)[MSP]$/$1/;
+		} else {
+			$rel =~ s/\$(\w+)/\"$PROG{$1}\"/g;
+			$rel =~ s/\bcat\b/type/g;
+			if ($rel =~ s/\bsed\b/$^X -pe/g) {
+				$rel =~ s/\[\[/\[/g;
+				$rel =~ s/\]\]/\]/g;
+			}
+			$rel =~ s/'([^']+)'/'"' . quoteshell($1) . '"'/ge;
+			$rel =~ s|/dev/null|nul|g;
+			$rel =~ s/;/&&/;
+			$rel =~ s/`([^`]+)`/`$1`/ge;
+			die "Can't determine release: $!" if $!;
+		}
+	}
+	return ($name, $ver, $em, $rel);
 }
 
 
