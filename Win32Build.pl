@@ -4,84 +4,86 @@
 use strict;
 use Getopt::Long;
 use Cwd qw(cwd);
-use Carp qw(confess);
+use Carp qw(confess cluck);
 use Data::Dumper;
 
 our $opt_remake;
 our $opt_debug;
-GetOptions("remake", "debug");
 
-### change these or reply to prompts
-$ENV{PATH}   .= ';\MinGW\bin';
-$ENV{INC}    .= ';\MinGW\include';
-$ENV{LIB}    .= ';\MinGW\lib';
-$ENV{APPATH} .= ';\Program Files\Apache Software Foundation\Apache*';
-$ENV{LDADD}   = 'libstdc++.a' unless $ENV{LDADD};
+GetOptions("remake", "debug") || die "USAGE: perl Win32Build.pl [-remake] [-debug] [dist|test]";
 
-### read in the 'nix "configure" command
-my $unixconf = grab('configure');
-die "Need 'configure', even if i'm not going to run it\n" unless $unixconf;
+our $opt_command = shift @ARGV;
+
+### this file contains all the "paths" and any "flags" used
+my $CFG_FILE = "Win32Build.conf";                  	# location of config file
+my %CFG;
+
+loadcfg();
+checkcfg();
+
+my %PATH = %{$CFG{paths}};                                               # path hash
+
+### list of *required* files
+my %FILE = (
+	sqlite_dll=>"sqlite3.dll",
+	libapr_lib=>"$PATH{apache}\\lib\\libapr-1.lib",
+	libhttpd_lib=>"$PATH{apache}\\lib\\libhttpd.lib",
+	apache_inc=>"$PATH{apache}\\include",
+	g_pp=>"$PATH{mingw}\\bin\\g++.exe",
+);
+
+checkfiles();
+
+my $perl_dll_base = abs_path($0);  $perl_dll_base =~ s/\\.*?$//;
+die $perl_dll_base;
 
 ### extract package version, add to defs
-my $PACKAGE_VERSION;
 my @def;
-if ($unixconf =~ m/(PACKAGE_VERSION=([^\n]+))/) {
-	$PACKAGE_VERSION = eval($2);
-	push @def, $1;
-} else {
-	die "Can't get PACKAGE_VERSION from configure";
-}
 
+my $PACKAGE_VERSION = getpackageversion() || die "Can't find package version";
+
+push @def, "PACKAGE_VERSION=$PACKAGE_VERSION";
 push @def, 'HAVE_SQLITE3_H';
 push @def, 'HAVE_OPENSSL';
-
-### find compiler
-my $cl;
-$cl = lookfor("g++.exe") if !$cl;
-
-die "Can't find g++.exe" unless $cl;
-
-### find linker
-my $ld;
-$ld = lookfor("ld.exe") if !$ld;
-
-die "Can't find ld.exe" unless $ld;
+push @def, 'OPENSSL_NO_IDEA';
+push @def, 'HAVE_GD' if $PATH{gd};
 
 my @inc;
 
 ### look for various directories, prompt if necessary
-my $APACHEDIR = lookfor('include' , $ENV{APPATH}, prompt=>'Apache Directory', pathonly=>1);
 
-push @inc, "$APACHEDIR\\include";
-push @inc, lookfor('winbase.h', $ENV{INC}, pathonly=>1, prompt=>'MinGW or Visual C++ includes');
-push @inc, lookfor('sqlite3.h', $ENV{INC} . ';sqlite', pathonly=>1);
-push @inc, lookfor('openssl\evp.h', '\openssl\include;..\openssl\include', pathonly=>1, prompt=>'OpenSSL Directory');
-push @inc, '..\\libsmx';
+push @inc, "$PATH{apache}\\include";
+push @inc, "$PATH{mingw}\\include";
+push @inc, "sqlite";
+push @inc, "$PATH{openssl}\\include";
+push @inc, 'libsmx';
+
+checkinc();
 
 if (!lookfor('atlbase.h', $ENV{INC})) {
-	print "Setting -DNOACTIVEX";
+	print "Setting -DNOACTIVEX\n";
 	push @def, 'NOACTIVEX';
 }
 
-my $cl_cmd = $cl;
-$cl_cmd .= " -g" if $opt_debug;
+my $cl_cmd = $FILE{g_pp}; $cl_cmd .= " -g" if $opt_debug;
+
 for (@inc) {
 	next unless $_;
 	$cl_cmd .= " -I\"$_\"";
 };
+
 for (@def) {
 	next unless $_;
 	$cl_cmd .= " -D$_";
 };
 
-
-my $ld_cmd = $cl;
+my $ld_cmd = $FILE{g_pp};
 $ld_cmd .= " -g" if $opt_debug;
 
-my $ld_libs = " c:\\bin\\sqlite3.dll -lwsock32 -lws2_32 -lodbc32 -lshlwapi -Lc:\\dev\\openssl -llibeay32 -L\"$APACHEDIR\\bin\" -lapr-1 -lhttpd \"$APACHEDIR\\lib\\libapr-1.lib\"  \"$APACHEDIR\\lib\\libhttpd.lib\"";
+my $ld_libs = "$FILE{sqlite_dll} -lwsock32 -lws2_32 -lodbc32 -lshlwapi -L$PATH{openssl} -llibeay32 -L\"$PATH{apache}\\bin\" -lapr-1 -lhttpd \"$PATH{apache}\\lib\\libapr-1.lib\"  \"$PATH{apache}\\lib\\libhttpd.lib\"";
 
 my $make = make('.');
-
+	
 if ($ARGV[0] eq 'release') {
 	my $cmd = "tar -cvf smx-$PACKAGE_VERSION-win32-x86.tar " . join ' ', release_targets($make);
 	print "$cmd\n";
@@ -90,6 +92,28 @@ if ($ARGV[0] eq 'release') {
 	my $cmd = "gzip smx-$PACKAGE_VERSION-win32-x86.tar";
 	print "$cmd\n";
 	system($cmd);
+}
+
+sub checkcfg {
+	my $save = 0;
+	for my $name (keys(%{$CFG{paths}})) {
+		my $path = $CFG{paths}{$name};
+		my $found;
+		for (split(/;/,$path)) {
+			if (my $actual = wcpath($_)) {
+				$CFG{paths}{$name} = $actual;
+				$found = 1;
+				last;
+			}
+		}
+		if (!$found) {
+			$CFG{paths}{$name} = prompt("Path for $name: ");
+			$save = 1;
+		}
+	}
+	if ($save) {
+		savecfg();
+	}
 }
 
 sub release_targets {
@@ -121,7 +145,6 @@ sub make_gettargets {
 	for my $target (split /\s+/, $make->{$name}) {
 		my $src = delete $make->{amname($target) . "_SOURCES"};
 		my $ldadd = delete $make->{amname($target) . "_LDADD"};
-
 		   $ldadd .= delete $make->{amname($target) . "_LIBADD"};
 
 		$ldadd =~ s/\.la/\.dll/g;
@@ -158,7 +181,7 @@ sub make {
 	my $make = readam();
 
 	print "Skipping $dir\n" if !$make;
-	
+
 	for my $sub (split(/\s+/, $make->{SUBDIRS})) {
 		$make->{$sub} = make($sub);
 	}
@@ -213,8 +236,8 @@ sub make_target {
 			$out =~ s/\./_dbg\./ if $opt_debug;
 			my $cmd = "$ld_cmd " . $make->{$target}->{objs} . "$shared -o $out";
 			$make->{$target}->{ldflags} =~ s/`([^`]+)`/`$1`/ge;
-			$make->{$target}->{ldflags} =~ s/-lperl/-lperl510/;	# bad hardcode among many!
-			$cmd .= " $ld_libs $make->{$target}->{ldadd} $make->{$target}->{ldflags}";
+			$make->{$target}->{ldflags} =~ s/-lperl\b/-l$perl_dll_base/;	
+			$cmd .= " $make->{$target}->{ldadd} $ld_libs $make->{$target}->{ldflags}";
 			print "$cmd\n";
 			system($cmd) && die;
 		}
@@ -301,10 +324,11 @@ sub wcpath {
 				$dir = wcpath($dir . "\\" . $rest);
 				next unless $dir;
 			}
+			$dir =~ s/\\\\/\\/g;
 			push @res, $dir;
 		}
 		closedir(D);
-		return @res;
+		return wantarray ? @res : $res[0];
 	} else {
 		return ($path) if -e $path;
 	}
@@ -353,4 +377,70 @@ sub abs_path {
 	my $f = Cwd::abs_path(shift);
 	$f =~ s/\//\\/g;
 	return $f;
+}
+
+
+sub loadcfg
+{
+        require Safe;                           # somewhat safe evaluation container
+        my $cont = new Safe;
+        my $cfg = eval {
+                package CFG;
+                $cont->rdo($CFG_FILE);          # read in the config
+        };
+        if ($cfg) {
+                %CFG = %{$cfg};                         # assign to the global hash
+        }
+}
+
+sub savecfg {
+        require Data::Dumper;                   # dump config hash into the config file
+        scrib($CFG_FILE, Data::Dumper->Dump([\%CFG]));
+}
+
+sub scrib {
+        my ($f, $d) = @_;
+        open OUT, ">$f";                        # write out a string as a whole file
+        print OUT $d;
+        close OUT;
+}
+
+sub prompt {
+        print $_[0] . ($_[1] ? " ($_[1]) " : "");       # show the prompt, and the default value if any
+        my $r = <STDIN>;
+        chomp($r);
+        $r = $_[1] if !$r;                      # assign the default value if needed
+        return $r;
+}
+
+sub checkfiles {
+	for (keys(%FILE)) {
+		my $path = $FILE{$_};
+		if ($path !~ /\\/) {
+			$path = lookfor($path);
+			$FILE{$_} = $path;
+		}
+		die "Can't find $path" unless -e $path;
+	}
+}
+
+sub checkinc {
+	for (@inc) {
+		$_ = abs_path($_);
+		die "Can't find $_" unless -e $_;
+	}
+}
+
+sub getpackageversion {
+	### read in the 'nix "configure" command
+	my $unixconf = grab('configure');
+
+	die "Need 'configure', even if i'm not going to run it\n" 
+		unless $unixconf;
+	my @def;
+	if ($unixconf =~ m/(PACKAGE_VERSION=([^\n]+))/) {
+		return eval($2);
+	} else {
+		die "Can't get PACKAGE_VERSION from configure";
+	}
 }
