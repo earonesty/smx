@@ -251,16 +251,16 @@ sub make_target {
 			my $cmd = "$ld_cmd " . $make->{$target}->{objs} . "$shared -o $out";
 			
 			
+			$make->{$target}->{ldflags} =~ s/-lperl\b//;		# on unix this is ok, on win it isn't
+			
+			$make->{$target}->{ldflags} =~ s/`([^`]+)`/`$1`/ge;
 			if ($make->{$target}->{ldflags} =~ /perl/i) {
-				$make->{$target}->{ldflags} =~ s/`([^`]+)`/`$1`/ge;
-				$make->{$target}->{ldflags} =~ s/-lperl\b//;
+				# perl's extutils rarely outputs what we need for mingw, so clean things up
 				$make->{$target}->{ldflags} =~ s/-libpath:/-L:/;
 				$make->{$target}->{ldflags} =~ s/-nologo//;
 				$make->{$target}->{ldflags} =~ s/-nodefaultlib//;
 				$make->{$target}->{ldflags} =~ s/-debug//;
 				$make->{$target}->{ldflags} =~ s/-opt:\S+//;
-			} else {
-				$make->{$target}->{ldflags} =~ s/`([^`]+)`/`$1`/ge;
 			}
 			
 			$cmd .= " $make->{$target}->{ldadd} $ld_libs $make->{$target}->{ldflags}";
