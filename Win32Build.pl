@@ -133,7 +133,7 @@ if ($opt_command eq 'release') {
 
 	if ($cmd = lookfor('7z.exe', "$ENV{PATH};$ENV{ProgramFiles}\\7-zip")) {
 		pushdir('release');
-		$cmd = "\"$cmd\" U ..\\$PACKAGE_NAME-$PACKAGE_VERSION${rel}-win32.zip *";
+		$cmd = "\"$cmd\" A -tzip ..\\$PACKAGE_NAME-$PACKAGE_VERSION${rel}-win32.zip *";
 		print "$cmd\n";
 		system($cmd);
 		popdir();
