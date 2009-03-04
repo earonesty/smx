@@ -88,8 +88,14 @@ my $ld_libs = "$FILE{sqlite_dll} -lwsock32 -lws2_32 -lodbc32 -lshlwapi -L$PATH{o
 
 my $make = make('.');
 	
-if ($ARGV[0] eq 'release') {
-	my $cmd = "tar -cvf smx-$PACKAGE_VERSION-win32-x86.tar " . join ' ', release_targets($make);
+if ($ARGV[0] =~ /^release|dist$/) {
+	mkdir "dist";
+
+	for (release_targets($make)) {
+		"copy $_ dist";
+	}
+	
+	my $cmd = "tar -cvf smx-$PACKAGE_VERSION-win32-x86.tar dist";
 	print "$cmd\n";
 	system($cmd);
 
@@ -244,12 +250,17 @@ sub make_target {
 			$out =~ s/\./_dbg\./ if $opt_debug;
 			my $cmd = "$ld_cmd " . $make->{$target}->{objs} . "$shared -o $out";
 			
-			$make->{$target}->{ldflags} =~ s/`([^`]+)`/`$1`/ge;
 			
 			if ($make->{$target}->{ldflags} =~ /perl/i) {
-				$make->{$target}->{ldflags} =~ s/-lperl\b/-l$perl_dll_base/;
+				$make->{$target}->{ldflags} =~ s/`([^`]+)`/`$1`/ge;
+				$make->{$target}->{ldflags} =~ s/-lperl\b//;
 				$make->{$target}->{ldflags} =~ s/-libpath:/-L:/;
-				$make->{$target}->{ldflags} = "-L$PATH{perl} " . $make->{$target}->{ldflags};
+				$make->{$target}->{ldflags} =~ s/-nologo//;
+				$make->{$target}->{ldflags} =~ s/-nodefaultlib//;
+				$make->{$target}->{ldflags} =~ s/-debug//;
+				$make->{$target}->{ldflags} =~ s/-opt:\S+//;
+			} else {
+				$make->{$target}->{ldflags} =~ s/`([^`]+)`/`$1`/ge;
 			}
 			
 			$cmd .= " $make->{$target}->{ldadd} $ld_libs $make->{$target}->{ldflags}";
