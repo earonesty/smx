@@ -467,6 +467,11 @@ sub wcmatch {
 
 sub readam {
 	my %am;
+	my $ac = grab('configure.ac');
+	for ($ac =~ m|AC_CHECK_PROG\(([^\(\)]+)\)|g) {
+		my ($var, $prog, $ok, $nok) = split(/\s*,\s*/, $_);
+		$am{$var} = lookfor($prog . ".exe") ? $ok : $nok;
+	}
 	open(IN, 'Makefile.am');
 	while(<IN>) {
 		chomp;
