@@ -207,7 +207,12 @@ static void signal_handler(int sig)
 	longjmp(sigenv,sig);
 }
 
+#ifdef WIN32
 #define BEGINFPE if (setjmp(sigenv)!=0) {return;} signal(SIGFPE, signal_handler);
+#else
+#define BEGINFPE if (setjmp(sigenv)!=0) {return;} sigset(SIGFPE, signal_handler);
+#endif
+
 #define ENDFPE signal(SIGFPE, SIG_DFL);
 
 void EvalIDiv(const void *data, qCtx *ctx, qStr *out, qArgAry *args) {

@@ -33,6 +33,7 @@ THIS SOFTWARE IS PROVIDED 'AS IS' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDI
 #include <unistd.h>
 #include <errno.h>
 #include <dlfcn.h>
+#include <wchar.h>
 
 #ifdef USE_ATOMIC_H
 #include <asm/atomic.h>

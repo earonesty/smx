@@ -55,7 +55,7 @@ RELEASE=`$SVNVERSION > /dev/null 2>&1 && (svnversion | sed 's/.*://' | sed 's/[[
 AC_SUBST(RELEASE)
 
 # sets HAVE_PERL conditional
-AM_CONDITIONAL(HAVE_PERL, test -n "$PERL")
+AM_CONDITIONAL(HAVE_PERL, [test -n "$PERL"])
 
 # Checks for typedefs, structures, and compiler characteristics.
 AC_HEADER_STDBOOL
