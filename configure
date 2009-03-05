@@ -20909,7 +20909,7 @@ RELEASE=`$SVNVERSION > /dev/null 2>&1 && (svnversion | sed 's/.*://' | sed 's/[M
 
 
 # sets HAVE_PERL conditional
- if test -n "$PERL"; then
+ if test "x${PERL}" != "x"; then
   HAVE_PERL_TRUE=
   HAVE_PERL_FALSE='#'
 else
