@@ -98,6 +98,7 @@ ECHO_N = @ECHO_N@
 ECHO_T = @ECHO_T@
 EGREP = @EGREP@
 EXEEXT = @EXEEXT@
+EXTPERL = @EXTPERL@
 F77 = @F77@
 FFLAGS = @FFLAGS@
 GREP = @GREP@
@@ -123,7 +124,6 @@ PACKAGE_STRING = @PACKAGE_STRING@
 PACKAGE_TARNAME = @PACKAGE_TARNAME@
 PACKAGE_VERSION = @PACKAGE_VERSION@
 PATH_SEPARATOR = @PATH_SEPARATOR@
-PERL = @PERL@
 POW_LIB = @POW_LIB@
 RANLIB = @RANLIB@
 RELEASE = @RELEASE@
@@ -632,7 +632,6 @@ uninstall-am:
 	mostlyclean-generic mostlyclean-libtool pdf pdf-am ps ps-am \
 	tags tags-recursive uninstall uninstall-am
 
-@HAVE_PERL_TRUE@	EXTPERL = extperl
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:
