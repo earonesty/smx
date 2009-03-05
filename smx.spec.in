@@ -37,17 +37,8 @@ building applications which use %{name}.
 %setup -q
 
 %build
-if [ -x ./configure ]; then
-  CFLAGS="$RPM_OPT_FLAGS" ./configure --prefix=%{_prefix} --mandir=%{_mandir}
-else
-  CFLAGS="$RPM_OPT_FLAGS" ./autogen.sh --prefix=%{_prefix} --mandir=%{_mandir}
-fi
-make
-
-%install
-rm -rf ${buildroot}
-make DESTDIR=%{buildroot} install
-
+%configure
+%makeinstall
 %clean
 rm -rf %{buildroot}
 
@@ -61,6 +52,7 @@ rm -rf %{buildroot}
 %{_bindir}/smx
 %{_libdir}/libsmx.*
 %{_libdir}/libmodsmx.*
+%{_libdir}/libextperl.*
 %{_prefix}/share/man/man3/%*
 
 %files devel
