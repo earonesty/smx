@@ -22,6 +22,9 @@ THIS SOFTWARE IS PROVIDED 'AS IS' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDI
 #include "qctx-comp.h"
 #include "core.h"
 #include "util.h"
+#ifdef unix
+#include <pwd.h>
+#endif
 
 #include "strary.h"
 
@@ -818,6 +821,12 @@ void EvalSafeUID(const void *data, qCtx *ctx, qStr *out, qArgAry *args) {
 	if (args->Count()>0) {
 		if (!ctx->GetSafeMode()) {
 			int uid = ParseInt((*args)[0]);
+			if (!uid) {
+#ifdef unix
+			struct passwd *pw = getpwnam((*args)[0]);
+			if (pw) uid = pw->pw_uid;
+#endif
+			}
 			ctx->SetSafeUID(uid);
 		}
 	}	
