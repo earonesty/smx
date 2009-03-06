@@ -24,6 +24,9 @@
 /* Define to 1 if you have the <arpa/inet.h> header file. */
 #undef HAVE_ARPA_INET_H
 
+/* Define to 1 if you have the <bits/atomicity.h> header file. */
+#undef HAVE_BITS_ATOMICITY_H
+
 /* Define to 1 if you have the `bzero' function. */
 #undef HAVE_BZERO
 
@@ -43,6 +46,9 @@
 
 /* Define to 1 if you have the `dup2' function. */
 #undef HAVE_DUP2
+
+/* Define to 1 if you have the <ext/atomicitiy.h> header file. */
+#undef HAVE_EXT_ATOMICITIY_H
 
 /* Define to 1 if you have the <fcntl.h> header file. */
 #undef HAVE_FCNTL_H

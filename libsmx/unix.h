@@ -38,7 +38,11 @@ THIS SOFTWARE IS PROVIDED 'AS IS' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDI
 #ifdef USE_ATOMIC_H
 #include <asm/atomic.h>
 #else
+#ifdef HAVE_BITS_ATOMICITY_H
 #include <bits/atomicity.h>
+#else
+#include <ext/atomicity.h>
+#endif
 #endif
 
 #include "unix_interlock.h"

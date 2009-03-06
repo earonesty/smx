@@ -64,7 +64,7 @@ THIS SOFTWARE IS PROVIDED 'AS IS' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDI
 **/
 
 typedef int		MTHREADINT;
-typedef void	VOID;
+#define	VOID void
 typedef void	ANY;
 typedef void*   MTHREADROUTINE;
 
