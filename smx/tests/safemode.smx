@@ -1,3 +1,2 @@
-%safe-uid(smxlang.org)
 %safe-mode(1)
 %create-file(safemodedir/test-safe.tmp,1)
