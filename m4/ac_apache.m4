@@ -72,7 +72,7 @@ AC_DEFUN([APACHE_APXS], [
       if test "$HTTPD" = ""; then
         AC_MSG_ERROR(["could not find httpd from apxs"])
       else
-        HTTPD_VERSION="`$HTTPD -V | grep 1.3`"
+        HTTPD_VERSION="`$HTTPD -V | grep /1.3`"
         if test -n "$HTTPD_VERSION"; then
           AC_MSG_RESULT(["$APXS Version $HTTPD_VERSION"])
         else
