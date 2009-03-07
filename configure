@@ -21640,7 +21640,7 @@ $as_echo "no" >&6; }
 fi
 
 
-RELEASE=`$SVNVERSION > /dev/null 2>&1 && ($SVNVERSION | sed 's/.*://' | sed 's/[MSP]$//' > release.txt); cat release.txt`
+RELEASE=`($SVNVERSION > /dev/null 2>&1) && ($SVNVERSION | grep [0-9] > /dev/null) && ($SVNVERSION | sed 's/.*://' | sed 's/[MSP]$//' > release.txt); cat release.txt`
 
 
 
