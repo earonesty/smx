@@ -25,7 +25,6 @@ THIS SOFTWARE IS PROVIDED 'AS IS' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDI
 #include <assert.h>
 #include <ctype.h>
 #include <errno.h>
-#include <iostream>
 #include <fcntl.h>
 
 #ifdef WIN32
