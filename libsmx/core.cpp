@@ -819,7 +819,7 @@ void EvalSafeMode(const void *data, qCtx *ctx, qStr *out, qArgAry *args) {
 }
 void EvalSafeUID(const void *data, qCtx *ctx, qStr *out, qArgAry *args) {
 	if (args->Count()>0) {
-		if (!ctx->GetSafeMode()) {
+		if (!(*args)[0].IsEmpty() && !ctx->GetSafeMode()) {
 			int uid = ParseInt((*args)[0]);
 			if (!uid) {
 #ifdef unix
