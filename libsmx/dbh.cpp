@@ -100,18 +100,24 @@ bool CDBHash::Open()
 	CDBDriver *t = NULL;
 
 #ifdef DBH_SQLITE3
-	t = new CDBDriverSqlite(m_path);
-	if (t->IsOpen()) v = t;
+	if (!v) {
+		t = new CDBDriverSqlite(m_path);
+		if (t->IsOpen()) v = t;
+	}
 #endif
 
 #ifdef DBH_TDB
-        t = new CDBDriverTdb(m_path);
-	if (t->IsOpen()) v = t;
+	if (!v) {
+        	t = new CDBDriverTdb(m_path);
+		if (t->IsOpen()) v = t;
+	}
 #endif
 
 #ifdef DBH_BDB
-        t = new CDBDriverBdb(m_path);
-	if (t->IsOpen()) v = t;
+	if (!v) {
+        	t = new CDBDriverBdb(m_path);
+		if (t->IsOpen()) v = t;
+	}
 #endif
 
         if (v) {
