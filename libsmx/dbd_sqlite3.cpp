@@ -31,38 +31,42 @@ CDBDriverSqlite::CDBDriverSqlite(const char *path)
 #else
 	#define SQLITE3_PREP sqlite3_prepare
 #endif
-	
-	sqlite3 *t = NULL;
-        int err = sqlite3_open(path, &t);
+
+	m_db = NULL;
+	m_st_get = NULL;	
+	m_st_set = NULL;	
+	m_st_del = NULL;	
+        int err = sqlite3_open(path, &m_db);
         if (err) {
-                smx_log_pf(SMXLOGLEVEL_WARNING, err, "SQLITE3 open failed", path, t ? sqlite3_errmsg(t) : "");
+                smx_log_pf(SMXLOGLEVEL_WARNING, err, "SQLITE3 open failed", path, m_db ? sqlite3_errmsg(m_db) : "");
         } else {
 		const char *p;
 		sqlite3_busy_timeout(t, 100);
 		char *msg = NULL;
-		if (sqlite3_exec(t, "create table if not exists h (k text primary key, v text)", NULL, NULL, &msg))  {
+		if (sqlite3_exec(m_db, "create table if not exists h (k text primary key, v text)", NULL, NULL, &msg))  {
                 	smx_log_pf(SMXLOGLEVEL_WARNING, err, "SQLITE3 create table failed", path, msg);
 		} else {
-			if (SQLITE3_PREP(t, "select v from h where k=?", -1, &m_st_get, &p)) {
+			if (SQLITE3_PREP(m_db, "select v from h where k=?", -1, &m_st_get, &p)) {
                 		smx_log_pf(SMXLOGLEVEL_WARNING, err, "SQLITE3 prepare stmt get failed", path, sqlite3_errmsg(t));
 			}
-                        if (SQLITE3_PREP(t, "delete from h where k=?", -1, &m_st_del, &p)) {
+                        if (SQLITE3_PREP(m_db, "delete from h where k=?", -1, &m_st_del, &p)) {
                                 smx_log_pf(SMXLOGLEVEL_WARNING, err, "SQLITE3 prepare stmt del failed", path, sqlite3_errmsg(t));
                         }
-			if (SQLITE3_PREP(t, "insert or replace into h (k, v) values (?, ?)", -1, &m_st_set, &p)) {
+			if (SQLITE3_PREP(m_db, "insert or replace into h (k, v) values (?, ?)", -1, &m_st_set, &p)) {
                 		smx_log_pf(SMXLOGLEVEL_WARNING, err, "SQLITE3 prepare stmt set failed", path, sqlite3_errmsg(t));
 			}
 		}
 	}
 
-	if (!m_st_get || !m_st_del || !m_st_set) {
-		sqlite3_close(t);
-		t = NULL;
-	}
+	if (m_db) {
+		if (!m_st_get || !m_st_del || !m_st_set) {
+			sqlite3_close(m_db);
+			m_db = NULL;
+		} else {
 
-	if (t) {
-		m_db = t;
-		m_path = path;
+			m_db = t;
+			m_path = path;
+		}
 	} else {
 		m_db = NULL;
 	}
