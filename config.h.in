@@ -47,8 +47,8 @@
 /* Define to 1 if you have the `dup2' function. */
 #undef HAVE_DUP2
 
-/* Define to 1 if you have the <ext/atomicitiy.h> header file. */
-#undef HAVE_EXT_ATOMICITIY_H
+/* Define to 1 if you have the <ext/atomicity.h> header file. */
+#undef HAVE_EXT_ATOMICITY_H
 
 /* Define to 1 if you have the <fcntl.h> header file. */
 #undef HAVE_FCNTL_H
