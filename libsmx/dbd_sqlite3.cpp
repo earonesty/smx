@@ -41,19 +41,19 @@ CDBDriverSqlite::CDBDriverSqlite(const char *path)
                 smx_log_pf(SMXLOGLEVEL_WARNING, err, "SQLITE3 open failed", path, m_db ? sqlite3_errmsg(m_db) : "");
         } else {
 		const char *p;
-		sqlite3_busy_timeout(t, 100);
+		sqlite3_busy_timeout(m_db, 100);
 		char *msg = NULL;
 		if (sqlite3_exec(m_db, "create table if not exists h (k text primary key, v text)", NULL, NULL, &msg))  {
                 	smx_log_pf(SMXLOGLEVEL_WARNING, err, "SQLITE3 create table failed", path, msg);
 		} else {
 			if (SQLITE3_PREP(m_db, "select v from h where k=?", -1, &m_st_get, &p)) {
-                		smx_log_pf(SMXLOGLEVEL_WARNING, err, "SQLITE3 prepare stmt get failed", path, sqlite3_errmsg(t));
+                		smx_log_pf(SMXLOGLEVEL_WARNING, err, "SQLITE3 prepare stmt get failed", path, sqlite3_errmsg(m_db));
 			}
                         if (SQLITE3_PREP(m_db, "delete from h where k=?", -1, &m_st_del, &p)) {
-                                smx_log_pf(SMXLOGLEVEL_WARNING, err, "SQLITE3 prepare stmt del failed", path, sqlite3_errmsg(t));
+                                smx_log_pf(SMXLOGLEVEL_WARNING, err, "SQLITE3 prepare stmt del failed", path, sqlite3_errmsg(m_db));
                         }
 			if (SQLITE3_PREP(m_db, "insert or replace into h (k, v) values (?, ?)", -1, &m_st_set, &p)) {
-                		smx_log_pf(SMXLOGLEVEL_WARNING, err, "SQLITE3 prepare stmt set failed", path, sqlite3_errmsg(t));
+                		smx_log_pf(SMXLOGLEVEL_WARNING, err, "SQLITE3 prepare stmt set failed", path, sqlite3_errmsg(m_db));
 			}
 		}
 	}
@@ -63,8 +63,6 @@ CDBDriverSqlite::CDBDriverSqlite(const char *path)
 			sqlite3_close(m_db);
 			m_db = NULL;
 		} else {
-
-			m_db = t;
 			m_path = path;
 		}
 	} else {
