@@ -1,4 +1,3 @@
-####### kdevelop will overwrite this part!!! (begin)##########
 bin_PROGRAMS = smx
 
 smx_SOURCES = qscgi.cpp qscgi.h 

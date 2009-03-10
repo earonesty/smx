@@ -9,7 +9,10 @@ AC_DEFUN([APACHE_APXS], [
                           defaults to "apxs".]],
     [
     if test "$withval" = "yes"; then
-      for i in /usr/local/apache/bin /usr/local/apache2/bin /usr/sbin /usr/bin ; do
+      if test -f `which apxs`; then
+          APXS=`which apxs`
+      fi
+      for i in /usr/local/sbin /usr/local/apache/bin /usr/local/apache2/bin /usr/sbin /usr/bin ; do
         if test -f "$i/apxs"; then
           APXS="$i/apxs"
         fi
@@ -23,7 +26,7 @@ AC_DEFUN([APACHE_APXS], [
     else
       APXS="$withval"
       if test ! -f "$APXS"; then
-        AC_MSG_ERROR(["could not find apxs"])
+        AC_MSG_ERROR(["could not find apxs ($withval)"])
       fi
     fi
 
@@ -49,7 +52,10 @@ AC_DEFUN([APACHE_APXS], [
     fi
     ],
     [
-      for i in /usr/local/apache/bin /usr/local/apache2/bin /usr/sbin /usr/bin ; do
+      if test -f `which apxs`; then
+          APXS=`which apxs`
+      fi
+      for i in /usr/local/sbin /usr/local/apache/bin /usr/local/apache2/bin /usr/sbin /usr/bin ; do
         if test -f "$i/apxs"; then
           APXS="$i/apxs"
         fi
@@ -103,7 +109,13 @@ AC_DEFUN([APACHE_APR], [
       then
         if test "$withval" = "yes";
         then
-          for i in /usr/sbin /usr/local/apache/bin /usr/local/apache2/bin \
+          if test -f `which apr-config`; then
+            APR=`which apr-config`
+          fi
+          if test -f `which apr-1-config`; then
+            APR=`which apr-1-config`
+          fi
+          for i in /usr/sbin /usr/local/bin /usr/local/sbin /usr/local/apache/bin /usr/local/apache2/bin \
             /usr/local/apache/sbin /usr/local/apache2/sbin /usr/bin ; do
             if test -f "$i/apr-config"; then
               APR="$i/apr-config"
@@ -137,7 +149,14 @@ AC_DEFUN([APACHE_APR], [
     [
       if test "$APACHE2" = "yes";
       then
-        for i in /usr/bin /usr/local/apache/bin /usr/local/apache2/bin ; do
+        if test -f `which apr-config`; then
+          APR=`which apr-config`
+        fi
+        if test -f `which apr-1-config`; then
+          APR=`which apr-1-config`
+        fi
+        for i in /usr/sbin /usr/local/bin /usr/local/sbin /usr/local/apache/bin /usr/local/apache2/bin \
+	  /usr/local/apache/sbin /usr/local/apache2/sbin /usr/bin; do
           if test -f "$i/apr-config"; then
             APR="$i/apr-config"
           fi

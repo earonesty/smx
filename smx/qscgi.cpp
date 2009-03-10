@@ -144,7 +144,7 @@ int main(int argc, char* argv[], char* envp[])
 
 
 
-#ifndef linux
+#ifdef WIN32
 #include "shlwapi.h"
 #endif
 
@@ -228,7 +228,10 @@ bool qEnvCGI::Flush()
 
 #ifdef WIN32
 	#define environ _environ
+#else
+	extern char **environ;
 #endif
+
 int qEnvCGI::GetHeaders(qEnvHttpHeaderCB *CB)
 {
 	char **pp = environ;
