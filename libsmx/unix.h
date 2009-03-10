@@ -26,14 +26,17 @@ THIS SOFTWARE IS PROVIDED 'AS IS' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDI
 #include <stdlib.h>
 #include <sys/time.h>
 #include <sys/types.h>
+#include <sys/stat.h>
 #include <ctype.h>
 #include <assert.h>
-#include <string.h>
 #include <fcntl.h>
 #include <unistd.h>
 #include <errno.h>
 #include <dlfcn.h>
 #include <wchar.h>
+#define _XOPEN_SOURCE 600
+#include <string.h>
+#include <strings.h>
 
 #ifdef USE_ATOMIC_H
 #include <asm/atomic.h>
@@ -117,6 +120,14 @@ int GetTempPath(int len, char *name);
 #define _snprintf snprintf
 #define _gcvt gcvt
 #define _fcvt fcvt
+
+#ifndef HAVE_GCVT
+ #define gcvt(val, ndig, buf) (sprintf(buf, "%.*g", ndig, val), buf)
+#endif
+
+#ifndef HAVE_GCVT
+char *fcvt(double number, int ndigits, int *decpt, int *sign);
+#endif
 
 #define _dup dup
 #define _pipe pipe

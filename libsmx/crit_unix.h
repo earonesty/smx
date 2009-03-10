@@ -24,6 +24,13 @@ THIS SOFTWARE IS PROVIDED 'AS IS' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDI
 #include <errno.h>
 #include <assert.h>
 
+#ifndef LOCK_UN
+     #define   LOCK_SH        0x01      /* shared file lock */
+     #define   LOCK_EX        0x02      /* exclusive file lock */
+     #define   LOCK_NB        0x04      /* do not block when locking */
+     #define   LOCK_UN        0x08      /* unlock file */
+#endif
+
 /* MUTEX TYPES */
 #define	MTHREAD_NON_RECURSIVE_MUTEX	 1
 #define	MTHREAD_RECURSIVE_MUTEX	 	 2

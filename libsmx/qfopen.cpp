@@ -182,7 +182,7 @@ qStr *OpenURL(qCtx *ctx, const CStr &path)
 
 	/*if (timed) {
 		qStrBuf wbuf;
-		time_t was = timed->GetTimeGMT();
+		time_t was = timed->GetTime();
 		wbuf.PutS("If-Modified-Since: ");
 		FmtTime(gmtime(&was), "www, dd mmm yyyy hh:nn:ss GMT", &wbuf);
 		ary.Add("/other=" << wbuf);

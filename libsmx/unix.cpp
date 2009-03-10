@@ -282,5 +282,11 @@ int SearchPath(const char *path, const char *fname, const char *ext, int fbuf_si
 }
 
 
+#ifndef HAVE_FCVT
+
 #endif
+
+
+
+#endif // unix
 

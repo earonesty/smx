@@ -377,6 +377,9 @@ void qObjProto::EvalTCPConn(qCtx *ctx, qStr *out, qArgAry *args)
 
 	}
 
+#ifndef IPPORT_TELNET
+#define IPPORT_TELNET 23
+#endif
 	if (!port)
 		port = IPPORT_TELNET;
 
@@ -473,6 +476,9 @@ void qObjProto::EvalWhois(qCtx *ctx, qStr *out, qArgAry *args)
 
 		serv = DEFAULT_WHOIS_HOST;
 	
+#ifndef IPPORT_WHOIS
+#define IPPORT_WHOIS 43
+#endif
 	port = IPPORT_WHOIS;
 
 	int sock_rval, i;

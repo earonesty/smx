@@ -12,7 +12,6 @@ THIS SOFTWARE IS PROVIDED 'AS IS' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDI
 */
 
 
-
 #include "stdafx.h"
 #include "qstr.h"
 #include "qctx.h"
@@ -414,11 +413,9 @@ void exvsprintf(char **out_p, const char *msg_p, va_list vargs)
                 add = FormatMessage(
                         FORMAT_MESSAGE_FROM_SYSTEM, 0, dy, 0, &((*out_p)[off]), 1024, 0);
 #else
-                const char *tbuf = strerror_r((int) dy, &((*out_p)[off]), 1024);
-    add = strlen(tbuf);
-    if (tbuf != &((*out_p)[off])) {
-      strcpy(&((*out_p)[off]),tbuf);
-    }
+                char *obuf = &((*out_p)[off]); 
+		strerror_r((int) dy, obuf, 1024);
+		add = strlen(obuf);
 #endif
                 memcpy(&((*out_p)[add+off]), pmy+2, len-off-2);
                 len = add + len - 2;

@@ -16,6 +16,7 @@ THIS SOFTWARE IS PROVIDED 'AS IS' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDI
 
 #undef UCHAR
 #undef DWORD
+#undef BOOL
 #include <sql.h>
 #include <sqlext.h>
 
@@ -349,7 +350,7 @@ class CDbLib : public qObjTS
 	SQLHENV        myHENV;	// Environment Handle
 	CCrit          myCrit;
 	int			   myMaxBuffer;
-	SQLUINTEGER    myTimeout;
+	SQLULEN    myTimeout;
 
 public:
 
@@ -362,8 +363,8 @@ public:
 	void SetMaxBuffer(int n) {myMaxBuffer = n;}
 	int GetMaxBuffer() {return myMaxBuffer;}
 
-	void SetTimeout(SQLUINTEGER timeout) {myTimeout = timeout;}
-	int GetTimeout() {return myTimeout;}
+	void SetTimeout(SQLULEN timeout) {myTimeout = timeout;}
+	SQLULEN GetTimeout() {return myTimeout;}
 
 	operator SQLHANDLE () 
 		{return myHENV;}
@@ -392,7 +393,7 @@ void _itoa4(int i, char *a)
 class CDbCol
 {
 	char	    *myBuf;
-	SQLINTEGER  *myIndPtr;
+	SQLLEN  *myIndPtr;
 	CDbStmt     *myStmt;
 
 public:
@@ -400,20 +401,20 @@ public:
 	CStr  Name;
 
 	SQLSMALLINT Type;
-	SQLUINTEGER Size;
-	SQLINTEGER  DispSize;
+	SQLULEN Size;
+	SQLLEN  DispSize;
 	SQLSMALLINT Digits;
 	SQLSMALLINT Null;
 
 	void SetStmt(CDbStmt *stmt)     {myStmt = stmt;}
 	void SetBuf(void *mem)			{myBuf = (char *) mem;}
-	void SetIndPtr(void *mem)		{myIndPtr = (SQLINTEGER *) mem;}
+	void SetIndPtr(void *mem)		{myIndPtr = (SQLLEN *) mem;}
 
 	char *GetBuf() {
 		return myBuf + (DispSize+1) * myStmt->BufIndex();
 	}
 
-	inline SQLINTEGER &GetInd() {
+	inline SQLLEN &GetInd() {
 		return myIndPtr[myStmt->BufIndex()];
 	}
 
@@ -662,7 +663,7 @@ bool CDbStmt::Bind()
 		nAlloc += (myCols[i].DispSize + 1);
 	}
 
-	SQLINTEGER rowSetSize = max((long unsigned int) 1, (dbLib->GetMaxBuffer() / (nAlloc + (myColN * sizeof(SQLINTEGER)))));
+	SQLLEN rowSetSize = max((long unsigned int) 1, (dbLib->GetMaxBuffer() / (nAlloc + (myColN * sizeof(SQLINTEGER)))));
 
 	nResult = SQLSetStmtAttr(*myHSTMT, SQL_ATTR_ROW_ARRAY_SIZE, (void *) rowSetSize,   SQL_IS_INTEGER);
 	nResult = SQLGetStmtAttr(*myHSTMT, SQL_ATTR_ROW_ARRAY_SIZE,   &rowSetSize,   SQL_IS_INTEGER,  NULL);
@@ -731,7 +732,7 @@ CDbStmt CDbConn::Execute(const char *sql)
 		doDynamic = true;
 	}
 
-	SQLSetStmtAttr(hstmt, SQL_ATTR_QUERY_TIMEOUT, (void *) myDbLib->GetTimeout(), SQL_IS_UINTEGER);
+	SQLSetStmtAttr(hstmt, SQL_ATTR_QUERY_TIMEOUT, (SQLPOINTER) myDbLib->GetTimeout(), SQL_IS_UINTEGER);
 
 	if (doStatic) {
 		SQLSetStmtAttr(hstmt, SQL_ATTR_CURSOR_SCROLLABLE, (void *) SQL_NONSCROLLABLE, SQL_IS_UINTEGER);
@@ -1249,7 +1250,7 @@ void EvalSqlTimeout(const void *data, qCtx *ctx, qStr *out, qArgAry *args)
 		int val = ParseInt((*args)[0]);
 		dbLib->SetTimeout(val);
 	} else {
-		out->PutN(dbLib->GetTimeout());
+		out->PutN((int) dbLib->GetTimeout());
 	}
 }
 

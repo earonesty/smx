@@ -88,9 +88,6 @@ public:
 	time_t GetTime() {
 		return myTime;
 	}
-	time_t GetTimeGMT() {
-		return myTime + qTime::GetZoneOffset();
-	}
 	void SetTime(time_t t) {
 		myTime = t;
 	}

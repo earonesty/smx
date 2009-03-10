@@ -294,20 +294,12 @@ time_t date_parse(const char *str)
     ** non-portability, and it's only used for local times that don't
     ** specify a zone - those don't occur in email and netnews.
     */
-#if defined(SYSV) || defined(WIN32) || defined(sun)
-    tzset();
-    gmtoff = -timezone;
-#else /* SYSV */
-#ifdef BSD
+#ifdef HAVE_STRUCT_TM_GMTOFF
     gmtoff = now_tmP->tm_gmtoff;
-#else /* BSD */
-    /* You have to fill this in yourself. */
-//    gmtoff = !!!;
+#else
     tzset();
     gmtoff = -timezone;
-
-#endif /* BSD */
-#endif /* SYSV */
+#endif
 
 	local_gmtoff = gmtoff;
 

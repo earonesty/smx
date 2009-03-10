@@ -74,12 +74,12 @@ qEvpMap::qEvpMap() {
 
 	Set("des",  EVP_des_ede_cbc());
 	Set("des3", EVP_des_ede3_cbc());
-#if !defined(NO_IDEA) && !defined(OPENSSL_NO_IDEA)
+#if defined(HAVE_IDEA)
 	Set("idea", EVP_idea_cbc());
 #endif
 	Set("cast", EVP_cast5_cbc());
 	Set("rc2",  EVP_rc2_cbc());
-#if !defined(NO_RC5) && !defined(OPENSSL_NO_RC5)
+#if defined(HAVE_RC5)
 	Set("rc5",  EVP_rc5_32_12_16_cbc());
 #endif
 	Set("bf",   EVP_bf_cbc());

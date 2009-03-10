@@ -34,9 +34,6 @@ public:
 
 	int Compare(time_t time) 
 		{return (myTime > time ? 1 : myTime < time ? -1 : 0);}
-
-	static long GetZoneOffset()
-		{return timezone;}
 };
 
 

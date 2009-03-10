@@ -11,8 +11,8 @@ THIS SOFTWARE IS PROVIDED 'AS IS' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDI
 
 */
 
-#ifndef SMX_SQLITE_H
-#define SMX_SQLITE_H
+#ifndef SMX_SQL_H
+#define SMX_SQL_H
 
 class qObjSql : public qObj {
 public:
@@ -26,4 +26,4 @@ public:
         virtual void EvalEnumCol(qCtx *ctx, qStr *out, qArgAry *args)=0;
 };
 
-#endif //#ifndef SMX_SQLITE_H
+#endif //#ifndef SMX_SQL_H

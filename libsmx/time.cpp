@@ -157,7 +157,7 @@ void EvalMakeGTime(const void *gtime, qCtx *ctx, qStr *out, qArgAry *args) {
 		time_t tmt = mktime( &tms );
 
 		if (gtime && (tmt != -1)) 
-			tmt -= _timezone;
+			tmt -= tms.tm_gmtoff;
 
 		out->PutN(tmt);
 	}

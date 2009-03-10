@@ -20,7 +20,9 @@ THIS SOFTWARE IS PROVIDED 'AS IS' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDI
 #ifdef WIN32
 #include <io.h>
 #else
+#ifdef HAVE_SYS_IO_H
 #include <sys/io.h>
+#endif
 #endif
 
 int fcmppos(fpos_t a, fpos_t b)

@@ -207,7 +207,7 @@ static void signal_handler(int sig)
 	longjmp(sigenv,sig);
 }
 
-#ifdef WIN32
+#ifndef sigset
 #define BEGINFPE if (setjmp(sigenv)!=0) {return;} signal(SIGFPE, signal_handler);
 #else
 #define BEGINFPE if (setjmp(sigenv)!=0) {return;} sigset(SIGFPE, signal_handler);
@@ -509,11 +509,12 @@ void EvalRound(const void *data, qCtx *ctx, qStr *out, qArgAry *args) {
 	VALID_ARGC("round", 1, 2);
 	double val = ParseDbl((*args)[0]);
 	int num = 0;
-	int dec; int sig;
 	if (args->Count() == 2) {
 		num = ParseInt((*args)[1]);
 	}
-	
+
+#ifdef HAVE_FCVT	
+	int dec; int sig;
 	char *buf = _fcvt(val, num, &dec, &sig);
 	
 	if (sig)
@@ -541,6 +542,20 @@ void EvalRound(const void *data, qCtx *ctx, qStr *out, qArgAry *args) {
 			out->PutS(buf);
 		}
 	}
+#else
+	char buf[33];
+	if (num < 0) {
+		int len = snprintf(buf, 32, "%.0f", val*pow(10,num));
+		if (buf[0] != '0') {
+			char *p=buf+len;
+			while (num<0) {*p='0';++p;++num;}
+			*p='\0';
+		}
+	} else {
+		snprintf(buf, 32, "%.*f", num, val);
+	}
+	out->PutS(buf);
+#endif
 }
 
 void EvalTrunc(const void *data, qCtx *ctx, qStr *out, qArgAry *args) {

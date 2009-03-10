@@ -20,7 +20,7 @@ THIS SOFTWARE IS PROVIDED 'AS IS' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDI
 #endif
 
 #include <memory.h>
-#include <malloc.h>
+#include <stdlib.h>
 
 #include "qlib.h"
 

@@ -28,9 +28,13 @@ THIS SOFTWARE IS PROVIDED 'AS IS' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDI
 
 inline CStr Dbl2Str(double num) {
 	CStr tmp(32);
+	#if defined(HAVE_GCVT) || defined(gcvt)
 	_gcvt(num, 20, tmp.GetBuffer());
-	// TODO: TAKE THIS OUT AND MAKE IT A COMPILE-TIME OPTION
+	#else
+	snprintf("%.20g", 31, tmp.GetBuffer());
+	#endif
 	tmp.Shrink();
+	// TODO: TAKE THIS OUT AND MAKE IT A COMPILE-TIME OPTION
 #ifdef SMX_DOT_COMPAT
 	return tmp;
 #else
