@@ -85,7 +85,7 @@ AC_TYPE_UINT8_T
 
 
 # Checks for library functions.
-AC_CHECK_FUNCS([gcvt dtoa fcvt])
+AC_CHECK_FUNCS([gcvt dtoa fcvt sigset])
 
 AC_CONFIG_FILES([Makefile smx/Makefile libsmx/Makefile extperl/Makefile modsmx/Makefile smx.spec])
 

@@ -52,7 +52,8 @@ die "Can't find package version" if ! $PACKAGE_VERSION;
 push @def, "PACKAGE_VERSION='$PACKAGE_VERSION'";
 push @def, 'HAVE_SQLITE3_H';
 push @def, 'HAVE_OPENSSL';
-push @def, 'OPENSSL_NO_IDEA';
+push @def, 'HAVE_FCVT';
+push @def, 'HAVE_GCVT';
 push @def, 'HAVE_GD' if $PATH{gd};
 push @def, 'DEBUG' if $opt_debug;
 

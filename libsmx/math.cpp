@@ -207,10 +207,10 @@ static void signal_handler(int sig)
 	longjmp(sigenv,sig);
 }
 
-#ifndef sigset
-#define BEGINFPE if (setjmp(sigenv)!=0) {return;} signal(SIGFPE, signal_handler);
-#else
+#ifdef HAVE_SIGSET
 #define BEGINFPE if (setjmp(sigenv)!=0) {return;} sigset(SIGFPE, signal_handler);
+#else
+#define BEGINFPE if (setjmp(sigenv)!=0) {return;} signal(SIGFPE, signal_handler);
 #endif
 
 #define ENDFPE signal(SIGFPE, SIG_DFL);
