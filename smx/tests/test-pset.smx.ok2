@@ -1,0 +1,7 @@
+
+%pset(/test/%k%%i%,%i%)%pset(/test/%k%%i%,%i%)%pset(/test/%k%%i%,%i%)%pset(/test/%k%%i%,%i%)%pset(/test/%k%%i%,%i%)%pset(/test/%k%%i%,%i%)%pset(/test/%k%%i%,%i%)%pset(/test/%k%%i%,%i%)%pset(/test/%k%%i%,%i%)%pset(/test/%k%%i%,%i%)%pset(/test/%k%%i%,%i%)
+0 = %pget(/test/%k%%i%);1 = %pget(/test/%k%%i%);2 = %pget(/test/%k%%i%);3 = %pget(/test/%k%%i%);4 = %pget(/test/%k%%i%);5 = %pget(/test/%k%%i%);6 = %pget(/test/%k%%i%);7 = %pget(/test/%k%%i%);8 = %pget(/test/%k%%i%);9 = %pget(/test/%k%%i%);10 = %pget(/test/%k%%i%);
+a %counter(test-%i%,0) b|a %counter(test-%i%,0) b|a %counter(test-%i%,0) b|a %counter(test-%i%,0) b|a %counter(test-%i%,0) b|a %counter(test-%i%,0) b|a %counter(test-%i%,0) b|a %counter(test-%i%,0) b|a %counter(test-%i%,0) b|a %counter(test-%i%,0) b|a %counter(test-%i%,0) b|
+a %counter(test-%i%) b|a %counter(test-%i%) b|a %counter(test-%i%) b|a %counter(test-%i%) b|a %counter(test-%i%) b|a %counter(test-%i%) b|a %counter(test-%i%) b|a %counter(test-%i%) b|a %counter(test-%i%) b|a %counter(test-%i%) b|a %counter(test-%i%) b|
+0 = %pget(/test/%k%%i%);1 = %pget(/test/%k%%i%);2 = %pget(/test/%k%%i%);3 = %pget(/test/%k%%i%);4 = %pget(/test/%k%%i%);5 = %pget(/test/%k%%i%);6 = %pget(/test/%k%%i%);7 = %pget(/test/%k%%i%);8 = %pget(/test/%k%%i%);9 = %pget(/test/%k%%i%);10 = %pget(/test/%k%%i%);
+

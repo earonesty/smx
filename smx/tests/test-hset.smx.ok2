@@ -1,0 +1,16 @@
+%hset(/.smxtest/x/y,1)
+
+val = %hget(/.smxtest/x/y)
+
+%hset(/.smxtest/x/z,%i%)%hset(/.smxtest/x/z,%i%)%hset(/.smxtest/x/z,%i%)%hset(/.smxtest/x/z,%i%)%hset(/.smxtest/x/z,%i%)%hset(/.smxtest/x/z,%i%)%hset(/.smxtest/x/z,%i%)%hset(/.smxtest/x/z,%i%)%hset(/.smxtest/x/z,%i%)%hset(/.smxtest/x/z,%i%)
+
+1 : %hget(/.smxtest/x/z)
+2 : %hget(/.smxtest/x/z)
+
+
+%hset(/x/z,)%hset(/x/z,)
+
+%hget(/.smxtest/x/z,%i%)
+%hget(/.smxtest/x/z,%i%)
+
+

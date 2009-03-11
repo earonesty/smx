@@ -17,7 +17,7 @@ do
 		echo $curtest
 		../smx $curtest > $curtest.tmp
 		if [ -e $curtest.ok2 ]; then
-			if ! diff $curtest.ok $curtest.tmp && ! diff $curtest.ok2 $curtest.tmp; then error; fi
+			if ( ! diff $curtest.ok $curtest.tmp ) && ( ! diff $curtest.ok2 $curtest.tmp ); then error; fi
 		else
 			if ! diff $curtest.ok $curtest.tmp; then error; fi
 		fi
