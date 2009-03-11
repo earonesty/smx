@@ -150,9 +150,6 @@
 /* Define to the version of this package. */
 #undef PACKAGE_VERSION
 
-/* 'So release can be referenced in script files' */
-#undef RELEASE
-
 /* Define to 1 if you have the ANSI C header files. */
 #undef STDC_HEADERS
 

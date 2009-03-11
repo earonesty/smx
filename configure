@@ -22092,11 +22092,6 @@ fi
 RELEASE=`($SVNVERSION > /dev/null 2>&1) && ($SVNVERSION | grep [0-9] > /dev/null) && ($SVNVERSION | sed 's/.*://' | sed 's/[MSP]$//' > release.txt); cat release.txt`
 
 
-cat >>confdefs.h <<\_ACEOF
-#define RELEASE 1
-_ACEOF
-
-
 
 # Checks for typedefs, structures, and compiler characteristics.
 { $as_echo "$as_me:$LINENO: checking for stdbool.h that conforms to C99" >&5
