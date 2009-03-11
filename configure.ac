@@ -19,6 +19,17 @@ AC_PROG_MAKE_SET
 AC_PROG_RANLIB
 AC_PROG_LIBTOOL
 
+# Platform-specific tweaks
+case $host in
+*solaris*)
+    LDFLAGS="$LDFLAGS -L/usr/local/ssl/lib";;
+*freebsd*)
+    CPPFLAGS="$CPPFLAGS -I/usr/local/include"
+    LDFLAGS="$LDFLAGS -L/usr/local/lib";;
+*openbsd*)
+    LIBS="-ldes $LIBS";;
+esac
+
 # add -l linker options, if necessary
 AC_SEARCH_LIBS([gethostbyname], [nsl socket])
 

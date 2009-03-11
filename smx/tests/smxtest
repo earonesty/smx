@@ -1,6 +1,6 @@
 #!/bin/sh
 
-pushd tests 2> /dev/null
+cd tests
 
 error()
 {
@@ -16,7 +16,11 @@ do
 	else
 		echo $curtest
 		../smx $curtest > $curtest.tmp
-		if ! diff $curtest.ok $curtest.tmp; then error; fi
+		if [ -e $curtest.ok2 ]; then
+			if ! diff $curtest.ok $curtest.tmp && ! diff $curtest.ok2 $curtest.tmp; then error; fi
+		else
+			if ! diff $curtest.ok $curtest.tmp; then error; fi
+		fi
 	fi
 done
 
@@ -26,7 +30,12 @@ if [ -e "$curtest.skip"  ]; then
 else
 	echo $curtest
 
-	useradd smxsafemodeuser -s /dev/null -M
+	pw=`which pw`
+	if [ "$pw" != "" ]; then 
+		pw useradd smxsafemodeuser -s /dev/null
+	else 
+		useradd smxsafemodeuser -s /dev/null -M
+	fi
 	mkdir safemodedir
 	chown smxsafemodeuser safemodedir
 	cp safemode.smx safemodedir
@@ -34,12 +43,14 @@ else
 
 	../smx "safemodedir/safemode.smx" > safemode.tmp
 
-	userdel smxsafemodeuser
+	if [ "$pw" != "" ]; then 
+		pw userdel smxsafemodeuser
+	else
+		userdel smxsafemodeuser
+	fi
 	rm -rf safemodedir
 
 	if ! diff safemode.ok safemode.tmp; then error; fi
 fi
 
 rm -f *.tmp
-
-popd 2> /dev/null
