@@ -708,11 +708,11 @@ int EvalWNComSimple(const void *a, const void *b)
 void EvalStricmp(const void *data, qCtx *ctx, qStr *out, qArgAry *args)
 {
 	if (args->Count() > 1) {
-		CStr a = (*args)[0];;
-		CStr b = (*args)[1];;
+		const char * a = (*args)[0];;
+		const char * b = (*args)[1];;
 
 		char buf[63];
-		out->PutS(_itoa(stricmp(a,b), buf, 10));
+		out->PutS(_itoa(stricmp(a?a:"",b?b:""), buf, 10));
 	}
 }
 
