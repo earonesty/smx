@@ -20,7 +20,7 @@ THIS SOFTWARE IS PROVIDED 'AS IS' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDI
 #define NO_LOAD_TSET
 
 #include "libs.h"
-#include "../smx/qscgi.h"
+#include "qscgi.h"
 
 int main()
 {
