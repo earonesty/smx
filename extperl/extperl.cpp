@@ -49,7 +49,7 @@ xs_init(pTHX)
 	dlopen("libperl.so", RTLD_LAZY|RTLD_GLOBAL);
 #endif
         /* DynaLoader is a special case */
-        newXS("DynaLoader::boot_DynaLoader", boot_DynaLoader, file);
+        newXS("DynaLoader::boot_DynaLoader", boot_DynaLoader, (char *) file);
 }
 
 /* Outputs stuff to SMX from within Perl */
@@ -129,8 +129,12 @@ DECL_SMXUSERFUNC(perl) {
 
 static PerlInterpreter *my_perl;
 
+extern char **environ;
+
 STDCALL void LoadLib(smxExContext *pContext) {
-	PERL_SYS_INIT3(NULL, NULL, NULL);
+	int argc = 0;
+	char *argv[1] = {NULL};
+	PERL_SYS_INIT3(&argc, (char ***) &argv, &environ);
 
 	my_perl = perl_alloc();
 	perl_construct(my_perl);
@@ -141,8 +145,8 @@ STDCALL void LoadLib(smxExContext *pContext) {
 	{ MY_CXT_INIT; }
 
     	const char *file = __FILE__;
-   	newXS("main::output", XS_SmxPerl_output, file);
-   	newXS("main::export", XS_SmxPerl_export, file);
+   	newXS("main::output", XS_SmxPerl_output, (char *) file);
+   	newXS("main::export", XS_SmxPerl_export, (char *) file);
 
 	pContext->MapFunc(NULL, (SMXUSERFUNC) &perl, "perl");	
 };
