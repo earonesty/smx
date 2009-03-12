@@ -1,0 +1,16 @@
+#!/bin/sh
+
+# if this script works there's a good chance that the port works
+
+make dist
+cp smx-1.1.4.tar.gz /usr/ports/distfiles/smx-1.1.4-`cat release.txt`.tar.gz
+cd port
+make makesum
+rm -rf /var/tmp/smx
+mkdir /var/tmp/smx
+mtree -U -f $(make -V MTREE_FILE) -d -e -p /var/tmp/smx
+make depends PREFIX=/var/tmp/smx
+(cd /var/tmp/smx && find -d * -type d) | sort > OLD-DIRS
+make install FORCE_PKG_REGISTER=1 PREFIX=/var/tmp/$(make -V PORTNAME)
+(cd /var/tmp/$(make -V PORTNAME) && find -d * \! -type d) | sort > pkg-plist
+rm -rf OLD-DIRS work
