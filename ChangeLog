@@ -1,10 +1,341 @@
-2005-05-09 : EA : Completely reorganized project
-2005-06-22 : EA : Removed STL hash stuff
-2006-02-22 : EA : Reworked SQL libs & hsets, adding sqlite3 and allowing safe-mode hset
-2006-03-03 : EA : Fixed html-clean, created test for it 
-2006-03-08 : EA : Added %sql-lastquery%
-2006-03-19 : EA : Several sqlite fixes since ver 1.1.2.  New release should replace.
-2006-03-26 : EA : Created test for null args to functions. smx.spec.in file used 
-2006-04-21 : EA : CGI fix for image generation.  Also fixed edge-case for PathCanonicalize.  
-2006-04-27 : EA : Added %create-image, trimmed http-init page macro output, removed junk code from cgi
-2006-08-06 : EA : Made encryption code use EVP functions instead of the old ones
+2009-03-11  googlecheckout@httpcolon.com
+
+	* config.h.in, configure: autogen-againrelease-def-was-not-right
+
+2009-03-11  earonesty
+
+	* configure.ac:
+
+2009-03-11  googlecheckout@httpcolon.com
+
+	* Makefile.in, aclocal.m4, config.guess, config.h.in, config.sub,
+	  configure, configure.ac, extperl/Makefile.in, libsmx/Makefile.in,
+	  ltmain.sh, modsmx/Makefile.in, smx/Makefile.in: build with later
+	  version of autoconf
+
+2009-03-11  earonesty
+
+	* configure.ac: also define RELEASE ... so it can be referenced in
+	  the code for %script-version%
+	* release.txt, smx/Makefile.am, smx/Makefile.in: more bsd stuff
+	* smx/tests/smxtest, smx/tests/test-hset.smx.ok2,
+	  smx/tests/test-pset.smx.ok2: ok not to have pset and hset
+	  installed
+	* Makefile.in, aclocal.m4, config.guess, config.h.in, config.sub,
+	  configure, configure.ac, extperl/Makefile.in, libsmx/Makefile.in,
+	  ltmain.sh, modsmx/Makefile.in, release.txt, smx/Makefile.in,
+	  smx/tests/smxtest: freebsd adds /usr/local to paths, or it
+	  doesn'twork
+	* libsmx/string.cpp: stricmp not nulls
+	* Makefile.in, Win32Build.pl, aclocal.m4, config.guess,
+	  config.h.in, config.sub, configure, configure.ac,
+	  extperl/Makefile.in, libsmx/Makefile.in, libsmx/math.cpp,
+	  ltmain.sh, modsmx/Makefile.in, smx/Makefile.in: HAVE_SIGSET added
+
+2009-03-10  earonesty
+
+	* m4/ax_compare_version.m4: not used
+	* Makefile.in, aclocal.m4, autogen.sh, config.guess, config.h.in,
+	  config.sub, configure, configure.ac, extperl/Makefile.in,
+	  ltmain.sh, m4/ac_apache.m4, modsmx/Makefile.in, release.txt,
+	  smx/Makefile.am, smx/Makefile.in, smx/qscgi.cpp: bsd port
+	* libsmx/Makefile.am, libsmx/Makefile.in, libsmx/buf.h,
+	  libsmx/buf_ref.cpp, libsmx/crit_unix.h, libsmx/dparse.cpp,
+	  libsmx/math.cpp, libsmx/open-enc.cpp, libsmx/proto.cpp,
+	  libsmx/pstime.h, libsmx/qctx.h, libsmx/qfopen.cpp,
+	  libsmx/qobj-cache.h, libsmx/qstr.cpp, libsmx/qstr.h,
+	  libsmx/smx_sql.h, libsmx/sql.cpp, libsmx/stdafx.h,
+	  libsmx/time.cpp, libsmx/unix.cpp, libsmx/unix.h, libsmx/util.cpp:
+	  port for freebsd
+
+2009-03-07  googlecheckout@httpcolon.com
+
+	* configure, configure.ac, release.txt: quote brackets
+
+2009-03-07  earonesty
+
+	* configure.ac: sometimes svn reports 'exported' as the verson
+
+2009-03-07  googlecheckout@httpcolon.com
+
+	* release.txt:
+
+2009-03-07  earonesty
+
+	* libsmx/dbh.cpp: fix multi driver logic
+
+2009-03-07  googlecheckout@httpcolon.com
+
+	* libsmx/dbd_tdb.cpp, release.txt: no need for iostream ... breaks
+	  things in face
+	* libsmx/core.cpp, release.txt: safe-mode checks to be sure param
+	  nonempty
+	* smx/tests/safemode.smx, smx/tests/smxtest,
+	  smx/tests/test-nulls.smx.ok: safe-uid now returns -1 (unset) if
+	  called with a null argument, instead of 0 (set incorrectly)
+	* configure, m4/ac_apache.m4: ok, finally fixing the apache thing
+	  hopefully
+	* configure, release.txt:
+	* m4/ac_apache.m4:
+	* Makefile.in, configure, extperl/Makefile.in, libsmx/Makefile.in,
+	  libsmx/dbd_sqlite3.cpp, m4/ac_apache.m4, modsmx/Makefile.in,
+	  release.txt, smx/Makefile.in: ac_apache needed to subst the
+	  includes
+
+2009-03-07  earonesty
+
+	* libsmx/dbd_sqlite3.cpp, release.txt: fix dbd_logic
+
+2009-03-07  googlecheckout@httpcolon.com
+
+	* Makefile.in, aclocal.m4, config.guess, config.h.in, config.sub,
+	  configure, configure.ac, extperl/Makefile.in, libsmx/Makefile.in,
+	  ltmain.sh, modsmx/Makefile.in, release.txt, smx/Makefile.in:
+	  atomicity-check-works
+
+2009-03-06  earonesty
+
+	* aclocal.m4, config.guess, config.h.in, config.sub, configure,
+	  configure.ac, libsmx/qthread-unix.h, libsmx/unix.h, ltmain.sh,
+	  modsmx/Makefile.am, modsmx/Makefile.in, release.txt: fc10
+	* libsmx/core.cpp, release.txt, smx/tests/safemode.smx: %safe-uid
+	  can now take a username, not ust a uid
+
+2009-03-05  earonesty
+
+	* release.txt, smx.spec.in: fixed spec to be more correct for
+	  modern systems
+	* Win32Build.pl: support AC_CHECK_PROG
+	* Makefile.am, Makefile.in, configure, configure.ac,
+	  extperl/Makefile.in, libsmx/Makefile.in, modsmx/Makefile.in,
+	  release.txt, smx/Makefile.in: automake is annying me, im going to
+	  try scons
+	* configure, release.txt: ok now it works
+	* configure.ac: have_perl still isn't working
+	* release.txt: newauto
+	* configure.ac, libsmx/math.cpp, libsmx/unix.h, release.txt,
+	  smx/tests/test-qs.smx.ok: needed wchar on fedora 8
+
+2009-03-04  earonesty
+
+	* Win32Build.pl: need -tzip on 7z release
+	* Win32Build.conf, Win32Build.pl, release.txt: win32 make release
+	  now uses 7zip if available, and uses the release number from the
+	  specfile, if available
+	* Win32Build.pl: extperl hack less install dependent
+	* Win32Build.pl: extperl hack less install dependent
+	* Win32Build.conf, Win32Build.pl, sqlite, sqlite/sqlite3.c,
+	  sqlite/sqlite3.h: win32 makefile thing works nicer now
+	* Win32Build.pl: making win32build.pl nicer
+
+2009-03-03  earonesty
+
+	* Makefile.am, Makefile.in, configure, configure.ac,
+	  extperl/Makefile.am, extperl/Makefile.in, libsmx/Makefile.am,
+	  libsmx/Makefile.in, modsmx/Makefile.in, release.txt, smx.spec.in,
+	  smx/Makefile.in: getting rpm to build & test_ext to not install,
+	  and still work .. needed -rpath /nowhere
+	* libsmx/Makefile.am, libsmx/Makefile.in, smx.spec.in:
+	* smx.spec.in: test libs moved to check_LTLIBRARIES
+	* libsmx/Makefile.am, libsmx/Makefile.in, libsmx/io.cpp,
+	  smx.spec.in:
+	* libsmx/util.h: io.h is windows
+	* Win32Build.pl, libsmx/util.h, smx/tests/smxtest.cmd,
+	  smx/tests/test-qs.smx: remove dbg
+	* libsmx/math.cpp, libsmx/sha.h, libsmx/unix_interlock.h: sigs ok
+	  on win
+
+2009-03-02  earonesty
+
+	* Win32Build.pl: got the win32 perl extension to work too (lots of
+	  hardcode)
+	* Win32Build.pl, extperl/extperl.cpp, libsmx/Makefile.am,
+	  libsmx/hset.cpp, libsmx/io.cpp, libsmx/tset.cpp,
+	  modsmx/modsmx.cpp: smx.exe compiles on win32 with openssl support
+	* Win32Build.pl, libsmx/crit_win.h, libsmx/qctx.h, libsmx/stdafx.h,
+	  libsmx/tset.cpp, libsmx/unix.h: porting to win32
+	* docs/funcs/# Time Formats, docs/funcs/* Time Formats,
+	  docs/funcs/fmtgtime, docs/funcs/fmtltime: make compat with win
+	  file
+	* .: reorganize
+	* smx: reorganize
+
+2009-03-01  simul
+
+	* smx/libsmx, smx/libsmx/.cvsignore: *** empty log message ***
+	* smx/libsmx/dbd_sqlite3.h, smx/libsmx/dbd_tdb.h,
+	  smx/m4/ax_path_bdb.m4: add driver for sqlite/tdb to repo
+
+2009-02-28  simul
+
+	* smx/Makefile.in, smx/aclocal.m4, smx/config.h.in, smx/configure,
+	  smx/configure.ac, smx/extperl/Makefile.in, smx/libsmx/dbpset.cpp,
+	  smx/libsmx/dbpset.h, smx/libsmx/hset.h, smx/modsmx/Makefile.in,
+	  smx/smx/Makefile.in: *** empty log message ***
+	* smx/libsmx/Makefile.am, smx/libsmx/Makefile.in, smx/libsmx/dbd.h,
+	  smx/libsmx/dbd_sqlite3.cpp, smx/libsmx/dbd_tdb.cpp,
+	  smx/libsmx/dbh.cpp, smx/libsmx/dbh.h: new inline-db
+	  architechture... for a rarely used feature it sure is a pain in
+	  the hoosegow
+
+2009-02-27  simul
+
+	* smx/libsmx/dbpset.cpp, smx/libsmx/dbpset.h: thank you valgrind
+	  for fixing that bug!
+	* smx/smx.spec.in: added ext libs to spec
+	* smx/libsmx/pscache.cpp: now searches path for dll/so files using
+	  the nadive LoadLib or dlopen
+	* smx/docs/funcs/define, smx/docs/funcs/left, smx/docs/funcs/right,
+	  smx/docs/groups/04. String Manipulation, smx/docs/groups/09.
+	  Macro Handling, smx/docs/groups/10. Session_S_Form Info: ***
+	  empty log message ***
+	* smx/extperl/extperl.cpp: ok, "export" now exports a "live"
+	  scalar... that can be modified
+	  
+	  not sure if this is useful
+	  
+	  maybe put it back
+	* smx/extperl/extperl.cpp: ppport not needed
+	* smx/extperl/extperl.cpp, smx/extperl/test_perl.cpp: export works
+	  with scalars and functions, not hashes or arrays yet
+	* smx/extperl/extperl.cpp, smx/extperl/test_perl.cpp,
+	  smx/libsmx/smxext.h, smx/libsmx/smximpl.cpp,
+	  smx/libsmx/smximpl.h: - smxExContext now supports function
+	  "Alloc(int nBytes)" which allows you to allocate some memory
+	  which will get freed when the context goes away
+	  
+	  - %perl() now supports "export" and "output" which allows you to
+	  select what's output and what's "exported" to the outer
+	  namespace.
+
+2009-02-26  simul
+
+	* smx/extperl, smx/extperl/.cvsignore, smx/extperl/Makefile.in,
+	  smx/libsmx, smx/libsmx/.cvsignore: *** empty log message ***
+	* smx/extperl/extperl.cpp: only load libperl.so if
+	  
+	  a) you're on unix
+	  b) you need dynaloader
+	* smx/Makefile.am, smx/Makefile.in, smx/configure,
+	  smx/configure.ac, smx/extperl, smx/extperl/Makefile.am,
+	  smx/extperl/extperl.cpp, smx/extperl/test_perl.cpp,
+	  smx/libsmx/Makefile.in, smx/libsmx/pscache.cpp,
+	  smx/modsmx/Makefile.in, smx/smx/Makefile.in: added a "%perl()"
+	  extension
+
+2009-02-25  simul
+
+	* smx/libsmx/qenvbuf.h, smx/libsmx/test_ext.cpp,
+	  smx/libsmx/test_ext2.cpp: add minimal "buffer environment"
+	  
+	  add test for extension shared object
+	* smx/libsmx/Makefile.am, smx/libsmx/Makefile.in,
+	  smx/libsmx/pscache.cpp, smx/libsmx/smxext.h: tested smx extension
+	  under linux ... seems good
+	* smx/libsmx/psxext.h: renarenamed to smxext.he
+	* smx/modsmx/tests, smx/modsmx/tests/.cvsignore,
+	  smx/modsmx/tests/logs, smx/modsmx/tests/logs/.cvsignore: ignore
+	  tmp output
+	* smx, smx/.cvsignore, smx/TODO: *** empty log message ***
+
+2009-02-24  simul
+
+	* smx/libsmx/smxext.h: renamed from psxext.h
+	* smx/libsmx/test_eval.cpp: fixed test_eval to reflect new CGI
+	  header
+	* smx/modsmx/tests/redir-target.html: target for redirect test
+	* smx/Makefile.in, smx/README, smx/TODO, smx/aclocal.m4,
+	  smx/config.guess, smx/config.h.in, smx/config.sub, smx/configure,
+	  smx/configure.ac, smx/libsmx/Makefile.am, smx/libsmx/Makefile.in,
+	  smx/libsmx/dbpset.cpp, smx/libsmx/dbpset.h, smx/libsmx/hset.cpp,
+	  smx/libsmx/pscache.cpp, smx/libsmx/psximpl.cpp,
+	  smx/libsmx/psximpl.h, smx/libsmx/smximpl.cpp,
+	  smx/libsmx/smximpl.h, smx/ltmain.sh, smx/modsmx/Makefile.am,
+	  smx/modsmx/Makefile.in, smx/putrelease, smx/smx/Makefile.in,
+	  smx/smx/tests/test-nulls.smx.ok, smx/smx/tests/test-pset.smx,
+	  smx/smx/tests/test-pset.smx.ok: dbpset - defaults to sqlite now
+	  
+	  psximpl/ext renamed to smximpl/ext
+	  
+	  test-nulls reflects new %radix behavior
+	  
+	  test-pset now works on a new build
+	* smx/modsmx/tests, smx/modsmx/tests/conf,
+	  smx/modsmx/tests/conf/mime.types, smx/modsmx/tests/httpd_test,
+	  smx/modsmx/tests/test-01-basic.html,
+	  smx/modsmx/tests/test-01-basic.html.ok,
+	  smx/modsmx/tests/test-02-apache.html,
+	  smx/modsmx/tests/test-02-apache.html.ok,
+	  smx/modsmx/tests/test-03-redir.html,
+	  smx/modsmx/tests/test-03-redir.html.ok,
+	  smx/modsmx/tests/test.conf: added some httpd tests, only works on
+	  linux
+	* smx/modsmx/Makefile.in: new revision changes "psx" to "smx" on
+	  some files
+
+2009-02-23  simul
+
+	* smx/libsmx/sql.cpp: password can have a ';' in it, but putting
+	  two ';' next to each other
+	  similar to '' escaping
+
+2008-12-08  simul
+
+	* smx/docs/groups/02. Math and Logic, smx/docs/groups/04. String
+	  Manipulation, smx/docs/leftcol.htx: *** empty log message ***
+	* smx/docs/funcs/append-header, smx/docs/funcs/gt,
+	  smx/docs/funcs/gte, smx/docs/funcs/lt, smx/docs/funcs/lte,
+	  smx/docs/funcs/ltrim, smx/docs/funcs/mid, smx/docs/funcs/rtrim,
+	  smx/docs/funcs/set-header, smx/docs/funcs/stricmp,
+	  smx/docs/funcs/trim, smx/docs/funcs/trimleft,
+	  smx/docs/funcs/trimright, smx/docs/funcs/try,
+	  smx/docs/funcs/xequal: update/add functions
+
+2008-10-17  simul
+
+	* smx/libsmx/qmail.cpp: all 6 chars
+	* smx/libsmx/qmail.cpp: ok the html magic thing works
+	* smx/libsmx/open-enc.h: not sure why it changed
+	* smx/libsmx/qmail.cpp: "smart" smtp logic knows to make it
+	  text/hml if you put <html at the beginning
+	  
+	  todo: add a %content-type macro to override types on any body
+	  parts
+
+2008-10-07  simul
+
+	* smx/libsmx/string.cpp: i guess nobody was using that md5 one....
+
+2008-06-18  simul
+
+	* smx/libsmx/math.cpp: radix valid args is wrong
+
+2008-05-28  simul
+
+	* smx/modsmx/modsmx.cpp: rolled back to prev
+
+2008-03-06  simul
+
+	* smx/modsmx/modsmx.cpp: try out some cleanup code
+
+2008-03-03  simul
+
+	* smx/libsmx/cgi.cpp: %expires:(now) sets Cache-control: no-cache,
+	  and a year-old expires header;
+	  %expires:(never) and %expires(-1) are the same, and both set
+	  cache to a year from now....
+	  not 10 years, which is against the 1.1 spec
+
+2007-05-07  simul
+
+	* smx/libsmx/dbpset.cpp, smx/libsmx/ex.cpp, smx/libsmx/file.cpp,
+	  smx/libsmx/qctx.cpp, smx/libsmx/qctx.h, smx/libsmx/sql.cpp,
+	  smx/libsmx/unix.h, smx/libsmx/unix_interlock.h,
+	  smx/libsmx/util.cpp: 64 bit platform mods
+	* smx/libsmx/process.cpp: mapped error output
+
+2007-02-28  simul
+
+	* smx/libsmx/string.cpp: propercase assumes "'" is non-delimeter
+	  
+	  as in Jim's instead of Jim'S

@@ -1,0 +1,8 @@
+%expand%
+
+you passed:
+
+x: %form(x)
+y: %form(y)
+
+and x * y  is %mult(%x%,%y%)

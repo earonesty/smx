@@ -32,7 +32,8 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
-subdir = modsmx
+bin_PROGRAMS = smx-fcgi$(EXEEXT)
+subdir = fcgi
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/ac_apache.m4 \
@@ -42,21 +43,12 @@ am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = $(top_builddir)/config.h
 CONFIG_CLEAN_FILES =
-am__vpath_adj_setup = srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`;
-am__vpath_adj = case $$p in \
-    $(srcdir)/*) f=`echo "$$p" | sed "s|^$$srcdirstrip/||"`;; \
-    *) f=$$p;; \
-  esac;
-am__strip_dir = `echo $$p | sed -e 's|^.*/||'`;
-am__installdirs = "$(DESTDIR)$(libdir)"
-libLTLIBRARIES_INSTALL = $(INSTALL)
-LTLIBRARIES = $(lib_LTLIBRARIES)
-libmodsmx_la_DEPENDENCIES = ../libsmx/libsmx.la
-am_libmodsmx_la_OBJECTS = modsmx.lo
-libmodsmx_la_OBJECTS = $(am_libmodsmx_la_OBJECTS)
-libmodsmx_la_LINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) \
-	$(LIBTOOLFLAGS) --mode=link $(CXXLD) $(AM_CXXFLAGS) \
-	$(CXXFLAGS) $(libmodsmx_la_LDFLAGS) $(LDFLAGS) -o $@
+am__installdirs = "$(DESTDIR)$(bindir)"
+binPROGRAMS_INSTALL = $(INSTALL_PROGRAM)
+PROGRAMS = $(bin_PROGRAMS)
+am_smx_fcgi_OBJECTS = smx-fcgi.$(OBJEXT)
+smx_fcgi_OBJECTS = $(am_smx_fcgi_OBJECTS)
+smx_fcgi_DEPENDENCIES = ../libsmx/libsmx.la
 DEFAULT_INCLUDES = -I. -I$(top_builddir)@am__isrc@
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
@@ -69,17 +61,8 @@ CXXLD = $(CXX)
 CXXLINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
 	--mode=link $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) $(AM_LDFLAGS) \
 	$(LDFLAGS) -o $@
-COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
-	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
-LTCOMPILE = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
-	--mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
-	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
-CCLD = $(CC)
-LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
-	--mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
-	$(LDFLAGS) -o $@
-SOURCES = $(libmodsmx_la_SOURCES)
-DIST_SOURCES = $(libmodsmx_la_SOURCES)
+SOURCES = $(smx_fcgi_SOURCES)
+DIST_SOURCES = $(smx_fcgi_SOURCES)
 ETAGS = etags
 CTAGS = ctags
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
@@ -197,12 +180,10 @@ sysconfdir = @sysconfdir@
 target_alias = @target_alias@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-lib_LTLIBRARIES = libmodsmx.la
-libmodsmx_la_SOURCES = modsmx.cpp modsmx.h 
-libmodsmx_la_LIBADD = ../libsmx/libsmx.la
-libmodsmx_la_LDFLAGS = -version-info 0:0:0 --shared
-INCLUDES = -I../libsmx -I $(APXS_INCLUDE) -I $(APR_INCLUDE)
-TESTS = tests/httpd_test
+smx_fcgi_SOURCES = smx-fcgi.cpp
+smx_fcgi_LDADD = ../libsmx/libsmx.la -lfcgi
+INCLUDES = -I../libsmx
+TESTS = test-fcgi
 all: all-am
 
 .SUFFIXES:
@@ -216,9 +197,9 @@ $(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am  $(am__confi
 	      exit 1;; \
 	  esac; \
 	done; \
-	echo ' cd $(top_srcdir) && $(AUTOMAKE) --gnu  modsmx/Makefile'; \
+	echo ' cd $(top_srcdir) && $(AUTOMAKE) --gnu  fcgi/Makefile'; \
 	cd $(top_srcdir) && \
-	  $(AUTOMAKE) --gnu  modsmx/Makefile
+	  $(AUTOMAKE) --gnu  fcgi/Makefile
 .PRECIOUS: Makefile
 Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
 	@case '$?' in \
@@ -236,35 +217,37 @@ $(top_srcdir)/configure: @MAINTAINER_MODE_TRUE@ $(am__configure_deps)
 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
 $(ACLOCAL_M4): @MAINTAINER_MODE_TRUE@ $(am__aclocal_m4_deps)
 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
-install-libLTLIBRARIES: $(lib_LTLIBRARIES)
+install-binPROGRAMS: $(bin_PROGRAMS)
 	@$(NORMAL_INSTALL)
-	test -z "$(libdir)" || $(MKDIR_P) "$(DESTDIR)$(libdir)"
-	@list='$(lib_LTLIBRARIES)'; for p in $$list; do \
-	  if test -f $$p; then \
-	    f=$(am__strip_dir) \
-	    echo " $(LIBTOOL) --mode=install $(libLTLIBRARIES_INSTALL) $(INSTALL_STRIP_FLAG) '$$p' '$(DESTDIR)$(libdir)/$$f'"; \
-	    $(LIBTOOL) --mode=install $(libLTLIBRARIES_INSTALL) $(INSTALL_STRIP_FLAG) "$$p" "$(DESTDIR)$(libdir)/$$f"; \
+	test -z "$(bindir)" || $(MKDIR_P) "$(DESTDIR)$(bindir)"
+	@list='$(bin_PROGRAMS)'; for p in $$list; do \
+	  p1=`echo $$p|sed 's/$(EXEEXT)$$//'`; \
+	  if test -f $$p \
+	     || test -f $$p1 \
+	  ; then \
+	    f=`echo "$$p1" | sed 's,^.*/,,;$(transform);s/$$/$(EXEEXT)/'`; \
+	   echo " $(INSTALL_PROGRAM_ENV) $(LIBTOOL) --mode=install $(binPROGRAMS_INSTALL) '$$p' '$(DESTDIR)$(bindir)/$$f'"; \
+	   $(INSTALL_PROGRAM_ENV) $(LIBTOOL) --mode=install $(binPROGRAMS_INSTALL) "$$p" "$(DESTDIR)$(bindir)/$$f" || exit 1; \
 	  else :; fi; \
 	done
 
-uninstall-libLTLIBRARIES:
+uninstall-binPROGRAMS:
 	@$(NORMAL_UNINSTALL)
-	@list='$(lib_LTLIBRARIES)'; for p in $$list; do \
-	  p=$(am__strip_dir) \
-	  echo " $(LIBTOOL) --mode=uninstall rm -f '$(DESTDIR)$(libdir)/$$p'"; \
-	  $(LIBTOOL) --mode=uninstall rm -f "$(DESTDIR)$(libdir)/$$p"; \
+	@list='$(bin_PROGRAMS)'; for p in $$list; do \
+	  f=`echo "$$p" | sed 's,^.*/,,;s/$(EXEEXT)$$//;$(transform);s/$$/$(EXEEXT)/'`; \
+	  echo " rm -f '$(DESTDIR)$(bindir)/$$f'"; \
+	  rm -f "$(DESTDIR)$(bindir)/$$f"; \
 	done
 
-clean-libLTLIBRARIES:
-	-test -z "$(lib_LTLIBRARIES)" || rm -f $(lib_LTLIBRARIES)
-	@list='$(lib_LTLIBRARIES)'; for p in $$list; do \
-	  dir="`echo $$p | sed -e 's|/[^/]*$$||'`"; \
-	  test "$$dir" != "$$p" || dir=.; \
-	  echo "rm -f \"$${dir}/so_locations\""; \
-	  rm -f "$${dir}/so_locations"; \
+clean-binPROGRAMS:
+	@list='$(bin_PROGRAMS)'; for p in $$list; do \
+	  f=`echo $$p|sed 's/$(EXEEXT)$$//'`; \
+	  echo " rm -f $$p $$f"; \
+	  rm -f $$p $$f ; \
 	done
-libmodsmx.la: $(libmodsmx_la_OBJECTS) $(libmodsmx_la_DEPENDENCIES) 
-	$(libmodsmx_la_LINK) -rpath $(libdir) $(libmodsmx_la_OBJECTS) $(libmodsmx_la_LIBADD) $(LIBS)
+smx-fcgi$(EXEEXT): $(smx_fcgi_OBJECTS) $(smx_fcgi_DEPENDENCIES) 
+	@rm -f smx-fcgi$(EXEEXT)
+	$(CXXLINK) $(smx_fcgi_OBJECTS) $(smx_fcgi_LDADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
@@ -272,7 +255,7 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/modsmx.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/smx-fcgi.Po@am__quote@
 
 .cpp.o:
 @am__fastdepCXX_TRUE@	$(CXXCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
@@ -451,9 +434,9 @@ distdir: $(DISTFILES)
 check-am: all-am
 	$(MAKE) $(AM_MAKEFLAGS) check-TESTS
 check: check-am
-all-am: Makefile $(LTLIBRARIES)
+all-am: Makefile $(PROGRAMS)
 installdirs:
-	for dir in "$(DESTDIR)$(libdir)"; do \
+	for dir in "$(DESTDIR)$(bindir)"; do \
 	  test -z "$$dir" || $(MKDIR_P) "$$dir"; \
 	done
 install: install-am
@@ -482,8 +465,7 @@ maintainer-clean-generic:
 	@echo "it deletes files that may require special tools to rebuild."
 clean: clean-am
 
-clean-am: clean-generic clean-libLTLIBRARIES clean-libtool \
-	mostlyclean-am
+clean-am: clean-binPROGRAMS clean-generic clean-libtool mostlyclean-am
 
 distclean: distclean-am
 	-rm -rf ./$(DEPDIR)
@@ -505,7 +487,7 @@ install-data-am:
 
 install-dvi: install-dvi-am
 
-install-exec-am: install-libLTLIBRARIES
+install-exec-am: install-binPROGRAMS
 
 install-html: install-html-am
 
@@ -537,23 +519,23 @@ ps: ps-am
 
 ps-am:
 
-uninstall-am: uninstall-libLTLIBRARIES
+uninstall-am: uninstall-binPROGRAMS
 
 .MAKE: install-am install-strip
 
 .PHONY: CTAGS GTAGS all all-am check check-TESTS check-am clean \
-	clean-generic clean-libLTLIBRARIES clean-libtool ctags \
-	distclean distclean-compile distclean-generic \
-	distclean-libtool distclean-tags distdir dvi dvi-am html \
-	html-am info info-am install install-am install-data \
+	clean-binPROGRAMS clean-generic clean-libtool ctags distclean \
+	distclean-compile distclean-generic distclean-libtool \
+	distclean-tags distdir dvi dvi-am html html-am info info-am \
+	install install-am install-binPROGRAMS install-data \
 	install-data-am install-dvi install-dvi-am install-exec \
 	install-exec-am install-html install-html-am install-info \
-	install-info-am install-libLTLIBRARIES install-man install-pdf \
-	install-pdf-am install-ps install-ps-am install-strip \
-	installcheck installcheck-am installdirs maintainer-clean \
+	install-info-am install-man install-pdf install-pdf-am \
+	install-ps install-ps-am install-strip installcheck \
+	installcheck-am installdirs maintainer-clean \
 	maintainer-clean-generic mostlyclean mostlyclean-compile \
 	mostlyclean-generic mostlyclean-libtool pdf pdf-am ps ps-am \
-	tags uninstall uninstall-am uninstall-libLTLIBRARIES
+	tags uninstall uninstall-am uninstall-binPROGRAMS
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

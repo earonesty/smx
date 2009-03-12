@@ -76,6 +76,8 @@ AC_CHECK_MEMBER(struct tm.tm_gmtoff,[AC_DEFINE([HAVE_STRUCT_TM_GMTOFF],[1],[gmto
 
 AC_CHECK_PROG(EXTPERL, perl, extperl)
 
+AC_CHECK_HEADER(fcgi_stdio.h, [AC_SUBST([FCGI],[fcgi])])
+
 AC_PATH_PROG([SVNVERSION], [svnversion])
 RELEASE=`($SVNVERSION > /dev/null 2>&1) && ($SVNVERSION | grep [[0-9]] > /dev/null) && ($SVNVERSION | sed 's/.*://' | sed 's/[[MSP]]$//' > release.txt); cat release.txt`
 AC_SUBST(RELEASE)
@@ -98,7 +100,7 @@ AC_TYPE_UINT8_T
 # Checks for library functions.
 AC_CHECK_FUNCS([gcvt dtoa fcvt sigset])
 
-AC_CONFIG_FILES([Makefile smx/Makefile libsmx/Makefile extperl/Makefile modsmx/Makefile smx.spec])
+AC_CONFIG_FILES([Makefile fcgi/Makefile smx/Makefile libsmx/Makefile extperl/Makefile modsmx/Makefile smx.spec])
 
 AC_OUTPUT
 

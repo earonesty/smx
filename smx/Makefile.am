@@ -1,6 +1,6 @@
 bin_PROGRAMS = smx
 
-smx_SOURCES = qscgi.cpp qscgi.h 
+smx_SOURCES = smx.cpp
 smx_LDADD   = ../libsmx/libsmx.la
 
 INCLUDES = -I../libsmx
