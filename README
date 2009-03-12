@@ -23,9 +23,14 @@ in your web pages
 
 **** PREEQUISITES
 
-yum install or apt-get 
+yum install or apt-get:
 
 	unixODBC unixODBC-devel sqlite sqlite-devel httpd-devel
+
+optionally, for image support:
+	
+	gd, gd-devel - for image support
+	tdb - for alternative to sqlite for %pset and %counter databases
 
 **** INSTALL
 
@@ -39,6 +44,9 @@ If you did a cvs update, and you get a libtool error, run
 
 	./make clean
 
+smx uses autotools, so you should be able to use --prefix, and other
+typical configure settings.
+
 **** APACHE CONFIG
 
 Add this to your apache conf:
@@ -51,17 +59,21 @@ And then add
 	AddHandler smx-parsed .html
 
 If you want it to magic-mode-parse html files.  You must put 
-%expand% at the top of magic-mode files.
+%expand% at the top of magic-mode files, or they are 
+passed-through to apache as regular html.
 
 Add SMXInit <code-to-run> to your conf, if you want a 
-global-init .
+global-init (your probably want this).
 
 These globally defined macros affect the operation 
 of the apache module:
 
 	http-user	- defines a basic auth handler
 	http-badurl	- defines a 404 handler
-	http-init	- defines a per-page expanded macro
+	http-init	- defines a per-page expanded macro (good for %module)
+
+You should read about %safe-mode if you have untrusted
+users writing macros.  man %safe-mode
 
 **** CGI CONFIG
 
@@ -69,9 +81,18 @@ If you want to run it as a CGI, put
 
 #!/usr/bin/smx -c
 
-at the top of your CGI scripts.  %expand% magic is 
+At the top of your CGI scripts.  %expand% magic is 
 not necessary for CGI
 
+**** FASTCGI SUPPORT
+
+/usr/bin/smx-fcgi is installed as well.  Use this for servers 
+that support fast-cgi.  It's much faster than CGI.
+
+The environment varialbe SMX_INIT can be used for initialization macros.
+
+smx-fcgi can be used as an auth filter, but only if the http-user macro
+is defined somewhere via SMX_INIT.
 
 **** LICENSE
 
