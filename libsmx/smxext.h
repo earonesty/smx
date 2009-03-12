@@ -92,7 +92,7 @@ public:
 
 	virtual void STDCALL Parse(const char *pIn, int nLen, smxExStreamOut *pOut) = 0;
 	virtual void STDCALL ParseString(const char *pIn, smxExStreamOut *pOut) = 0;
-	virtual char * STDCALL ParseArg(int nIndex, const char *pArgs[], smxArgType pArgType[], int nNumArgs) = 0;
+	virtual const char * STDCALL ParseArg(int nIndex, const char *pArgs[], smxArgType pArgType[], int nNumArgs) = 0;
 
 // get info from context
 	virtual smxExObject *STDCALL GetObj(const char *name) = 0;

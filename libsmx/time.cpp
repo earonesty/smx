@@ -48,7 +48,7 @@ void EvalLocalTime(const void *data, qCtx *ctx, qStr *out, qArgAry *args) {
 	}
 }
 
-char *s_wdays[] = 
+const char *s_wdays[] = 
 {
 	"Sunday",
 	"Monday",
@@ -59,7 +59,7 @@ char *s_wdays[] =
 	"Saturday"
 };
 
-char *s_wday3[] = 
+const char *s_wday3[] = 
 {
 	"Sun",
 	"Mon",
@@ -70,7 +70,7 @@ char *s_wday3[] =
 	"Sat"
 };
 
-char *s_mons[] = 
+const char *s_mons[] = 
 {
 	"January",
 	"February",
@@ -86,7 +86,7 @@ char *s_mons[] =
 	"December"
 };
 
-char *s_mon3[] = 
+const char *s_mon3[] = 
 {
 	"Jan",
 	"Feb",

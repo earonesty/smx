@@ -278,7 +278,7 @@ char *multi_delim(CStr &buf, bool last)
 	return buf.GetBuffer();
 }
 
-char *multi_head(CStr &buf, char *file, bool &enc)
+char *multi_head(CStr &buf, const char *file, bool &enc)
 {
 	char *ext;
 	multi_delim(buf, false);
@@ -296,7 +296,7 @@ char *multi_head(CStr &buf, char *file, bool &enc)
 		buf += "Content-Type: application/x-ext-";
 		buf += ext + 1;
 		buf += "; name=\"";
-		if ((ext = strrchr(fslash(file), '/'))) {
+		if ((ext = strrchr(fslash((char *)file), '/'))) {
 			file = ext + 1;	
 		}
 		buf += file;

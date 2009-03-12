@@ -49,7 +49,7 @@
 
 struct strint 
 {
-    char* s;
+    const char* s;
     int i;
 };
 

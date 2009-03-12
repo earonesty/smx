@@ -133,7 +133,7 @@ void RunCompiled(qCtx *ctx, qStr *in, qStr *out)
 					qArgAry ary;
 					char qmode;
 					if (in->GetS((char *) &v, sizeof(v)) == sizeof(v)) {
-						char *map = obj->GetQmap();
+						const char *map = obj->GetQmap();
 						if (!map || *map == 'A') {
 							qmode = !map ? '0' : '1';
 							for (i = 0; i < v.cnt; ++i) {
@@ -394,7 +394,7 @@ bool qCtxComp::ParseFunc(qStr *in, qStr *out)
 
 // NOTE: this is identical to the regular one except for ParseCompArg
 
-void qCtxComp::ParseCompArgs(qStr *in, qArgAry *out, char *qmap)
+void qCtxComp::ParseCompArgs(qStr *in, qArgAry *out, const char *qmap)
 {
 	int quot = false;
 	bool more = true;

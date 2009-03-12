@@ -231,7 +231,7 @@ void qCtx::Parse(qStr *in, qStr *out)
 
 bool qCtx::ParseFunc(qStr *in, qStr *out)
 {
-	char *map;
+	const char *map;
 	char c;
 //	int pop = 0;
 
@@ -419,7 +419,7 @@ bool qCtx::ParseArg(qStr *in, qStrBuf &cur, char c)
 	return c == EOF ? false : more;
 }
 
-void qCtx::ParseArgsQmap(qStr *in, qArgAry *out, char *qmap)
+void qCtx::ParseArgsQmap(qStr *in, qArgAry *out, const char *qmap)
 {
 	bool quot = false;
 	bool more = true;

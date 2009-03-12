@@ -36,7 +36,7 @@ enum CC_TYPES
 	cc_bankcard
 };
 
-char * CC_NAMES[CC_NAME_COUNT] = 
+const char * CC_NAMES[CC_NAME_COUNT] = 
 {
 	"unknown",
 	"enroute",
@@ -50,7 +50,7 @@ char * CC_NAMES[CC_NAME_COUNT] =
 	"bankcard"
 };
 
-char * CC_PREFIX[CC_MAP_COUNT] = 
+const char * CC_PREFIX[CC_MAP_COUNT] = 
 {
 	"1800", 
 	"2014", 

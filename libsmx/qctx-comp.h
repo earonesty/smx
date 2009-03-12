@@ -33,7 +33,7 @@ class qCtxComp : protected qCtx{
 private:
 	inline void ParseC(qStr *in, qStr *out, char c);
 	inline bool ParseFunc(qStr *in, qStr *out);
-	void ParseCompArgs(qStr *in, qArgAry *out, char *qmap);
+	void ParseCompArgs(qStr *in, qArgAry *out, const char *qmap);
 	void ParseCompArgs(qStr *in, qArgAry *out);
 	bool ParseCompArg(qStr *in, qStrBuf &out, char c);
 

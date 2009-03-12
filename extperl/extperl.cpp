@@ -42,7 +42,7 @@ EXTERN_C void boot_DynaLoader (pTHX_ CV* cv);
 EXTERN_C void
 xs_init(pTHX)
 {
-        char *file = __FILE__;
+        const char *file = __FILE__;
         dXSUB_SYS;
 
 #ifdef unix
@@ -134,13 +134,13 @@ STDCALL void LoadLib(smxExContext *pContext) {
 
 	my_perl = perl_alloc();
 	perl_construct(my_perl);
-	char *embedding[] = { "", "-e", "0" };
-	perl_parse(my_perl, xs_init, 3, embedding, NULL);	
+	const char *embedding[] = { "", "-e", "0" };
+	perl_parse(my_perl, xs_init, 3, (char **) embedding, NULL);	
 	PL_exit_flags |= PERL_EXIT_DESTRUCT_END;
 
 	{ MY_CXT_INIT; }
 
-    	char *file = __FILE__;
+    	const char *file = __FILE__;
    	newXS("main::output", XS_SmxPerl_output, file);
    	newXS("main::export", XS_SmxPerl_export, file);
 

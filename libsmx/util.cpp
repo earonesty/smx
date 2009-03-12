@@ -56,7 +56,7 @@ CStr ReplaceStr(CStr in, CStr from, CStr to)
 		return in;
 	} else {
 		CStr res;
-		char *b = in.SafeP();
+		char *b = (char *) in.SafeP();
 		char *i = b;
 		while ((p = strstr(i, from))) {
 			res.Append(i, p - i);

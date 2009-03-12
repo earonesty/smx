@@ -228,7 +228,7 @@ static int psx_user(request_rec *r)
 
 		qCtxTmp tmpCtx(renv->GetCtx());
 
-		char *user = NULL;
+		const char *user = NULL;
 		const char *pw = NULL;
 
 		int res=ap_get_basic_auth_pw(r,&pw);

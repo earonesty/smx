@@ -19,7 +19,7 @@ THIS SOFTWARE IS PROVIDED 'AS IS' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDI
 #include "str.h"
 #include "map.h"
 
-char *CStr::s_empty = "";
+const char *CStr::s_empty = "";
 CStr CStr::Null = 0;
 CStr CStr::Empty = CStr("", 0);
 

@@ -40,7 +40,7 @@ public:
 	
 	void Eval(qCtx *ctx, qStr *out, qArgAry *args);
 
-	char *GetQmap() {
+	const char *GetQmap() {
 		return S_QMAP;
 	}
 };
@@ -56,7 +56,7 @@ public:
 
 	void Eval(qCtx *ctx, qStr *out, qArgAry *args);
 
-	virtual char *GetQmap() 
+	const virtual char *GetQmap() 
 		{return S_QMAP;}
 };
 
@@ -220,7 +220,7 @@ public:
 		myCtx->Parse(&rb, &wrap);
 	}
 
-	virtual char * STDCALL ParseArg(int nIndex, const char *pArgs[], smxArgType pArgType[], int nNumArgs) {
+	virtual const char * STDCALL ParseArg(int nIndex, const char *pArgs[], smxArgType pArgType[], int nNumArgs) {
 		if (nIndex < nNumArgs && pArgs) {
 			if (!pArgType || pArgType[nIndex] != smxQuotedString) {
 				qStrBuf out;

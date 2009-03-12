@@ -28,14 +28,14 @@ TLS CEx gEx = {0,""};
 char   gExPrefix[] = QEX_PREFIX;
 int    gExPrefixLen = strlen(gExPrefix);
 
-CEx *qEx(int id, char *msg, ...)
+CEx *qEx(int id, const char *msg, ...)
 {
 	va_list vargs;
 	va_start( vargs, msg );
 	return qExV(id, msg, vargs);
 }
 
-CEx *qExF(int id, char *msg, ...)
+CEx *qExF(int id, const char *msg, ...)
 {
 	va_list vargs;
 	va_start( vargs, msg );
@@ -46,7 +46,7 @@ CEx *qExF(int id, char *msg, ...)
 	return qExV(id, gEx.msg, vargs-1);
 }
 
-CEx *qExV(int id, char *msg_p, va_list vargs)
+CEx *qExV(int id, const char *msg_p, va_list vargs)
 {
 	int len = strlen(msg_p);
 	gEx.id = id;

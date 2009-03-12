@@ -128,7 +128,7 @@ public:
 		myObj->Eval(myCtx, out, args);
 	}
 
-	char *GetQmap() {
+	const char *GetQmap() {
 		return myObj->GetQmap();
 	}
 };

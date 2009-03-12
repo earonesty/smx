@@ -200,7 +200,7 @@ void ProtoParseHosts(CStrAry &hosts, CStr &hostStr) {
 	}
 }
 
-char *stristr(char *b, char *s) {
+const char *stristr(const char *b, const char *s) {
 	if (!*s)
 		return b;
 	if (!s[1])
@@ -326,7 +326,7 @@ class qObjTcp : public qObjCtxP {
 		}
 	}
 
-	char *GetQmap() {
+	const char *GetQmap() {
 		static char qm[2] = "1";
 		return qm;
 	}

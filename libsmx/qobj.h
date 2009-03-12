@@ -42,7 +42,7 @@ public:
 
 	virtual void Eval(qCtx *ctx, qStr *out, qArgAry *args) 
 		{}
-	virtual char *GetQmap() 
+	virtual const char *GetQmap() 
 		{return NULL;}
 	virtual bool EvalSet(qCtx *ctx, qStr *out, qArgAry *args)
 		{return false;}
@@ -229,15 +229,15 @@ public:
 
 class qObjFunc : public qObj {
 	const void *myData;
-	char *myQmap;
+	const char *myQmap;
 	QOBJFUNC myFunc;
 public:
-	qObjFunc(const void *newData, QOBJFUNC newFunc, char *qmap = NULL)
+	qObjFunc(const void *newData, QOBJFUNC newFunc, const char *qmap = NULL)
 		{myData = newData; myFunc = newFunc; myQmap = qmap;}
 	inline void Eval(qCtx *ctx, qStr *out, qArgAry *args) {
 		myFunc(myData, ctx, out, args);
 	}
-	inline char *GetQmap() {
+	inline const char *GetQmap() {
 		return myQmap;
 	}
 	virtual void Dump(qStr *out)
@@ -247,16 +247,16 @@ public:
 class qObjMeth : public qObj {
 	void (qObj::*myMeth)(qCtx *,qStr *,qArgAry *);
 	qObj *myObj;
-	char *myQmap;
+	const char *myQmap;
 
 public:
-	qObjMeth(qObj* newObj, void (qObj::*newMeth)(qCtx *,qStr *,qArgAry *), char *qmap = NULL)
+	qObjMeth(qObj* newObj, void (qObj::*newMeth)(qCtx *,qStr *,qArgAry *), const char *qmap = NULL)
 		{myObj = newObj; myMeth = newMeth; myQmap = qmap;}
 
 	inline void Eval(qCtx *ctx, qStr *out, qArgAry *args) {
 		(myObj->*myMeth)(ctx, out, args);
 	}
-	inline char *GetQmap() {
+	inline const char *GetQmap() {
 		return myQmap;
 	}
 	virtual void Dump(qStr *out)
@@ -285,7 +285,7 @@ public:
 	
 	void Eval(qCtx *ctx, qStr *out, qArgAry *args);
 
-	char *GetQmap() {return myQmap.GetBuffer();}
+	const char *GetQmap() {return myQmap.GetBuffer();}
 
 	bool IsQuoted(int i)
 		{ return (i >= 0 && i < myQuoted.Count() && myQuoted[i] == dQuoted); }

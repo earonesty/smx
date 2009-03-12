@@ -392,16 +392,16 @@ public:
 	qObj *MapObj(const char *str, const CStr & name) 
 		{return MapObj(CreateObj(str), name);}
 
-	qObj *MapObj(const void *ext_obj, QOBJFUNC func, const CStr & name, char *qmap = NULL) 
+	qObj *MapObj(const void *ext_obj, QOBJFUNC func, const CStr & name, const char *qmap = NULL) 
 		{return MapObj(CreateObj(ext_obj, func, qmap), name);}
 
 	void SetValue(const char *name, QOBJFUNC func, void *ext_obj)
 		{MapObj(CreateObj(ext_obj, func, NULL), name);}
 
-	qObj *MapObj(QOBJFUNC func, const CStr & name, char *qmap = NULL) 
+	qObj *MapObj(QOBJFUNC func, const CStr & name, const char *qmap = NULL) 
 		{return MapObj(CreateObj(func, qmap), name);}
 
-	qObj *MapObj(qObj* obj,QOBJMETH meth, const CStr & name, char *qmap = NULL) 
+	qObj *MapObj(qObj* obj,QOBJMETH meth, const CStr & name, const char *qmap = NULL) 
 		{return MapObj(CreateObj(obj, meth, qmap), name);}
 // end helper maps
 
@@ -425,13 +425,13 @@ public:
 	qObj *CreateObj(const char **charpp) 
 		{qObj *obj; return obj = new qObjCharPP(charpp);}
 
-	qObj *CreateObj(QOBJFUNC func, char *qmap) 
+	qObj *CreateObj(QOBJFUNC func, const char *qmap) 
 		{qObj *obj; return obj = new qObjFunc(0, func, qmap);}
 
-	qObj *CreateObj(const void *ext_obj, QOBJFUNC func, char *qmap) 
+	qObj *CreateObj(const void *ext_obj, QOBJFUNC func, const char *qmap) 
 		{qObj *obj; return obj = new qObjFunc(ext_obj, func, qmap);}
 
-	qObj *CreateObj(qObj* obj, QOBJMETH meth, char *qmap) 
+	qObj *CreateObj(qObj* obj, QOBJMETH meth, const char *qmap) 
 		{qObj *mobj; return mobj = new qObjMeth(obj, meth, qmap);}
 
 // end create helpers
@@ -470,7 +470,7 @@ public:
 
 // argument array parsing
 	void   ParseArgs(qStr *in, qArgAry *out);
-	void   ParseArgsQmap(qStr *in, qArgAry *out, char *qmap);
+	void   ParseArgsQmap(qStr *in, qArgAry *out, const char *qmap);
 
 // argument parsing
 //	int    ParseInt(const CStr &str, bool quot);

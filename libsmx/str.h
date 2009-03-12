@@ -51,7 +51,7 @@ class CStrNull;
 
 class CStr : public CBufChar {
 protected:
-	static char *s_empty;
+	static const char *s_empty;
 public:
 	int Length() const	{return Count() ? Count() - 1 : 0;}
 
@@ -105,7 +105,7 @@ public:
 
 	operator char*() const {return m_buf;}
 
-	char *SafeP() const {return m_buf ? m_buf : s_empty;}
+	char *SafeP() const {return m_buf ? m_buf : (char *) s_empty;}
 	char *GetBuffer() const {return Data();}
 
 	CStr &operator =(const char *d) 

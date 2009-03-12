@@ -70,7 +70,7 @@ public:
         void Eval(qCtx *ctx, qStr *out, qArgAry *args) {
         }
 
-        char *GetQmap() {
+        const char *GetQmap() {
                 return S_QMAP;
         }
 };

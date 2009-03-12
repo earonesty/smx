@@ -33,9 +33,9 @@ struct CEx {
 	char msg[QEX_MAXMSG + 1];
 };
 
-CEx *qExV(int id, char *msg, va_list vargs);
-CEx *qEx(int id, char *msg, ...);
-CEx *qExF(int id, char *msg, ...);
+CEx *qExV(int id, const char *msg, va_list vargs);
+CEx *qEx(int id, const char *msg, ...);
+CEx *qExF(int id, const char *msg, ...);
 CEx *qExLast();
 
 #ifndef TLS

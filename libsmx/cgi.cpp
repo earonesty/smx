@@ -1218,12 +1218,12 @@ void qObjCGI::EvalUrlDecode(qCtx *ctx, qStr *out, qArgAry *args)
 	}
 }
 
-int ParseAry(const char *p, CStrAry &ary, char *toks)
+int ParseAry(const char *p, CStrAry &ary, const char *toks)
 {
 	if (!p)
 		return 0;
 
-	char *t;
+	const char *t;
 	const char *o = p;
 	while (*p) {
 		t = toks;
