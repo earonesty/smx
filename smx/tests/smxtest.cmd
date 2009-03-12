@@ -16,7 +16,7 @@ echo "%1"
 if EXIST "%1.skip"  ] goto :skip 
 
 ..\smx %1 > %1.tmp
-diff %1.ok %1.tmp
+diff -b %1.ok %1.tmp
 if errorlevel 1 goto :error
 
 goto :end

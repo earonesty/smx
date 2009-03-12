@@ -49,7 +49,7 @@ our ($PACKAGE_NAME, $PACKAGE_VERSION, $PACKAGE_EMAIL, $PACKAGE_RELEASE) = getpac
 die "Can't find package version" if ! $PACKAGE_VERSION;
 
 ### add other defs for g++
-push @def, "PACKAGE_VERSION='$PACKAGE_VERSION'";
+push @def, "PACKAGE_VERSION=\\\"$PACKAGE_VERSION.$PACKAGE_RELEASE\\\"";
 push @def, 'HAVE_SQLITE3_H';
 push @def, 'HAVE_OPENSSL';
 push @def, 'HAVE_FCVT';
@@ -305,6 +305,7 @@ sub make_target {
 			my $obj = make_cpp($make, $_, $make->{$target}->{cflags});
 			$make->{$target}->{objs} .= "$obj ";
 			die unless $obj;
+			$mtime = (stat($obj))[9] if (stat($obj))[9] > $mtime;
 		}
 	}
 

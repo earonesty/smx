@@ -25,6 +25,9 @@ THIS SOFTWARE IS PROVIDED 'AS IS' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDI
 #ifdef unix
 #include <pwd.h>
 #endif
+#ifdef WIN32
+#include <malloc.h>
+#endif
 
 #include "strary.h"
 
