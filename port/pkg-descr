@@ -1,0 +1,6 @@
+smx is a macro language for developing dynamic web pages 
+that is designed to be easier and faster than procedural 
+languages.
+
+It provides support for database access, forms processing, 
+image creation and other common web development tasks.

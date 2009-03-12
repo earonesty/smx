@@ -1,0 +1,20 @@
+# New ports collection makefile for:   smx
+# Date created:        11 March 2009
+# Whom:                erik
+#
+# $FreeBSD$
+#
+
+PORTNAME=      smx
+PORTVERSION=   @VERSION@.@RELEASE@
+CATEGORIES=    lang
+MASTER_SITES=  http://smx.googlecode.com/files/
+DISTVERSION=   @VERSION@-@RELEASE@
+WRKSRC=	       ${WRKDIR}/smx-@VERSION@
+
+MAINTAINER=    erik@q32.com
+COMMENT=       Easy to use language for building dynamic websites.
+GNU_CONFIGURE= yes
+
+.include <bsd.port.mk>
+
