@@ -1,0 +1,2 @@
+#!/bin/sh
+gdb -x run_gdb.init httpd

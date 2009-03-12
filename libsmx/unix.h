@@ -34,7 +34,6 @@ THIS SOFTWARE IS PROVIDED 'AS IS' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDI
 #include <errno.h>
 #include <dlfcn.h>
 #include <wchar.h>
-#define _XOPEN_SOURCE 600
 #include <string.h>
 #include <strings.h>
 

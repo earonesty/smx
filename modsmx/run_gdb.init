@@ -1,0 +1,2 @@
+# run httpd ina sinle process, loading an alternate/debug conf
+run -X -f /etc/httpd/conf/httpd-debug.conf

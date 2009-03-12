@@ -406,7 +406,7 @@ void exvsprintf(char **out_p, const char *msg_p, va_list vargs)
         (*out_p) = (char *) realloc((*out_p), max);
 
         if (pmy) {
-                int add, off = pmy - tmp;
+                int add = 0, off = pmy - tmp;
                 memcpy((*out_p), tmp, off);
 
 #ifdef WIN32
@@ -414,8 +414,20 @@ void exvsprintf(char **out_p, const char *msg_p, va_list vargs)
                         FORMAT_MESSAGE_FROM_SYSTEM, 0, dy, 0, &((*out_p)[off]), 1024, 0);
 #else
                 char *obuf = &((*out_p)[off]); 
-		strerror_r((int) dy, obuf, 1024);
-		add = strlen(obuf);
+#ifdef STRERROR_R_CHAR_P
+                char * ret = strerror_r((int) dy, obuf, 1024);
+                if (ret) {
+			if (ret != obuf) {
+				strcpy(obuf, ret);
+			}
+                	add = strlen(obuf);
+                }
+#else
+		int ret = strerror_r((int) dy, obuf, 1024);
+		if (ret) {
+			add = strlen(obuf);
+		}
+#endif
 #endif
                 memcpy(&((*out_p)[add+off]), pmy+2, len-off-2);
                 len = add + len - 2;

@@ -70,7 +70,6 @@ THIS SOFTWARE IS PROVIDED 'AS IS' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDI
 
 #include <stdlib.h>
 #include <string.h>
-#include <stdlib.h>
 
 #include "str.h"
 #include "map.h"
