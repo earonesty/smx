@@ -41,7 +41,7 @@ CDBDriverSqlite::CDBDriverSqlite(const char *path)
                 smx_log_pf(SMXLOGLEVEL_WARNING, err, "SQLITE3 open failed", path, m_db ? sqlite3_errmsg(m_db) : "");
         } else {
 		const char *p;
-		sqlite3_busy_timeout(m_db, 100);
+		sqlite3_busy_timeout(m_db, 400);
 		char *msg = NULL;
 		if (sqlite3_exec(m_db, "create table if not exists h (k text primary key, v text)", NULL, NULL, &msg))  {
                 	smx_log_pf(SMXLOGLEVEL_WARNING, err, "SQLITE3 create table failed", path, msg);
@@ -121,6 +121,11 @@ bool CDBDriverSqlite::Set(const char *key, const char *val, int vlen, HTRANS txn
                 smx_log_pf(SMXLOGLEVEL_WARNING, rv, "SQLITE3 set error", m_path, sqlite3_errmsg(m_db));
                 Close();
         }
+}
+
+CDBDriverSqlite::~CDBDriverSqlite() 
+{
+	Close();
 }
 
 bool CDBDriverSqlite::Close()

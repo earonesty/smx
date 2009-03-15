@@ -44,7 +44,10 @@ THIS SOFTWARE IS PROVIDED 'AS IS' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDI
         KEY = p;}
 
 CDBHash::~CDBHash() {
-	if (m_v) delete m_v;
+	if (m_v) {
+		m_v->Close();
+		delete m_v;
+	}
 }
 
 bool CDBHash::IsOpen() { 

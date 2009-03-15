@@ -1,7 +1,6 @@
-2009-02-25 : EA : memory "management" in modsmx is a spaghetti of heuristics borne of trial and error that usually works and sometimes doesn't.  look to apache docs?? for correct way
+2009-03-12 : EA : Normalize the SMX_INIT thing, document all init macros.  Get FastCGI to support all of them, just like Apache.
+2009-02-25 : EA : memory "management" in modsmx linux needs the ability to dump and diff, just like on windows, debugging with -X doesn't cut it.
 2009-02-24 : EA : add tests for libmodsmx whhich instantiate a local httpd server and run some tests on it
-2009-02-24 : EA : add tests and examples for dll/so library code
-2009-02-24 : EA : get the durned thing to complie on windows/mingw/apache2
 2006-04-27 : EA : rewrite noncompiled parser to resemble compiled parser (less recursion)?
 2006-04-27 : EA : document all macros, mark experimental ones as experimental
 2006-03-19 : EA : put more code into qObjHttp, and remove code from the modsmx apache module - for new IIS build, and help with other servers

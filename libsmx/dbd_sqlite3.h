@@ -21,6 +21,7 @@ class CDBDriverSqlite : public CDBDriver {
 
 public:
 	CDBDriverSqlite(const char *path);
+	~CDBDriverSqlite();
 
 	bool Close();
 
