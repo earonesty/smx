@@ -129,6 +129,7 @@ int qEnvCGI::GetHeaders(qEnvHttpHeaderCB *CB)
 		}
 		++pp;
 	}
+	return 1;
 }
 
 void qEnvCGI::PrintHeaders()

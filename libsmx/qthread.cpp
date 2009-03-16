@@ -209,7 +209,7 @@ MTHREADINT qThread::MthreadCondBroadcast(MTHREADCOND *MThreadCond,
 {
 	MTHREADINT	Ret;
 
-	pthread_cond_broadcast(&MThreadCond->Cond);
+	Ret = pthread_cond_broadcast(&MThreadCond->Cond);
 	if (Ret != 0)
 	{
 		*Errno = Ret;

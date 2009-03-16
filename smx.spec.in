@@ -19,14 +19,14 @@ BuildRequires:	unixODBC-devel >= 2.0
 BuildRequires:	openssl-devel >= 0.9
 %if %{?suse_version:1}0
 BuildRequires: apache2-devel
-BuildRequires: gcc-c++
-BuildRequires: glibc-devel
 %else
 BuildRequires: httpd-devel
 %endif
-%if %suse_version > 1000
-BuildRequires: libapr1-devel
+%if %{?fedora_version:1}0
+BuildRequires: perl-ExtUtils-Embed
 %endif
+BuildRequires: gcc-c++
+BuildRequires: glibc-devel
 
 %description
 SMX is a simple macro language that can be used to parse text files
