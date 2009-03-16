@@ -49,7 +49,7 @@ rm -rf %{buildroot}
 %files
 %defattr(-,root,root)
 %doc AUTHORS ChangeLog COPYING INSTALL README TODO
-%{_bindir}/smx
+%{_bindir}/smx*
 %{_libdir}/libsmx.*
 %{_libdir}/libmodsmx.*
 %{_libdir}/libextperl.*
