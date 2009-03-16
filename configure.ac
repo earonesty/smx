@@ -67,6 +67,11 @@ AC_HEADER_STDC
 AC_HEADER_SYS_WAIT
 AC_LANG_PUSH(C++)
 
+AC_CHECK_HEADER(sql.h,[],[
+        echo "Error! sql.h is required, try installing unixODBC-devel"
+        exit -1
+])
+
 AC_CHECK_HEADERS([sys/io.h sqlite3.h sql.h pthread.h openssl/evp.h tdb.h signal.h gd.h bits/atomicity.h ext/atomicity.h])
 AC_FUNC_STRERROR_R
 
