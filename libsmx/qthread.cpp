@@ -195,7 +195,7 @@ MTHREADINT qThread::MthreadCondWait(MTHREADCOND  *MThreadCond,
 {
 	MTHREADINT	Ret;
 
-	pthread_cond_wait(&MThreadCond->Cond, &MThreadMutex->Mutex);
+	Ret = pthread_cond_wait(&MThreadCond->Cond, &MThreadMutex->Mutex);
 	if (Ret != 0)
 	{
 		*Errno = Ret;
