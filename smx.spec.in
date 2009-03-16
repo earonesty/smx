@@ -19,6 +19,8 @@ BuildRequires:	unixODBC-devel >= 2.0
 BuildRequires:	openssl-devel >= 0.9
 %if %{?suse_version:1}0
 BuildRequires: apache2-devel
+BuildRequires: gcc-c++
+BuildRequires: glibc-devel
 %else
 BuildRequires: httpd-devel
 %endif

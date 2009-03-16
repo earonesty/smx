@@ -600,7 +600,8 @@ void EvalGetToken(const void *data, qCtx *ctx, qStr *out, qArgAry *args) {
 				*e = 0;
 				if (--ind < 0)
 					break;
-				p = (++e) + strspn(e, t);
+				++e;
+				p = e + strspn(e, t);
 			} else {
 				if (ind > 0)
 					return;
@@ -651,7 +652,8 @@ void EvalEnumToken(const void *data, qCtx *ctx, qStr *out, qArgAry *args) {
 					sub.Parse(args->GetAt(2),out);
 				else
 					--skip;
-				p = (++e) + strspn(e, t);
+				++e;
+				p = e + strspn(e, t);
 			} else {
 				if (!skip)
 					sub.Parse(args->GetAt(2),out);
