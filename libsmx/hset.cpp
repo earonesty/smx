@@ -101,8 +101,7 @@ void qObjHCtx::Counter(qCtx *ctx, qStr *out, qArgAry *args)
                 if (!var.IsEmpty()) {
                         var  = "/counters/" << var;
 /*
-      			HTRANS trans = NULL;
-                        trans = myHash.BeginTrans();
+      			HTRANS trans = trans = myHash.BeginTrans();
 */
                         try {
                                 if (args->Count() > 1) {

@@ -66,9 +66,9 @@ bool CDBDriverTdb::Reopen() {
 	        key.dsize=1;
 
 	        int retry = 0;
-	        data=tdb_fetch(m_db, key);
+	        data=tdb_fetch(t, key);
 
-	        if (!data.dptr && (tdb_error(m_db) == TDB_ERR_CORRUPT)) {
+	        if (!data.dptr && (tdb_error(t) == TDB_ERR_CORRUPT)) {
 			t = NULL;
 		}
 	}

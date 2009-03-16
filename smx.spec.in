@@ -66,8 +66,10 @@ rm -rf %{buildroot}
 
 %files devel
 %defattr(-,root,root)
-%doc AUTHORS ChangeLog COPYING INSTALL README TODO
-%{_libdir}/lib*smx*.*
+libsmx/smxext.h
+%{_libdir}/libsmx.*
+%{_libdir}/libmodsmx.*
+%{_libdir}/libextperl.*
 
 %changelog
 * Sun Mar 26 2006 Erik Aronesty <erik@q32.com>
