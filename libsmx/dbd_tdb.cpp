@@ -55,10 +55,24 @@ bool CDBDriverTdb::Reopen() {
 	if (!t) {
 		usleep(100); 
 		t = tdb_open((char *) m_path, 0, 0, O_CREAT|O_RDWR, 0666);
+
 	}
 	if (!t) {
 		smx_log_pf(SMXLOGLEVEL_WARNING, errno, "TDB Open Failed", m_path, strerror(errno));
+	} else {
+	        TDB_DATA key;
+	        TDB_DATA data;
+	        key.dptr=(char *)"x";
+	        key.dsize=1;
+
+	        int retry = 0;
+	        data=tdb_fetch(m_db, key);
+
+	        if (!data.dptr && (tdb_error(m_db) == TDB_ERR_CORRUPT)) {
+			t = NULL;
+		}
 	}
+
 	if (t) {
 		m_db = t;
 		return true;
