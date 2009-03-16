@@ -279,7 +279,7 @@ public:
 
 		strcpy(full_name, s_mutex_path);
 		strcat(full_name, name);
-		m_mutex = open(full_name, O_CREAT);
+		m_mutex = open(full_name, O_CREAT, 0777);
 		m_spin = 0;
 	}
 
