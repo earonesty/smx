@@ -19,9 +19,11 @@ BuildRequires:	unixODBC-devel >= 2.0
 BuildRequires:	openssl-devel >= 0.9
 %if %{?suse_version:1}0
 BuildRequires: apache2-devel
+%else
+BuildRequires: httpd-devel
 %endif
-%if %{?fedora_version:1}0
-BuildReqires: httpd-devel
+%if %suse_version > 1000
+BuildRequires: libapr1-devel
 %endif
 
 %description
