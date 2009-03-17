@@ -1,7 +1,5 @@
 #!/bin/sh
 
-cd tests
-
 error()
 {
     echo "ERROR during test '$curtest', quitting"
@@ -9,10 +7,11 @@ error()
     exit 1
 }
 
+cd tests 2> /dev/null
 useradd test_httpd_user -d `pwd` 2> /dev/null
+rm -rf test_data 
 mkdir test_data
 chown test_httpd_user:test_httpd_user test_data
-cd tests 2> /dev/null
 httpd -f `pwd`/test.conf
 
 for curtest in test-*.html
@@ -26,6 +25,7 @@ do
         fi
 done
 
+httpd -f `pwd`/test.conf -k stop
 kill `cat test_httpd.pid`
 
 userdel test_httpd_user

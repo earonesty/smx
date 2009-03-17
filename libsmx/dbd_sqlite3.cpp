@@ -43,17 +43,20 @@ CDBDriverSqlite::CDBDriverSqlite(const char *path)
 		const char *p;
 		sqlite3_busy_timeout(m_db, 400);
 		char *msg = NULL;
-		if (sqlite3_exec(m_db, "create table if not exists h (k text primary key, v text)", NULL, NULL, &msg))  {
-                	smx_log_pf(SMXLOGLEVEL_WARNING, err, "SQLITE3 create table failed", path, msg);
-		} else {
-			if (SQLITE3_PREP(m_db, "select v from h where k=?", -1, &m_st_get, &p)) {
-                		smx_log_pf(SMXLOGLEVEL_WARNING, err, "SQLITE3 prepare stmt get failed", path, sqlite3_errmsg(m_db));
+		if (err=sqlite3_exec(m_db, "create table if not exists h (k text primary key, v text)", NULL, NULL, &msg))  {
+                	if (err != SQLITE_NOTADB) {
+				smx_log_pf(SMXLOGLEVEL_WARNING, err, "SQLITE3 create table failed", path, msg);
 			}
-                        if (SQLITE3_PREP(m_db, "delete from h where k=?", -1, &m_st_del, &p)) {
-                                smx_log_pf(SMXLOGLEVEL_WARNING, err, "SQLITE3 prepare stmt del failed", path, sqlite3_errmsg(m_db));
-                        }
-			if (SQLITE3_PREP(m_db, "insert or replace into h (k, v) values (?, ?)", -1, &m_st_set, &p)) {
-                		smx_log_pf(SMXLOGLEVEL_WARNING, err, "SQLITE3 prepare stmt set failed", path, sqlite3_errmsg(m_db));
+		}
+                if (err != SQLITE_NOTADB) {
+			if (err=SQLITE3_PREP(m_db, "select v from h where k=?", -1, &m_st_get, &p)) {
+				smx_log_pf(SMXLOGLEVEL_WARNING, err, "SQLITE3 prepare stmt get failed", path, sqlite3_errmsg(m_db));
+			}
+			if (err=SQLITE3_PREP(m_db, "delete from h where k=?", -1, &m_st_del, &p)) {
+				smx_log_pf(SMXLOGLEVEL_WARNING, err, "SQLITE3 prepare stmt del failed", path, sqlite3_errmsg(m_db));
+			}
+			if (err=SQLITE3_PREP(m_db, "insert or replace into h (k, v) values (?, ?)", -1, &m_st_set, &p)) {
+				smx_log_pf(SMXLOGLEVEL_WARNING, err, "SQLITE3 prepare stmt set failed", path, sqlite3_errmsg(m_db));
 			}
 		}
 	}
@@ -74,7 +77,7 @@ CStr CDBDriverSqlite::Get(const char *key, HTRANS txn) {
 	sqlite3_bind_text(m_st_get, 1, key, strlen(key), SQLITE_STATIC);
 	int rv = sqlite3_step(m_st_get);
 	if (rv == SQLITE_ROW) {
-		CStr str((const char *) sqlite3_column_text(m_st_get, 0));
+		CStr str((const char *) sqlite3_column_text(m_st_get, 0), sqlite3_column_bytes(m_st_get, 0));
 		sqlite3_reset(m_st_get);
 		return str;
 	}
@@ -131,6 +134,10 @@ CDBDriverSqlite::~CDBDriverSqlite()
 bool CDBDriverSqlite::Close()
 {
   if (!m_db) return true;
+
+  if (m_st_set) sqlite3_finalize(m_st_set);
+  if (m_st_get) sqlite3_finalize(m_st_get);
+  if (m_st_del) sqlite3_finalize(m_st_del);
  
   bool ret;
   ret = !sqlite3_close(m_db);

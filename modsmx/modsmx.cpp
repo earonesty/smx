@@ -62,6 +62,36 @@ static CMutex gCrit("mod_smx.1917000012");
 static qEnvApacheServer *gEnv = NULL;
 
 void ServerReInit(qEnvApacheServer *s, qCtx *ctx, qStr *out, qArgAry *args);
+static apr_status_t cleanup_renv(void *vprenv);
+
+qEnvApacheServer::qEnvApacheServer(qEnvApacheServer *parent) {
+	myCtx = new qCtxTS(parent ? parent->myCtx : NULL);
+	myCtx->SetEnv(this);
+	SetSessionCtx(myCtx);
+//              GetCtx()->MapObj(new qObjCtxP(GetCtx()), "server-context");
+
+#ifdef APACHE2
+	apr_pool_create_ex(&myPool,parent ? parent->GetPool() : NULL,NULL,NULL);
+#else
+	myPool = ap_make_sub_pool(parent ? parent->GetPool() : NULL);
+#endif
+
+	if (!myCtx->Find((qObj**)&myCache , "<cache>")) {
+		assert(!parent);
+		myCache  = new qStrCache(myCtx);
+		myCtx->MapObj(myCache, "<cache>");
+	}
+
+	myServer = NULL;
+	myReady  = false;
+	myInInit = false;
+}
+
+qEnvApacheServer::~qEnvApacheServer() {
+	myCtx->Clear();
+	myCtx->Free();
+	ap_destroy_pool(myPool);
+}
 
 void qEnvApacheServer::ReInitialize()
 {
@@ -122,12 +152,9 @@ static void * create_psx_config(ap_pool *p, server_rec *s);
 static ap_inline qEnvApacheServer *get_psx_srv_env(request_rec *r) 
 { 
 	if (!gEnv) {
-		smx_log_str(SMXLOGLEVEL_DEBUG,"server environment created during get_psx_srv_env");
-		ap_set_module_config(r->server->module_config, &smx_module, create_psx_config(r->pool, r->server));
-	}
-
-	if (!gEnv)
+		smx_log_str(SMXLOGLEVEL_DEBUG,"global environment null during get_psx_srv_env");
 		return NULL;
+	}
 
 	qEnvApacheServer *ps = ((qEnvApacheServer *) 
 		ap_get_module_config(r->server->module_config, &smx_module));
@@ -141,13 +168,9 @@ static ap_inline qEnvApacheServer *get_psx_srv_env(request_rec *r)
 static qEnvApache *get_psx_req_env(request_rec *r, bool create = true)
 {
 	if (!gEnv) {
-		smx_log_str(SMXLOGLEVEL_DEBUG,"server environment created during get_psx_req_env");
-		ap_set_module_config(r->server->module_config, &smx_module, create_psx_config(r->pool, r->server));
-	}
-
-	if (!gEnv)
+		smx_log_str(SMXLOGLEVEL_DEBUG,"global environment null during get_psx_req_env");
 		return NULL;
-		
+	}
 
 	qEnvApache *renv = (qEnvApache *)
 		ap_get_module_config(r->request_config, &smx_module);
@@ -155,10 +178,11 @@ static qEnvApache *get_psx_req_env(request_rec *r, bool create = true)
 	if (!renv) {
 		if (create) {
 			renv = new qEnvApache(r);
+//			smx_log_str(SMXLOGLEVEL_ERROR, "alloc request");
 			ap_set_module_config(r->request_config, &smx_module, renv);
+    			apr_pool_cleanup_register(r->pool, renv, cleanup_renv, apr_pool_cleanup_null);
 		}
-	} else if (create)
-		renv->AddRef();
+	}
 
 	return renv;
 }
@@ -185,20 +209,9 @@ static int psx_auth_fail(request_rec *r, qEnvApache *renv)
 	} else {
 		ap_note_basic_auth_failure(r);
 	}
-	renv->Free();
 
 	ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, AP2STATUS r, "returning unauthorized: %d, status : %d", HTTP_UNAUTHORIZED, r->status);
 	return HTTP_UNAUTHORIZED;
-}
-
-static int psx_log(request_rec *r)
-{
-	qEnvApache *renv = get_psx_req_env(r, false);
-
-	if (renv)
-		renv->Done();
-
-	return DECLINED;
 }
 
 static int psx_user(request_rec *r)
@@ -219,8 +232,6 @@ static int psx_user(request_rec *r)
 
 
 		if (renv->IsAuth == 1) {
-			if (r->main)
-				renv->Free();
 			return OK;
 		} else if (renv->IsAuth == -1) {
 			return psx_auth_fail(r, renv);
@@ -257,8 +268,6 @@ static int psx_user(request_rec *r)
 			renv->IsAuth = -1;
 			return psx_auth_fail(r, renv);
 		} else {
-			if (r->main)
-				renv->Free();
 			renv->IsAuth = 1;
 			return OK;
 		}
@@ -267,9 +276,6 @@ static int psx_user(request_rec *r)
 		if (r->status == HTTP_MOVED_TEMPORARILY) {
 			return OK;
 		}
-
-		if (renv)
-			renv->Free();
 
 		smx_log_str(SMXLOGLEVEL_ERROR, "unhandled exception during authentication");
 
@@ -375,7 +381,7 @@ static int psx_handler(request_rec *r)
 				return 500;
 			} catch (...) {
 				ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, AP2STATUS r,
-					"PSX : Unexpected error, recovery impossible, possible memory leak.");
+					"SMX : Unexpected error, recovery impossible, possible memory leak.");
 				r->status = 500;
 				return 500;
 			}
@@ -418,6 +424,20 @@ static int psx_handler(request_rec *r)
 /* -------------------------------------------------------------- */
 /* Setup configurable data */
 
+static apr_status_t cleanup_senv(void *vpsenv)
+{
+//	smx_log_str(SMXLOGLEVEL_ERROR, "free server");
+	delete (qEnvApacheServer *) vpsenv;
+	return OK;
+}
+
+static apr_status_t cleanup_renv(void *vprenv)
+{
+//	smx_log_str(SMXLOGLEVEL_ERROR, "free request");
+        delete (qEnvApache *) vprenv;
+        return OK;
+}
+
 static void * create_psx_config(ap_pool *p, server_rec *s)
 {
 	qEnvApacheServer *senv;
@@ -427,6 +447,7 @@ static void * create_psx_config(ap_pool *p, server_rec *s)
 
 		if (!gEnv) {		// first time
 			gEnv = senv = new qEnvApacheServer(NULL);
+//			smx_log_str(SMXLOGLEVEL_ERROR, "alloc server");
 			gEnv->SetServer(s);
 
 			LoadAllLibs(gEnv->GetCtx());
@@ -436,9 +457,11 @@ static void * create_psx_config(ap_pool *p, server_rec *s)
 			gEnv->GetCtx()->MapObj(gEnv, (QOBJFUNC) ServerReInit, "global-reinit");
 
 		} else {
-			senv = gEnv->NewServer();
+			senv = new qEnvApacheServer(gEnv);
 		}
 	}
+
+    apr_pool_cleanup_register(p, senv, cleanup_senv, cleanup_senv);
 
     return senv;
 }
@@ -463,7 +486,6 @@ static const char * set_psx_name(cmd_parms *parms, char *struct_ptr, char *arg)
 static void register_psx_hooks(apr_pool_t *p)
 {
     ap_hook_check_user_id(psx_user,NULL,NULL,APR_HOOK_MIDDLE);
-    ap_hook_log_transaction(psx_log,NULL,NULL,APR_HOOK_MIDDLE);
     ap_hook_handler(psx_handler, NULL, NULL, APR_HOOK_MIDDLE);
 }
 #else
@@ -595,15 +617,14 @@ qEnvApache::qEnvApache(request_rec *req)
 	}
 }
 
-void qEnvApache::Free()
-{
-	if (--myRefs == 0)
-		delete this;
-}
+// this is called when the request is no longer needed, but apache hasn't deleted it yet
+// maybe it would help with memory issues if the context was cleared
+// on the chance apache decides not to delete it
 
 void qEnvApache::Done()
 {
-	delete this;
+	if (myCtx)
+		myCtx->Clear();
 }
 
 
@@ -617,11 +638,9 @@ qEnvApache::~qEnvApache()
 #ifdef _DBUGMEM
 		InterlockedDecrement(&gCxCnt);
 #endif
+		myCtx->Clear();
 		myCtx->Free();
 	}
-
-	if (PrevEnv())
-		PrevEnv()->Free();
 
 	ap_set_module_config(myReq->request_config, &smx_module, NULL);
 }

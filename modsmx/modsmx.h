@@ -102,10 +102,6 @@ public:
 	qCtx *GetCtx() {
 		return myCtx;
 	}
-	void AddRef() {
-		++myRefs;
-	}
-	void Free();
 	void Done();
 
 	void SetRequest(request_rec *req) {
@@ -282,50 +278,14 @@ protected:
 	CStr         myWrapMacro;   /* contents of page passed to it */
 	CStr         myPageMacro;   /* called before each page hit */
 	
-	CLst<qEnvApacheServer *> *myVirts;
-	
 public:
 
 
-	qEnvApacheServer(qEnvApacheServer *parent) {
-		myCtx = new qCtxTS(parent ? parent->myCtx : NULL);
-		myCtx->SetEnv(this);
-		SetSessionCtx(myCtx);
-//		GetCtx()->MapObj(new qObjCtxP(GetCtx()), "server-context");
-
-#ifdef APACHE2
-    apr_pool_create_ex(&myPool,parent ? parent->GetPool() : NULL,NULL,NULL);
-#else
-		myPool = ap_make_sub_pool(parent ? parent->GetPool() : NULL);
-#endif
-
-		if (!myCtx->Find((qObj**)&myCache , "<cache>")) {
-			assert(!parent);
-			myCache  = new qStrCache(myCtx);
-			myCtx->MapObj(myCache, "<cache>");
-		}
-
-		myServer = NULL;
-		myReady  = false;
-		myVirts  = NULL;
-		myInInit = false;
-	}
+	qEnvApacheServer(qEnvApacheServer *parent);
+	~qEnvApacheServer();
 
 	bool EnableCache() {return false;}	// never parse forms, or cache modules in a reusable context
 	
-	qEnvApacheServer * NewServer() {
-		qEnvApacheServer *virt = new qEnvApacheServer(this);
-		myVirts = myVirts->Link(virt);
-		return virt;
-	}
-
-	~qEnvApacheServer() {
-		while (myVirts)
-			myVirts = myVirts->DeleteTop();
-		myCtx->Free();
-		ap_destroy_pool(myPool);
-	}
-
 	void Initialize(request_rec *r);
 	void ReInitialize();
 

@@ -86,6 +86,7 @@ qEvpMap::qEvpMap() {
 }
 qEvpMap::~qEvpMap()
 {
+	EVP_cleanup();
 	Clear();
 }
 
