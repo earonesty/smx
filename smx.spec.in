@@ -53,6 +53,7 @@ building applications which use %{name}.
 make DESTDIR=%{buildroot} install
 
 rm -f %{buildroot}/%{_libdir}/*.la
+rm -f %{buildroot}/%{_libdir}/*.a
 
 %clean
 rm -rf %{buildroot}
