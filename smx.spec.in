@@ -46,7 +46,15 @@ building applications which use %{name}.
 
 %build
 %configure --disable-rpath
-%makeinstall
+
+%install
+
+make DESTDIR=%{buildroot} install
+
+rm -f %{_libdir}/libsmx.la
+rm -f %{_libdir}/libmodsmx.la
+rm -f %{_libdir}/libextperl.la
+
 %clean
 rm -rf %{buildroot}
 
