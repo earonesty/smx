@@ -1,5 +1,7 @@
 #!/bin/sh
 
+cd tests
+
 error()
 {
     echo "ERROR during test '$curtest', quitting"
