@@ -8,9 +8,8 @@ Version: 	%{ver}
 Release: 	%{rel}
 Source: 	%{name}-%{ver}.tar.gz
 Vendor: 	Erik Aronesty <erik@smxlang.org>
-Packager: 	Erik Aronesty <erik@smxlang.org>
 URL: 		http://www.smxlang.org/
-License: 	GPL
+License: 	BSD
 Group: 		Development/Languages
 Prefix: 	%{_prefix}
 BuildRoot: 	%{_tmppath}/%{name}-%{ver}-root
@@ -46,7 +45,7 @@ building applications which use %{name}.
 %setup -q
 
 %build
-%configure
+%configure --disable-rpath
 %makeinstall
 %clean
 rm -rf %{buildroot}
@@ -69,7 +68,10 @@ rm -rf %{buildroot}
 %{_includedir}/smxext.h
 
 %changelog
-* Tue Mar 17 2009 EA Getting spec to work on SUSE
-* Sun Mar 26 2006 EA Made spec.in autoconf'ed
-* Mon Feb 27 2006 EA First draft of the spec file
+* Tue Mar 17 2009 EA 
+- Getting spec to work on SUSE
+* Sun Mar 26 2006 EA 
+- Made spec.in autoconf'ed
+* Mon Feb 27 2006 EA 
+- First draft of the spec file
 

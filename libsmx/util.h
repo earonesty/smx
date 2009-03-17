@@ -25,12 +25,6 @@ THIS SOFTWARE IS PROVIDED 'AS IS' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDI
 	#endif
 #endif
 
-#ifdef unix
-        #define DEFAULT_LOG "/tmp/smx_debug.log";
-#else
-        #define DEFAULT_LOG "c:/smx_debug.log"
-#endif
-
 #define SMXLOGLEVEL_NONE    0		// not logged
 #define SMXLOGLEVEL_SEVERE  1		// severe error
 #define SMXLOGLEVEL_ERROR   2		// error

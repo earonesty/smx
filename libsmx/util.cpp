@@ -157,9 +157,10 @@ time_t GetFileModified(const FILE *fp)
 }
 #endif
 
+static CStr set_default_log();
 static FILE * gDebugLog = NULL;
 static CCrit  gDebugLogCrit;
-static const char * gDebugLogFile = DEFAULT_LOG;
+static CStr   gDebugLogFile = set_default_log();
 
 static class gDebugLogTermClass {
 public:
@@ -169,6 +170,39 @@ public:
 } gDebugLogTerm;
 
 static void (*gDebugLogFunc)(const char *msg) = _log_debug;
+
+static CStr set_default_log() {
+	CStr log = getenv("SMX_LOG");
+
+#ifdef unix
+	if (log.IsEmpty()) {
+		const char * varlog = "/var/log/smx_debug.log";
+		FILE * t = fopen(varlog, "a");
+		if (t) {
+			log = varlog;
+			fclose(t);
+		}
+	}
+#endif
+
+	if (log.IsEmpty()) {
+                const char * tmp = getenv("tmp");
+                tmp = getenv("temp");
+		if (tmp) {
+			log = tmp;
+			log += "/smx_debug.log";
+		}
+        }
+
+        if (log.IsEmpty()) {
+                const char * tmp = getenv("HOME");
+                if (tmp) {
+                        log += "/smx_debug.log";
+                }
+        }
+
+	return log;
+}
 
 void _log_debug(const char *msg) {
   int pid = (int) getpid();
@@ -180,14 +214,16 @@ void _log_debug(const char *msg) {
   }
 
   if (gDebugLog == NULL) {
-        CLock lock(&gDebugLogCrit);
+	if (gDebugLogFile) {
+	        CLock lock(&gDebugLogCrit);
 #ifdef unix
-  	int um = umask(0027);
+  		int um = umask(0027);
 #endif
-	gDebugLog = fopen(gDebugLogFile,"a");
+		gDebugLog = fopen(gDebugLogFile,"a");
 #ifdef unix
-  	umask(um);
+  		umask(um);
 #endif
+	}
   }
 
   if (gDebugLog) {
