@@ -7,6 +7,7 @@ error()
     exit 1
 }
 
+cd tests 2> /dev/null
 LIBEXECDIR=`apxs -q LIBEXECDIR`
 if [ "$LIBEXECDIR" != "" ]; then
 	sed "s|@LIBEXECDIR@|$LIBEXECDIR|" test.conf.in > test.conf
@@ -14,7 +15,6 @@ else
 	sed "s|@LIBEXECDIR@|modules|" test.conf.in > test.conf
 fi
 
-cd tests 2> /dev/null
 pw=`which pw`
 if [ "$pw" != "" ]; then
 	pw useradd test_httpd_user -d `pwd` -s /dev/null
