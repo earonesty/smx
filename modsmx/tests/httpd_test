@@ -15,7 +15,7 @@ else
 	sed "s|@LIBEXECDIR@|modules|" test.conf.in > test.conf
 fi
 
-pw=`which pw`
+pw=`which pw 2> /dev/null`
 if [ "$pw" != "" ]; then
 	pw useradd test_httpd_user -d `pwd` -s /dev/null
 else
