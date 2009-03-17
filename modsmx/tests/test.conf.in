@@ -9,7 +9,7 @@ MinSpareServers    1
 MaxSpareServers    1
 ServerLimit        1
 
-LoadModule mime_module modules/mod_mime.so
+LoadModule mime_module @LIBEXECDIR@/mod_mime.so
 
 ServerRoot .
 LoadModule smx_module ../.libs/libmodsmx.so

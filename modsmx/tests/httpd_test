@@ -7,8 +7,20 @@ error()
     exit 1
 }
 
+LIBEXECDIR=`apxs -q LIBEXECDIR`
+if [ "$LIBEXECDIR" != "" ]; then
+	sed "s|@LIBEXECDIR@|$LIBEXECDIR|" test.conf.in > test.conf
+else
+	sed "s|@LIBEXECDIR@|modules|" test.conf.in > test.conf
+fi
+
 cd tests 2> /dev/null
-useradd test_httpd_user -d `pwd` 2> /dev/null
+pw=`which pw`
+if [ "$pw" != "" ]; then
+	pw useradd test_httpd_user -d `pwd` -s /dev/null
+else
+	useradd test_httpd_user -d `pwd` -s /dev/null -M
+fi
 rm -rf test_data 
 mkdir test_data
 chown test_httpd_user:test_httpd_user test_data
@@ -28,5 +40,9 @@ done
 httpd -f `pwd`/test.conf -k stop
 kill `cat test_httpd.pid`
 
-userdel test_httpd_user
+if [ "$pw" != "" ]; then
+        pw userdel test_httpd_user
+else
+        userdel test_httpd_user
+fi
 rm -rf test_data 
