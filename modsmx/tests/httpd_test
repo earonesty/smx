@@ -8,6 +8,8 @@ error()
 }
 
 useradd test_httpd_user -d `pwd` 2> /dev/null
+mkdir test_data
+chown test_httpd_user:test_httpd_user test_data
 cd tests 2> /dev/null
 httpd -f `pwd`/test.conf
 
@@ -24,4 +26,5 @@ done
 
 kill `cat test_httpd.pid`
 
-userdel test_httpd_user 
+userdel test_httpd_user
+rm -rf test_data 
