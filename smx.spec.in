@@ -69,8 +69,7 @@ rm -rf %{buildroot}
 %{_includedir}/smxext.h
 
 %changelog
-* Sun Mar 26 2006 Erik Aronesty <erik@q32.com>
-- Made spec.in autoconf'ed
+* Tue Mar 17 2009 EA Getting spec to work on SUSE
+* Sun Mar 26 2006 EA Made spec.in autoconf'ed
+* Mon Feb 27 2006 EA First draft of the spec file
 
-* Mon Feb 27 2006 Erik Aronesty <erik@q32.com>
-- First draft of the spec file
