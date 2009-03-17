@@ -3,6 +3,9 @@ lib_LTLIBRARIES = libsmx.la
 
 libsmx_la_SOURCES = base64.cpp qmail.cpp buf_ref.cpp pscache.cpp math.cpp strx.cpp util.cpp unix.cpp time.cpp tabtd.cpp tabpre.cpp tabfmt.cpp string.cpp stdafx.cpp sqlgrp.cpp sql.cpp sock.cpp sha.cpp regx.cpp qthread.cpp qstr.cpp qsched.cpp qpriq.cpp qobj-ctx.cpp qobj.cpp qfopen.cpp qenv.cpp qctx.cpp qctx-comp.cpp smximpl.cpp pstable.cpp proto.cpp process.cpp opt.cpp open-enc.cpp map.cpp hset.cpp file.cpp ex.cpp dparse.cpp dbh.cpp dbd_sqlite3.cpp dbd_tdb.cpp crit_unix.cpp core.cpp cgi.cpp card.cpp hash.c mapstr.cpp smx_sqlite.cpp psxutil.cpp ary.h open-enc.h qctx-based.h qmail_resource.h qstr-pipe.h sha.h tabpre.h base64.h ex.h optex.h qctx-comp.h qnag.h qstrsock.h smx_sql.h tabtd.h buf.h fbuf.h opt.h qctx.h qobj-cache.h qthread.h smx_sqlite.h tset.h buf_ref.h hash.h pstime.h qenv.h qobj-ctx.h qthread-unix.h sock.h unix.h core.h hset.h smxext.h qobj.h qthread-win.h sqlgrp.h unix_interlock.h crit.h smximpl.h qpriq.h stdafx.h unixsock.h crit_unix.h libs.h qfopen.h qpriqx.h rcex.h strary.h util.h crit_win.h lst.h qgargs.h qsched.h regx.h strex.h dbh.h lstx.h qarg.h qgif.h qstr.h res.h str.h debug.h map.h qlib.h dparse.h mapstr.h qmail.h tabfmt.h psxutil.h gd.cpp dbd_sqlite3.h dbd_tdb.h dbh.h dbd.h io.cpp tset.cpp tset.h qscgi.cpp qscgi.h
 
+libsmx_la_includedir=$(includedir)
+libsmx_la_include_HEADERS = smxext.h
+
 check_LTLIBRARIES = libtest_ext.la
 libtest_ext_la_SOURCES = test_ext.cpp
 libtest_ext_la_LDFLAGS = -rpath /nowhere

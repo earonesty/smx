@@ -34,7 +34,7 @@ and replace inline macros. Contains the smx command-line and cgi
 tool, as well as the modsmx apache module, and extperl plugin.
 
 %package devel
-Summary: Libraries, includes to develop applications with %{name}.
+Summary: Libraries, includes to develop applications with %{name}
 Group: Development/Libraries
 Requires: %{name} = %{ver}
 
@@ -66,10 +66,7 @@ rm -rf %{buildroot}
 
 %files devel
 %defattr(-,root,root)
-libsmx/smxext.h
-%{_libdir}/libsmx.*
-%{_libdir}/libmodsmx.*
-%{_libdir}/libextperl.*
+%{_includedir}/smxext.h
 
 %changelog
 * Sun Mar 26 2006 Erik Aronesty <erik@q32.com>

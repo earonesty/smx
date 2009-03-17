@@ -14,6 +14,7 @@
 
 @SET_MAKE@
 
+
 VPATH = @srcdir@
 pkgdatadir = $(datadir)/@PACKAGE@
 pkglibdir = $(libdir)/@PACKAGE@
@@ -37,7 +38,8 @@ check_PROGRAMS = test_map$(EXEEXT) test_str$(EXEEXT) \
 TESTS = test_map$(EXEEXT) test_str$(EXEEXT) test_eval$(EXEEXT) \
 	test_ext2$(EXEEXT)
 subdir = libsmx
-DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
+DIST_COMMON = $(libsmx_la_include_HEADERS) $(srcdir)/Makefile.am \
+	$(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/ac_apache.m4 \
 	$(top_srcdir)/configure.ac
@@ -52,7 +54,8 @@ am__vpath_adj = case $$p in \
     *) f=$$p;; \
   esac;
 am__strip_dir = `echo $$p | sed -e 's|^.*/||'`;
-am__installdirs = "$(DESTDIR)$(libdir)"
+am__installdirs = "$(DESTDIR)$(libdir)" \
+	"$(DESTDIR)$(libsmx_la_includedir)"
 libLTLIBRARIES_INSTALL = $(INSTALL)
 LTLIBRARIES = $(lib_LTLIBRARIES)
 libsmx_la_LIBADD =
@@ -112,6 +115,8 @@ SOURCES = $(libsmx_la_SOURCES) $(libtest_ext_la_SOURCES) \
 DIST_SOURCES = $(libsmx_la_SOURCES) $(libtest_ext_la_SOURCES) \
 	$(test_eval_SOURCES) $(test_ext2_SOURCES) $(test_map_SOURCES) \
 	$(test_str_SOURCES)
+libsmx_la_includeHEADERS_INSTALL = $(INSTALL_HEADER)
+HEADERS = $(libsmx_la_include_HEADERS)
 ETAGS = etags
 CTAGS = ctags
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
@@ -253,6 +258,8 @@ libsmx_la_SOURCES = base64.cpp qmail.cpp buf_ref.cpp pscache.cpp \
 	qgif.h qstr.h res.h str.h debug.h map.h qlib.h dparse.h \
 	mapstr.h qmail.h tabfmt.h psxutil.h gd.cpp dbd_sqlite3.h \
 	dbd_tdb.h dbh.h dbd.h io.cpp tset.cpp tset.h qscgi.cpp qscgi.h
+libsmx_la_includedir = $(includedir)
+libsmx_la_include_HEADERS = smxext.h
 check_LTLIBRARIES = libtest_ext.la
 libtest_ext_la_SOURCES = test_ext.cpp
 libtest_ext_la_LDFLAGS = -rpath /nowhere
@@ -471,6 +478,23 @@ mostlyclean-libtool:
 
 clean-libtool:
 	-rm -rf .libs _libs
+install-libsmx_la_includeHEADERS: $(libsmx_la_include_HEADERS)
+	@$(NORMAL_INSTALL)
+	test -z "$(libsmx_la_includedir)" || $(MKDIR_P) "$(DESTDIR)$(libsmx_la_includedir)"
+	@list='$(libsmx_la_include_HEADERS)'; for p in $$list; do \
+	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
+	  f=$(am__strip_dir) \
+	  echo " $(libsmx_la_includeHEADERS_INSTALL) '$$d$$p' '$(DESTDIR)$(libsmx_la_includedir)/$$f'"; \
+	  $(libsmx_la_includeHEADERS_INSTALL) "$$d$$p" "$(DESTDIR)$(libsmx_la_includedir)/$$f"; \
+	done
+
+uninstall-libsmx_la_includeHEADERS:
+	@$(NORMAL_UNINSTALL)
+	@list='$(libsmx_la_include_HEADERS)'; for p in $$list; do \
+	  f=$(am__strip_dir) \
+	  echo " rm -f '$(DESTDIR)$(libsmx_la_includedir)/$$f'"; \
+	  rm -f "$(DESTDIR)$(libsmx_la_includedir)/$$f"; \
+	done
 
 ID: $(HEADERS) $(SOURCES) $(LISP) $(TAGS_FILES)
 	list='$(SOURCES) $(HEADERS) $(LISP) $(TAGS_FILES)'; \
@@ -623,9 +647,9 @@ check-am: all-am
 	$(MAKE) $(AM_MAKEFLAGS) $(check_LTLIBRARIES) $(check_PROGRAMS)
 	$(MAKE) $(AM_MAKEFLAGS) check-TESTS
 check: check-am
-all-am: Makefile $(LTLIBRARIES)
+all-am: Makefile $(LTLIBRARIES) $(HEADERS)
 installdirs:
-	for dir in "$(DESTDIR)$(libdir)"; do \
+	for dir in "$(DESTDIR)$(libdir)" "$(DESTDIR)$(libsmx_la_includedir)"; do \
 	  test -z "$$dir" || $(MKDIR_P) "$$dir"; \
 	done
 install: install-am
@@ -673,7 +697,7 @@ info: info-am
 
 info-am:
 
-install-data-am:
+install-data-am: install-libsmx_la_includeHEADERS
 
 install-dvi: install-dvi-am
 
@@ -709,7 +733,8 @@ ps: ps-am
 
 ps-am:
 
-uninstall-am: uninstall-libLTLIBRARIES
+uninstall-am: uninstall-libLTLIBRARIES \
+	uninstall-libsmx_la_includeHEADERS
 
 .MAKE: install-am install-strip
 
@@ -721,12 +746,14 @@ uninstall-am: uninstall-libLTLIBRARIES
 	install install-am install-data install-data-am install-dvi \
 	install-dvi-am install-exec install-exec-am install-html \
 	install-html-am install-info install-info-am \
-	install-libLTLIBRARIES install-man install-pdf install-pdf-am \
-	install-ps install-ps-am install-strip installcheck \
-	installcheck-am installdirs maintainer-clean \
-	maintainer-clean-generic mostlyclean mostlyclean-compile \
-	mostlyclean-generic mostlyclean-libtool pdf pdf-am ps ps-am \
-	tags uninstall uninstall-am uninstall-libLTLIBRARIES
+	install-libLTLIBRARIES install-libsmx_la_includeHEADERS \
+	install-man install-pdf install-pdf-am install-ps \
+	install-ps-am install-strip installcheck installcheck-am \
+	installdirs maintainer-clean maintainer-clean-generic \
+	mostlyclean mostlyclean-compile mostlyclean-generic \
+	mostlyclean-libtool pdf pdf-am ps ps-am tags uninstall \
+	uninstall-am uninstall-libLTLIBRARIES \
+	uninstall-libsmx_la_includeHEADERS
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
