@@ -16,14 +16,20 @@ BuildRoot: 	%{_tmppath}/%{name}-%{ver}-root
 
 BuildRequires:	unixODBC-devel >= 2.0
 BuildRequires:	openssl-devel >= 0.9
+
 %if %{?suse_version:1}0
 BuildRequires: apache2-devel
-%else
-BuildRequires: httpd-devel
 %endif
-%if %{?fedora_version:1}0
+
+%if %{?mandriva_version:1}
+BuildRequires: apache-devel >= 2.0
+%endif
+
+%if %{?fedora_version:1}%{?redhat_version:1}0
+BuildRequires: httpd-devel
 BuildRequires: perl-ExtUtils-Embed
 %endif
+
 BuildRequires: gcc-c++
 BuildRequires: glibc-devel
 
