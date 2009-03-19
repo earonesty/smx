@@ -14,10 +14,16 @@ Group: 		Development/Languages
 Prefix: 	%{_prefix}
 BuildRoot: 	%{_tmppath}/%{name}-%{ver}-root
 
-BuildRequires: unixODBC-devel >= 2.0
-BuildRequires: openssl-devel >= 0.9
 BuildRequires: gcc-c++
 BuildRequires: glibc-devel
+
+# actually it doesn't require more than the above
+# configure will just build a version without these features
+# but relying on that for packaging seems to be 
+# not what people want
+
+BuildRequires: unixODBC-devel >= 2.0
+BuildRequires: openssl-devel >= 0.9
 
 %if %{?suse_version:1}0
 BuildRequires: apache2-devel

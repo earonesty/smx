@@ -50,27 +50,29 @@ CDBDriverTdb::CDBDriverTdb(const char * path)
 }
 
 bool CDBDriverTdb::Reopen() {
-	TDB_CONTEXT *t;
-	t = tdb_open((char *) m_path, 0, 0, O_CREAT|O_RDWR, 0666);
-	if (!t) {
-		usleep(100); 
-		t = tdb_open((char *) m_path, 0, 0, O_CREAT|O_RDWR, 0666);
 
+	// check magic, return false if exists and not mine
+	int f = open(m_path, O_RDONLY);
+	if (f >= 0) {
+		char magic[3] = "00";
+		read(f, magic, 3);
+		close(f);
+		if (strncmp(magic, "TDB", 3)) {
+			m_db = NULL;
+			return false;
+		}
 	}
+
+	// try to open for 200 millisecons
+	TDB_CONTEXT *t = NULL;
+	int i = 0;
+	while (!t && i++ < 10) {
+		t = tdb_open((char *) m_path, 0, 0, O_CREAT|O_RDWR, 0666);
+		usleep(20); 
+	}
+
 	if (!t) {
 		smx_log_pf(SMXLOGLEVEL_WARNING, errno, "TDB Open Failed", m_path, strerror(errno));
-	} else {
-	        TDB_DATA key;
-	        TDB_DATA data;
-	        key.dptr=(char *)"x";
-	        key.dsize=1;
-
-	        int retry = 0;
-	        data=tdb_fetch(t, key);
-
-	        if (!data.dptr && (tdb_error(t) == TDB_ERR_CORRUPT)) {
-			t = NULL;
-		}
 	}
 
 	if (t) {
