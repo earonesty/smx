@@ -105,39 +105,39 @@ if ($opt_command eq 'test') {
 }
 
 if ($opt_command eq 'release') {
-	mkdir "release";
+	my $dest = $opt_debug ? "debug" : "release";
+	mkdir $dest;
 	
 	my $rel = $PACKAGE_RELEASE > 0 ? "-$PACKAGE_RELEASE" : "";
+	my $suffix = $opt_debug ? '-debug' : '';
 	
-
 	for (release_targets($make)) {
-		my $fn = $_; $fn =~ s/.*\\//;		
-		if ((stat($_))[9] > (stat("release\\$fn"))[9]) {
-			system("copy \"$_\" release");
+		my $fn = $_; $fn =~ s/.*\\//;	
+		$_ =~ s/\\([^\\]+)$/\\.debug\\$1/ if $opt_debug;
+		if ((stat($_))[9] > (stat("$dest\\$fn"))[9]) {
+			system("copy \"$_\" $dest");
 		}
 	}
 
 	my $cmd = '';
-	if ($cmd = lookfor('tar.exe')) {
-		pushdir('release');
-		$cmd = "\"$cmd\" -cvf ..\\$PACKAGE_NAME-$PACKAGE_VERSION${rel}-win32.tar *";
+	if ($cmd = lookfor('7z.exe', "$ENV{PATH};$ENV{ProgramFiles}\\7-zip")) {
+		pushdir($dest);
+		$cmd = "\"$cmd\" A -tzip ..\\$PACKAGE_NAME-$PACKAGE_VERSION${rel}-win32$suffix.zip *";
+		print "$cmd\n";
+		system($cmd);
+		popdir();
+	} elsif ($cmd = lookfor('tar.exe')) {
+		pushdir($dest);
+		$cmd = "\"$cmd\" -cvf ..\\$PACKAGE_NAME-$PACKAGE_VERSION${rel}-win32$suffix.tar *";
 		print "$cmd\n";
 		system($cmd);
 		popdir();
 		
 		if ($cmd = lookfor('gzip.exe')) {
-			$cmd = "\"$cmd\" $PACKAGE_NAME-$PACKAGE_VERSION${rel}-win32.tar";
+			$cmd = "\"$cmd\" $PACKAGE_NAME-$PACKAGE_VERSION${rel}-win32$suffix.tar";
 			print "$cmd\n";
 			system($cmd);
 		}
-	}
-
-	if ($cmd = lookfor('7z.exe', "$ENV{PATH};$ENV{ProgramFiles}\\7-zip")) {
-		pushdir('release');
-		$cmd = "\"$cmd\" A -tzip ..\\$PACKAGE_NAME-$PACKAGE_VERSION${rel}-win32.zip *";
-		print "$cmd\n";
-		system($cmd);
-		popdir();
 	}
 }
 

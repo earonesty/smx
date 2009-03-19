@@ -30,11 +30,6 @@ void LoadHSet(qCtx *ctx, const char *tmpName);
 
 void qObjHCtx::Cleanup(bool aborted) {
         myHash.Close();
-#ifdef WIN32
-        if (myTemp) {
-                remove(myHash.GetPath());
-        }
-#endif
 }
 
 void qObjHCtx::HGet(qCtx *ctx, qStr *out, qArgAry *args)
@@ -356,10 +351,6 @@ void LoadHSet(qCtx *ctx) {
 	mkdir(tmpName, 0777);
     }
     tmpName = tmpName << DIRSEP << "hset.db";
-
-#ifdef WIN32
-    remove(tmpName);
-#endif
 
     qObjHCtx *hCtx = new qObjHCtx(ctx);
 
