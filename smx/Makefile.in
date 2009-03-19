@@ -539,7 +539,7 @@ uninstall-am: uninstall-binPROGRAMS
 
 
 install-data-local:
-	thisdir=`pwd` && cd ../docs && $$thisdir/smx doc2man $(DESTDIR)$(datadir)/man && cd ../smx
+	thisdir=`pwd` && cd ../docs && $$thisdir/smx doc2man $(DESTDIR)$(mandir) && cd ../smx
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:
