@@ -64,22 +64,21 @@ int main(int argc, char* argv[], char* envp[])
 			FILE *fp = fopen(file, "r");
 			if (fp) {
 				qCtxTmp ctx(&global);
-				qEnvCGI env(fp, stdout, 1024);
+				qStrFileI fin(fp, true);
+				qEnvCGI env(stdin, stdout, 1024);
 				
 				ctx.SetEnv(&env);
 				env.SetSessionCtx(&ctx);
 
 				qStrBuf out;
 
-				ctx.ParseTry(&env, &out);
+				ctx.ParseTry(&fin, &out);
 				env.PutS("Content-Length: ");
 				env.PutN(out.Length());
 				env.PutC('\n');
 				env.PrintHeaders();
 				env.PutC('\n');
 				env.PutS(out);
-
-				fclose(fp);
 			} else {
 				printerr("Failed to open file: %s", file);
 			}
