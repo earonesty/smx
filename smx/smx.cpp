@@ -104,24 +104,21 @@ int main(int argc, char* argv[], char* envp[])
 				} else {
 					ungetc(c, fp);	
 				}
-				qEnvCGI env(fp, stdout, 1024);
-				
-				ctx.SetEnv(&env);
+				qStrFileI fin(fp, true);
+				qStrBuf buf;
 				env.SetSessionCtx(&ctx);
 
 				if (cgi) {
-					ctx.ParseTry(&env, env.GetBuf());
+					ctx.ParseTry(&fin, &buf);
 					env.PutS("Content-Length: ");
-					env.PutN(env.GetBuf()->Length());
+					env.PutN(buf.Length());
 					env.PutC('\n');
 					env.PrintHeaders();
 					env.PutC('\n');
-					env.PutS((CStr &)*env.GetBuf());
+					env.PutS(buf);
 				} else {
-					ctx.ParseTry(&env, &env);
+					ctx.ParseTry(&fin, &env);
 				}
-
-				fclose(fp);
 			}
 		}
 
