@@ -34,7 +34,7 @@ int main(int argc, char* argv[], char* envp[])
 // Declare the variables needed
 	setarg(&argc, argv);
 	if (argc > 1) {
-		qEnvCGI env(NULL, stdout, 1024);
+		qEnvCGI env(stdin, stdout, 1024);
 		qCtxTmp global(&env);
     
 		global.MapArgv(argc, argv, "arg");
