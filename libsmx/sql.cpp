@@ -628,7 +628,8 @@ bool CDbStmt::Bind()
 	nAlloc = 0;
 	for(i = 0; myCols && i < myColN; i++) {
 		myCols[i].Name.Grow(3);
-		SQLDescribeCol(*myHSTMT, i+1, (LPSQLC) (const char *) myCols[i].Name, 2, &nColName, &myCols[i].Type, &myCols[i].Size,
+		SQLDescribeCol(*myHSTMT, i+1, (LPSQLC) (const char *) myCols[i].Name, 2, 
+					&nColName, &myCols[i].Type, &myCols[i].Size,
 					&myCols[i].Digits, &myCols[i].Null);
 		
 		if (nColName) {
@@ -650,9 +651,11 @@ bool CDbStmt::Bind()
 			}
 		}
 
+	
 		SQLColAttribute(*myHSTMT, i+1, SQL_DESC_DISPLAY_SIZE, 0, 0, 0, 
 					&myCols[i].DispSize);
 
+		smx_log(SMXLOGLEVEL_DEBUG, "allocate size %d for %s", myCols[i].DispSize, myCols[i].Name.Data());
 
 		myColMap.Set(myCols[i].Name,&myCols[i]);
 
@@ -677,7 +680,7 @@ bool CDbStmt::Bind()
 	myMem = (char *) malloc(nAlloc * (myRowsetSize+1) + sizeof(SQLINTEGER) * (myColN+1) * (myRowsetSize+1));
 	
 	char *pB = myMem;
-	long *pI = (long *) (myMem + nAlloc * (myRowsetSize+1));
+	SQLINTEGER *pI = (SQLINTEGER *) (myMem + nAlloc * (myRowsetSize+1));
 	for(i = 0; i < myColN; i++) {
 		myCols[i].SetBuf(pB);
 		myCols[i].SetIndPtr(pI);
@@ -777,6 +780,7 @@ bool CDbStmt::Next()
 		return true;
 	} else {
 		if (myHSTMT) {
+			smx_log(SMXLOGLEVEL_DEBUG, "fetch again with same bound memory");
 			nReturn = SQLFetch(*myHSTMT);
 			if (SQL_SUCCEEDED(nReturn)) {
 				myBufIndex = 0;
@@ -786,6 +790,7 @@ bool CDbStmt::Next()
 			} else {
 				nReturn = SQLMoreResults(*myHSTMT);
 				if (SQL_SUCCEEDED(nReturn)) {
+					smx_log(SMXLOGLEVEL_DEBUG, "reallocate for more results");
 					FreeMem();
 					myRow = -1;
 					return Next();
