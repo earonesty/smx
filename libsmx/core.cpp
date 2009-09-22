@@ -1001,10 +1001,12 @@ void LoadCore(qCtx *ctx) {
 	ctx->MapObj(EvalPriorityExpand,  "priority-expand", "01");
 #endif
 
-	
+#ifdef RELEASE	
 #define gxstr(s) gstr(s)
 #define gstr(s) #s
-
 	ctx->MapObj(PACKAGE_VERSION "." gxstr(RELEASE),  "script-version");
+#else
+	ctx->MapObj(PACKAGE_VERSION,  "script-version");
+#endif
 }
 
