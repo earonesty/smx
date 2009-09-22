@@ -87,6 +87,7 @@ AC_CHECK_HEADER(fcgi_stdio.h, [AC_SUBST([FCGI],[fcgi])])
 AC_PATH_PROG([SVNVERSION], [svnversion])
 RELEASE=`($SVNVERSION > /dev/null 2>&1) && ($SVNVERSION | grep [[0-9]] > /dev/null) && ($SVNVERSION | sed 's/.*://' | sed 's/[[MSP]]$//' > release.txt); cat release.txt`
 AC_SUBST(RELEASE)
+AC_DEFINE_UNQUOTED([RELEASE],${RELEASE},"Set RELEASE in config.h")
 
 
 # Checks for typedefs, structures, and compiler characteristics.
