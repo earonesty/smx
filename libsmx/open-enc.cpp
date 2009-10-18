@@ -37,6 +37,11 @@ int EVP_Digest(const char *name, const unsigned char *strin, int cbstr, unsigned
  return md_len;
 }
 
+int SHA256_string(const char *strin, int cbstr, char *strout)
+{
+        return EVP_Digest("sha256", (unsigned char *)strin, cbstr, (unsigned char *)strout);
+}
+
 int SHA1_string(const char *strin, int cbstr, char *strout)
 {
 	return EVP_Digest("sha1", (unsigned char *)strin, cbstr, (unsigned char *)strout);
@@ -230,6 +235,14 @@ CStr SHA1_string(CStr strin)
 	int len = SHA1_string(strin, strin.Length(), strout.GetBuffer());
 	strout.Grow(len);
 	return strout;
+}
+
+CStr SHA256_string(CStr strin)
+{
+        CStr strout(EVP_MAX_MD_SIZE);
+        int len = SHA256_string(strin, strin.Length(), strout.GetBuffer());
+        strout.Grow(len);
+        return strout;
 }
 
 CStr MD5_string(CStr strin)

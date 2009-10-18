@@ -55,6 +55,19 @@ void EvalMD5(const void *data, qCtx *ctx, qStr *pStream, qArgAry *args)
                         pStream->PutS(out);
         }
 }
+
+// sha256 hash
+void EvalSha256(const void *data, qCtx *ctx, qStr *pStream, qArgAry *args)
+{
+        if (args->Count() > 0) {
+                CStr out = HEX_encode(SHA256_string((*args)[0]));
+                if (args->Count() > 1)
+                        pStream->PutS(out, max(0,min(ParseInt((*args)[1]), out.Length())));
+                else
+                        pStream->PutS(out);
+        }
+}
+
 #endif
 
 // string position
@@ -1283,6 +1296,7 @@ void LoadString(qCtx *ctx) {
 
 	ctx->MapObj(EvalSha,	       "sha");
 	ctx->MapObj(EvalMD5,	       "md5");
+	ctx->MapObj(EvalSha256,	       "sha256");
 
 	ctx->MapObj(EvalEncrypt,       "encrypt");
 	ctx->MapObj(EvalDecrypt,       "decrypt");

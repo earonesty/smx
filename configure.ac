@@ -40,6 +40,7 @@ AC_CHECK_LIB([crypt], [crypt])
 AC_CHECK_LIB([crypto], [EVP_EncodeBlock])
 AC_CHECK_LIB([crypto], [EVP_idea_cbc], [AC_DEFINE([HAVE_IDEA], [1], [Enable idea cipher])])
 AC_CHECK_LIB([crypto], [EVP_rc5_32_12_16_cbc], [AC_DEFINE([HAVE_RC5], [1], [Enable rc5 cipher])])
+AC_CHECK_LIB([crypto], [SHA256_Init], [AC_DEFINE([HAVE_SHA256], [1], [Enable sha256 hash])])
 
 AC_CHECK_LIB([odbc], [SQLConnect],[],[
         echo "Error! libodbc is required, maybe you need to set LDFLAGS="-L/usr/local/lib""
