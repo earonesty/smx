@@ -93,21 +93,29 @@ XS(XS_SmxPerl_export)
 {
     dXSARGS;
     if (items != 2 && items != 1)
-        Perl_croak(aTHX_ "Usage: SmxExt::export(name_of_function)");
+        Perl_croak(aTHX_ "Usage: SmxExt::export(name_of_function[,alias])");
     {
         dMY_CXT;
         char * name = SvPV_nolen(ST(0));
 	if (name && *name) {
+                char * cp_name = (char *) MY_CXT.pCtx->Alloc(strlen(name)+1);
+		char * cp_alias = cp_name;
+
+                strcpy(cp_name, name);
+		if (items == 2) {
+        		char * alias = SvPV_nolen(ST(0));
+			if (alias && *alias) {
+ 				cp_alias = (char *) MY_CXT.pCtx->Alloc(strlen(alias)+1);
+				strcpy(cp_alias, alias);
+			}
+		}
+
 		if (*name == '$') {
 			++name;
-                        char * cp_name = (char *) MY_CXT.pCtx->Alloc(strlen(name)+1);
-                        strcpy(cp_name, name);
-                        MY_CXT.pCtx->MapFunc(cp_name, (SMXUSERFUNC) &call_get_sv, name);
+                        MY_CXT.pCtx->MapFunc(cp_alias, (SMXUSERFUNC) &call_get_sv, cp_name);
 		} else {
 			if (*name == '&') ++name;
-			char * cp_name = (char *) MY_CXT.pCtx->Alloc(strlen(name)+1);
-			strcpy(cp_name, name);
-			MY_CXT.pCtx->MapFunc(cp_name, (SMXUSERFUNC) &call_perl_func, name);
+			MY_CXT.pCtx->MapFunc(cp_alias, (SMXUSERFUNC) &call_perl_func, cp_name);
 		}
 	}
     }
