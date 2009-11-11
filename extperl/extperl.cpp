@@ -110,11 +110,13 @@ XS(XS_SmxPerl_export)
 			}
 		}
 
-		if (*name == '$') {
-			++name;
+		if (*cp_name == '$') {
+			++cp_name;
+			if (*cp_alias == '$') ++cp_alias;
                         MY_CXT.pCtx->MapFunc(cp_alias, (SMXUSERFUNC) &call_get_sv, cp_name);
 		} else {
-			if (*name == '&') ++name;
+			if (*cp_name == '&') ++cp_name;
+			if (*cp_alias == '&') ++cp_alias;
 			MY_CXT.pCtx->MapFunc(cp_alias, (SMXUSERFUNC) &call_perl_func, cp_name);
 		}
 	}
