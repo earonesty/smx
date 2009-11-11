@@ -73,7 +73,12 @@ XS(XS_SmxPerl_output)
 DECL_SMXUSERFUNC(call_perl_func) {
 	dMY_CXT;
 	dSP;
-	int cnt = call_argv((const char *) pObject, G_SCALAR, (char **) pArgs);
+	
+	char **argv = (char **) MY_CXT.pCtx->Alloc(sizeof(char *)*(nNumArgs+1));
+	memcpy(argv, pArgs, sizeof(char *)*(nNumArgs));
+	argv[nNumArgs]=NULL;
+	
+	int cnt = call_argv((const char *) pObject, G_SCALAR, argv);
 	SPAGAIN;
 	while (cnt--) {
 		SV * sv = POPs;
@@ -103,7 +108,7 @@ XS(XS_SmxPerl_export)
 
                 strcpy(cp_name, name);
 		if (items == 2) {
-        		char * alias = SvPV_nolen(ST(0));
+        		char * alias = SvPV_nolen(ST(1));
 			if (alias && *alias) {
  				cp_alias = (char *) MY_CXT.pCtx->Alloc(strlen(alias)+1);
 				strcpy(cp_alias, alias);
@@ -113,11 +118,11 @@ XS(XS_SmxPerl_export)
 		if (*cp_name == '$') {
 			++cp_name;
 			if (*cp_alias == '$') ++cp_alias;
-                        MY_CXT.pCtx->MapFunc(cp_alias, (SMXUSERFUNC) &call_get_sv, cp_name);
+                        MY_CXT.pCtx->MapFunc(cp_name, (SMXUSERFUNC) &call_get_sv, cp_alias);
 		} else {
 			if (*cp_name == '&') ++cp_name;
 			if (*cp_alias == '&') ++cp_alias;
-			MY_CXT.pCtx->MapFunc(cp_alias, (SMXUSERFUNC) &call_perl_func, cp_name);
+			MY_CXT.pCtx->MapFunc(cp_name, (SMXUSERFUNC) &call_perl_func, cp_alias);
 		}
 	}
     }
