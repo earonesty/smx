@@ -19,20 +19,17 @@ THIS SOFTWARE IS PROVIDED 'AS IS' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDI
 #endif
 #define NO_LOAD_TSET
 
-#include "fcgi_stdio.h"
-
-// PATCH to fix incorrect prototype
-// FCGI_fwrite(void *ptr, size_t size, size_t nmemb, FCGI_FILE *fp);
-
-#undef fwrite
-#define fwrite FCGI_FWRITE
-#define FCGI_FWRITE(p, s, n, f) FCGI_fwrite((void *)p, s, n, f)
-
-// REMOVE when FCGI is fixed
-
 #include "stdafx.h"
 
 #include "fcgi_config.h"
+#include "fcgi_stdio.h"
+
+// PATCH to fix incorrect prototype
+#undef fwrite
+#define fwrite FCGI_FWRITE
+#define FCGI_FWRITE(p, s, n, f) FCGI_fwrite((void *)p, s, n, f)
+// REMOVE when FCGI is fixed
+
 
 #include "qstr.h"
 #include "qobj.h"
@@ -48,6 +45,7 @@ THIS SOFTWARE IS PROVIDED 'AS IS' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDI
 #else
 extern char **environ;
 #endif
+
 void printerr(const char * msg, const char *arg=NULL);
 
 int main(int argc, char* argv[], char* envp[])
@@ -82,6 +80,7 @@ int main(int argc, char* argv[], char* envp[])
 				qStrBuf out;
 
 				ctx.ParseTry(&fin, &out);
+
 				env.PutS("Content-Length: ");
 				env.PutN(out.Length());
 				env.PutC('\n');
@@ -131,3 +130,57 @@ void qEnvCGI::PutS(const char *s, int n) {if (s) fwrite(s, 1, n, myOut);}
 void qEnvCGI::PutC(char c)                       {fputc(c, myOut);}
 char qEnvCGI::GetC()      {return fgetc(myIn);}
 CStr qEnvCGI::GetS()  {CStr tmp(myBufSize); tmp.Grow(fread(tmp.GetBuffer(), 1, myBufSize, myIn)); return tmp;}
+
+/* THESE HAVE TO BE DEFINED HERE TO FORCE THE LINKER TO USE FCGI stuff */
+
+// this won't work unless fcmppos is defined... which it often isnt
+
+int qStrFileI::GetLineNum() {
+// painfully derive line number
+#ifdef fcmppos
+        fpos_t sav;
+        fgetpos(myFile, &sav);
+        fseek(myFile, 0, SEEK_SET);
+
+        fpos_t p;
+        fgetpos(myFile, &p);
+
+        char c;
+        int lc = 1;
+        while (fcmppos(p,sav) < 0 && (c=fgetc(myFile) ) != EOF) {
+                if (c == '\n')
+                        ++lc;
+        fgetpos(myFile, &p);
+        }
+
+        fsetpos(myFile,&sav);
+
+        return lc;
+#else
+	return 0;
+#endif
+}
+
+// why won't this link from libsmx?
+#if defined(_WINDOWS) || defined(WIN32)
+time_t GetFileModified(const FILE *fp)
+{
+        HANDLE hF = (HANDLE) _get_osfhandle(fp->_file);
+        FILETIME ft; FILETIME lt;
+        if (GetFileTime(hF,NULL, NULL, &ft)) {
+                FileTimeToLocalFileTime(&ft,&lt);
+                return ConvWin32Time(lt);
+        }
+        return 0;
+}
+#else
+time_t GetFileModified(const FILE *fp)
+{
+        struct stat sb;
+        if (!fstat(fileno((FILE *)fp), &sb)) {
+                return sb.st_mtime;
+        }
+        return 0;
+}
+#endif
+

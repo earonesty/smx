@@ -1,3 +1,6 @@
 #!/bin/sh
 
-QUERY_STRING='x=5&y=6' PATH_TRANSLATED=`pwd`/test-fcgi.smx cgi-fcgi -connect smx-fcgi.socket smx-fcgi
+rm -f smx-fcgi.socket
+QUERY_STRING='x=5&y=6' PATH_TRANSLATED=`pwd`/test-fcgi.smx cgi-fcgi -connect smx-fcgi.socket smx-fcgi > smx-fcgi.out
+pkill `pwd`/.libs/lt-smx-fcgi
+diff smx-fcgi.out smx-fcgi.ok
