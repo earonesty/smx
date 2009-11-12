@@ -1,3 +1,4 @@
+%hdbfile(test-hset.db)
 %set(k, %arg(2))
 %for(i,0,10,
 	%pset(/test/%k%%i%,%i%)
@@ -15,3 +16,4 @@
 	%i% = %pget(/test/%k%%i%);
 )
 %flush%
+%delete(test-hset.db)
