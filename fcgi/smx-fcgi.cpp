@@ -21,6 +21,15 @@ THIS SOFTWARE IS PROVIDED 'AS IS' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDI
 
 #include "fcgi_stdio.h"
 
+// PATCH to fix incorrect prototype
+// FCGI_fwrite(void *ptr, size_t size, size_t nmemb, FCGI_FILE *fp);
+
+#undef fwrite
+#define fwrite FCGI_FWRITE
+#define FCGI_FWRITE(p, s, n, f) FCGI_fwrite((void *)p, s, n, f)
+
+// REMOVE when FCGI is fixed
+
 #include "stdafx.h"
 
 #include "fcgi_config.h"
