@@ -48,7 +48,7 @@ CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
 am__installdirs = "$(DESTDIR)$(bindir)"
 PROGRAMS = $(bin_PROGRAMS)
-am_smx_fcgi_OBJECTS = smx-fcgi.$(OBJEXT) fcgi-qctx.$(OBJEXT)
+am_smx_fcgi_OBJECTS = smx-fcgi.$(OBJEXT)
 smx_fcgi_OBJECTS = $(am_smx_fcgi_OBJECTS)
 smx_fcgi_DEPENDENCIES = ../libsmx/libsmx.la
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
@@ -188,7 +188,7 @@ target_alias = @target_alias@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-smx_fcgi_SOURCES = smx-fcgi.cpp fcgi-qctx.cpp
+smx_fcgi_SOURCES = smx-fcgi.cpp 
 smx_fcgi_LDADD = ../libsmx/libsmx.la -lfcgi
 INCLUDES = -I../libsmx
 TESTS = test-fcgi
@@ -279,7 +279,6 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fcgi-qctx.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/smx-fcgi.Po@am__quote@
 
 .cpp.o:

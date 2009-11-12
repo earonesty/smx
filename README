@@ -37,15 +37,19 @@ optionally, for image support:
 Should be able to run 
 
 	./configure
-	./make
-	./make install
+	make
+	make install
 
 If you did a cvs update, and you get a libtool error, run 
 
-	./make clean
+	make clean
 
 smx uses autotools, so you should be able to use --prefix, and other
 typical configure settings.
+
+For example, to make a debug build
+
+	make clean all CFLAGS=-ggdb CXXFLAGS=-ggdb
 
 **** APACHE CONFIG
 
@@ -96,7 +100,7 @@ is defined somewhere via SMX_INIT.
 
 **** LICENSE
 
-Copyright 1998-2006 Erik Aronesty. All rights reserved.
+Copyright 1998-2006 Erik Aronesty. BSD-Style License Follows
 
         1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
 

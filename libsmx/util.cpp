@@ -343,6 +343,7 @@ bool safe_fcheck(qCtx *ctx, const char *path, char rw)
 	
         int uid = ctx->GetSafeUID();
         if (uid == 0) return true;
+	//printf("safe_uid: %d\n", uid);
         if (uid == -1)  {
 		// script owner user id is probably too low
 		errno = EPERM;

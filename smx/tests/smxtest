@@ -30,7 +30,7 @@ if [ -e "$curtest.skip"  ]; then
 else
 	echo $curtest
 
-	pw=`which pw`
+	pw=`which pw 2> /dev/null`
 	if [ "$pw" != "" ]; then 
 		pw useradd smxsafemodeuser -s /dev/null
 	else 
