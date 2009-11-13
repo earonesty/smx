@@ -297,7 +297,7 @@ char * CRegX::Parse(char *&parse, int paren, int *flagp)
 
 	*flagp |= flags & SPSTART; // complex R.E. flag
 
-	while (*parse == '|') {
+	while (*parse == '|' || *parse == '\n') {
 		parse++;
 		br = ParseBranch(parse, &flags);
 		if (br == NULL)
@@ -348,7 +348,7 @@ char * CRegX::ParseBranch(char *&parse, int *flagp)
 	ret = ParseNode(BRANCH);
 	chain = NULL;
 	while (*parse != '\0' && *parse != ')' &&
-	       *parse != '|') {
+	       *parse != '\n' && *parse != '|') {
 		latest = ParsePiece(parse, &flags);
 		if (latest == NULL)
 			return(NULL);
@@ -526,6 +526,7 @@ char *CRegX::ParseAtom(char *&parse, int *flagp)
 		break;
 	case '\0':
 	case '|':
+	case '\n':
 	case ')':
 		FAIL("internal urp");	/* Supposed to be caught earlier. */
 		break;
@@ -592,7 +593,7 @@ char *CRegX::ParseAtom(char *&parse, int *flagp)
 					break;
 
 				case '.': case '[': case '(':
-				case ')': case '|': 
+				case ')': case '|': case '\n':
 				case '$': case '^':
 				case '\0':
 				// ***TODO***, $ and ^ should not always be magic 
