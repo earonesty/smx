@@ -1162,7 +1162,7 @@ void CRegX::Dump(FILE *f) const
 // DumpProp - printable representation of opcode
 char *CRegX::DumpProp(char *op) const
 {
-	register char *p;
+	register const char *p;
 	static char buf[50];
 
 	(void) strcpy(buf, ":");
