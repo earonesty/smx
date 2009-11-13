@@ -39,6 +39,7 @@ TODO:
 	const vars should be used correctly and not coerced
 	code frgments below marked ***TODO*** need to be to-done
 
+EA. Some may want me to switch to pcre ... but it's just ... so ... big.
 */
 
 /*
