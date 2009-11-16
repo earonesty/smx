@@ -1117,8 +1117,13 @@ void qObjCGI::EvalRedirect(qCtx *ctx, qStr *out, qArgAry *args)
 	if (args->GetAt(0)) {
 		qEnvHttp *env = GetHttpEnv(ctx);
 		if (env) {
+			int code = 302;
+			if (args->GetAt(1)) {
+				code = ParseInt((*args)[0]);
+				code = 301 if code < 300 || code >= 400;
+			}
 			bool ok = env->SetHeader("Location", (*args)[0]);
-			ok     |= env->SetReplyCode(302);
+			ok     |= env->SetReplyCode(code);
 			if (ok) {
 				ctx->Abort();
 			} else {
