@@ -1120,7 +1120,9 @@ void qObjCGI::EvalRedirect(qCtx *ctx, qStr *out, qArgAry *args)
 			int code = 302;
 			if (args->GetAt(1)) {
 				code = ParseInt((*args)[0]);
-				code = 301 if code < 300 || code >= 400;
+				if (code < 300 || code >= 400) {
+					code = 302;
+				}
 			}
 			bool ok = env->SetHeader("Location", (*args)[0]);
 			ok     |= env->SetReplyCode(code);
