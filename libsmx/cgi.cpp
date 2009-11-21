@@ -281,10 +281,13 @@ void qObjCGI::EvalFormEnumPCollated(qCtx *ctx, qStr *out, qArgAry *args)
 	tmpCtx.MapObj(&name,  "name");
 	tmpCtx.MapObj(&value, "value");
 
+	bool brk = false;
+	tmpCtx.MapObj(&brk, (QOBJFUNC) EvalBreak, "break");
+
 	bool ok = true;
-	while (ok) {
+	while (ok && !brk) {
 		ok = false;
-		for (pos = myFormMap.First(); myFormMap.Next(&pos, &name, &list); ) {
+		for (pos = myFormMap.First(); !brk && myFormMap.Next(&pos, &name, &list); ) {
 			i = 0;
 			while (list && i++ < index) {
 				list = list->Next();
@@ -312,9 +315,11 @@ void qObjCGI::EvalFormEnumPFast(qCtx *ctx, qStr *out, qArgAry *args)
 
 	tmpCtx.MapObj(&name,  "name");
 	tmpCtx.MapObj(&value, "value");
+	bool brk = false;
+	tmpCtx.MapObj(&brk, (QOBJFUNC) EvalBreak, "break");
 
 	for (pos = myFormMap.First(); myFormMap.Next(&pos, &name, &list); ) {
-		while (list) {
+		while (!brk && list) {
 			value = list->Data();
 			tmpCtx.Parse(body, out);
 			list = list->Next();
