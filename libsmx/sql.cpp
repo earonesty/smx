@@ -1131,7 +1131,7 @@ void EvalSqlTrans(const void *data, qCtx *ctx, qStr *out, qArgAry *args)
 		bool ok = true;
 
 		tmpCtx.AddTry();
-		tmpCtx.MapObj(dbPool, EvalSql, "sql");
+		tmpCtx.MapObj(dbPool, EvalSql, "sql", "00111");
 		tmpCtx.MapObj(&ok , (QOBJFUNC) EvalBreak, "rollback");
 
 		try {
