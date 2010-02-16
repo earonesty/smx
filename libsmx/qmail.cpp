@@ -205,7 +205,7 @@ int qsmtp(qMailOpts *popts)
 		do {
 			errs = smtp_next(&state, request);
 			if (errs > Q_ERRTHRESH) {
-				char *p = request.Length() ? strrchr((const char *) request,'\r') : NULL;
+				char *p = request.Length() ? (char *) strrchr((const char *) request,'\r') : NULL;
 				if (p) *p = '\0';
 				throw qEx(QM_ERR_SMTP_THRESH, QM_ERR_SMTP_THRESH_RC, errs, (const char *) request);
 			}
@@ -280,7 +280,7 @@ char *multi_delim(CStr &buf, bool last)
 
 char *multi_head(CStr &buf, const char *file, bool &enc)
 {
-	char *ext;
+	const char *ext;
 	multi_delim(buf, false);
 	if (file && *file)
 		ext = strrchr(file, '.');

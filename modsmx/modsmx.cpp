@@ -461,7 +461,8 @@ static void * create_psx_config(ap_pool *p, server_rec *s)
 		}
 	}
 
-    apr_pool_cleanup_register(p, senv, cleanup_senv, cleanup_senv);
+// this seems to get called even while the server is running... not sure why
+//    apr_pool_cleanup_register(p, senv, cleanup_senv, NULL);
 
     return senv;
 }

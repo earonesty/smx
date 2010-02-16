@@ -23,7 +23,7 @@ THIS SOFTWARE IS PROVIDED 'AS IS' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDI
 void qStrNLTrim::PutS(const char *s)
 {
 	if (s) {
-		char *p;
+		const char *p;
 		while ((p = strchr(s, '\n'))) {
 			if (myNL)
 				myStr->PutS(s, p - s);

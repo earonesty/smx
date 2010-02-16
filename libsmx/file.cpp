@@ -67,7 +67,7 @@ void EvalExt(const void *data, qCtx *ctx, qStr *out, qArgAry *args)
 	VALID_ARGC("ext", 1, 1);
 	CStr path = (*args)[0];
 	if (path) { 
-	char *r = strrchr((const char *)path, '.');
+	char *r = strrchr(path, '.');
 	if (r) {
 		out->PutS(r+1);
 	}}
@@ -107,7 +107,7 @@ void EvalBase(const void *data, qCtx *ctx, qStr *out, qArgAry *args)
 	VALID_ARGC("base", 1, 1);
 	CStr path = (*args)[0];
 	if (path){
-	char *r = strrchr((const char *)path, '.');
+	char *r = strrchr(path, '.');
 	if (r) {
 		*r = '\0';
 		path.Grow(r - (const char *)path);
@@ -431,15 +431,15 @@ void WriteCSV(const void *mode, bool forceQuoted, qCtx *ctx, qStr *out, qArgAry 
 		quot.Clear();
 
 		b = bo.GetBuffer();
-		if ((p = strchr((const char *)b, '"'))) {
+		if ((p = strchr(b, '"'))) {
 			quot.PutC('"');
 			do {
 				quot.PutS(b, p - b + 1);
 				quot.PutS('"');
-			} while ((p = strchr((const char *)b, '"')));
+			} while ((p = strchr(b, '"')));
 			quot.PutC('"');
 			fo.PutS(quot);
-		} else if (forceQuoted || (p = strchr((const char *)b, ','))) {
+		} else if (forceQuoted || (p = strchr(b, ','))) {
 			quot.PutC('"');
 			quot.PutS(bo);
 			quot.PutC('"');

@@ -187,6 +187,7 @@ protected:
 		myLevel  = 0;
 		mySafeMode = false;
 		mySafeUID = -1;
+		myErrorHandler = NULL;
 #ifdef _DEBUG
 		myParent = 0;
 #endif

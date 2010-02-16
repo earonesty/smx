@@ -608,7 +608,7 @@ void EvalGetToken(const void *data, qCtx *ctx, qStr *out, qArgAry *args) {
 		sub.MapObj(&p, "token");
 
 		while (p && *p) {
-			e = strpbrk(p, t);
+			e = (char *)strpbrk(p, t);
 			if (e) {
 				*e = 0;
 				if (--ind < 0)
@@ -658,7 +658,7 @@ void EvalEnumToken(const void *data, qCtx *ctx, qStr *out, qArgAry *args) {
 		sub.MapObj(&skip, (QOBJFUNC) EvalSkipTokens, "skip-tokens");
 
 		while (p && *p && ok) {
-			e = strpbrk(p, t);
+			e = (char *) strpbrk(p, t);
 			if (e) {
 				*e = 0;
 				if (!skip)

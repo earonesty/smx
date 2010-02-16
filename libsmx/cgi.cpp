@@ -469,11 +469,11 @@ void qObjCGI::Parse(qEnvHttp *env)
 		CStr boundary;
 		ctype.LTrim();
 		if (!strnicmp(ctype, "multipart/form-data", 19)) {
-			char *p = strchr((const char *)ctype+19, ';');
+			char *p = strchr(ctype+19, ';');
 			if (p) {
 				while(isspace(*++p));
 				if (!strnicmp(p, "boundary", 8)) {
-					p = strchr((const char *)ctype+8, '=');
+					p = strchr(ctype+8, '=');
 					boundary = p+1;
 					ReadClientBody(env);
 					ParseMulti(myClientBody.GetBuffer(), myClientBody.Length(), boundary, boundary.Length());
@@ -791,7 +791,7 @@ void qObjCGI::EvalContentType(qCtx *ctx, qStr *out, qArgAry *args)
 	qEnvHttp *env = GetHttpEnv(ctx);
 	if (env && args->Count()>0) {
 		CStr s = (*args)[0];
-		if (strchr((const char *)s, '/')) {
+		if (strchr(s, '/')) {
 			env->SetHeader("content-type",s);
 		}
 	}
@@ -940,7 +940,7 @@ void qObjCGI::EvalClientURL(qCtx *ctx, qStr *out, qArgAry *args)
 	if (env) {
 		const char *url = env->GetRequestURL();
 		if (url && *url) {
-			char *p;
+			const char *p;
 			if ((p = strchr(url, '?')))
 				out->PutS(url, p-url);
 			else
@@ -1161,7 +1161,7 @@ void qObjCGI::EvalMimeType(qCtx *ctx, qStr *out, qArgAry *args)
 		if (env) {
 			CStr ext = (*args)[0];
 			if (ext) {
-				if (!strchr((const char *)ext, '.'))
+				if (!strchr(ext, '.'))
 					ext = (CStr(".") << ext);
 				CStr mime = env->GetMimeType(ext);
 				if (!mime.IsEmpty()) {

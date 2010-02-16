@@ -203,9 +203,9 @@ qStr *OpenURL(qCtx *ctx, const CStr &path)
 }
 #else
 
-static char* EMPTY = "";
+static const char* EMPTY = "";
 
-bool ParseHTTPURI(char *url, char **proto, char **host, char **path, char **uid, char **pwd, int *port)
+bool ParseHTTPURI(char *url, char **proto, char **host, const char **path, char **uid, char **pwd, int *port)
 {
 	char *p = url;
 
@@ -271,7 +271,8 @@ qStr *OpenURL(qCtx *ctx, const CStr &arg_path)
 {
 	CStr copy = arg_path;
 	char *p = copy.Data();
-	char *proto, *host, *path, *uid, *pwd;
+	char *proto, *host, *uid, *pwd;
+	const char *path;
 	int port;
 	
 	if (!ParseHTTPURI(p, &proto, &host, &path, &uid, &pwd, &port))	{
@@ -415,7 +416,7 @@ void ResolvePath(qCtx *ctx, CStr &path)
 		if (env && !strchr((const char *)path,':')) {
 			CStr pdir = env->GetScriptPath();
 			if (!pdir.IsEmpty()) {
-				char *p = strrchr((const char *)pdir, '/');
+				char *p = strrchr(pdir, '/');
 				if (p) {
 					*p = '\0';
 					pdir.Grow(p - pdir.Data());

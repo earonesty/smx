@@ -368,7 +368,7 @@ void qObjProto::EvalTCPConn(qCtx *ctx, qStr *out, qArgAry *args)
 
 	int port = 0;
 
-	char * p = strchr((const char *)serv, ':');
+	char * p = strchr(serv, ':');
 
 	if (p) {
 		port = atoi(p+1);
@@ -417,7 +417,7 @@ void qObjProto::EvalXTCP(qCtx *ctx, qStr *out, qArgAry *args)
 
 	int port = 0;
 
-	char * p = strchr((const char *)serv, ':');
+	char * p = strchr(serv, ':');
 
 	if (p) {
 		port = atoi(p+1);
@@ -532,19 +532,19 @@ void qObjProto::EvalWhois(qCtx *ctx, qStr *out, qArgAry *args)
 			if ((p = stristr(body.GetBuffer(),"Whois Server:"))) {
 				p += 14;
 				while (isspace(*p)) ++p;
-				char *e = strchr(p, '\n');
+				const char *e = strchr(p, '\n');
 				ref = CStr(p, e-p);
 			}
 			if ((p = stristr(body.GetBuffer(),"Registrar:"))) {
 				p += 14;
 				while (isspace(*p)) ++p;
-				char *e = strchr(p, '\n');
+				const char *e = strchr(p, '\n');
 				reg = CStr(p, e-p);
 			}
 			if ((p = stristr(body.GetBuffer(),"Referral URL:"))) {
 				p += 14;
 				while (isspace(*p)) ++p;
-				char *e = strchr(p, '\n');
+				const char *e = strchr(p, '\n');
 				url = CStr(p, e-p);
 
 			}

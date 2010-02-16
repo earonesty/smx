@@ -21,6 +21,9 @@ THIS SOFTWARE IS PROVIDED 'AS IS' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDI
 #include "EXTERN.h"
 #include "perl.h"
 #include "XSUB.h"
+#define NEED_eval_pv
+#define NEED_sv_2pv_flags
+#include "ppport.h"
 
 /* declare thread-safe storage */
 
