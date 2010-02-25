@@ -1,6 +1,6 @@
 lib_LTLIBRARIES = libextperl.la
 
-libextperl_la_SOURCES = extperl.cpp
+libextperl_la_SOURCES = extperl.cpp ppport.h
 libextperl_la_CXXFLAGS = -I../libsmx `perl -MExtUtils::Embed -e ccopts`
 libextperl_la_LDFLAGS = `perl -MExtUtils::Embed -e ldopts` -lperl
 
