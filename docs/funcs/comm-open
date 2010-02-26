@@ -9,7 +9,7 @@ byte response.
 
 %%comm-open(
    COM1
-  \,baud–00 data=8 parity=N
+  \,baud=9600 data=8 parity=N
   \,WRITING: %%comm-write(SOMEBYTES) ...
    READING: %%comm-read(8\,1) ...
 )
