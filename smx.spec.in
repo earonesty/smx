@@ -33,11 +33,11 @@ BuildRequires: apache2-devel
 BuildRequires: apache-devel >= 2.0
 %endif
 
-%if %{?fedora_version}0
+%if %{?fedora_version}%{?fedora}0
 BuildRequires: perl-ExtUtils-Embed
 %endif
 
-%if %{?fedora_version}%{?rhel_version}%{?centos_version}0
+%if %{?fedora_version}%{?rhel_version}%{?centos_version}%{?fedora}%{?rhel}0
 BuildRequires: httpd-devel
 %endif
 
@@ -66,6 +66,9 @@ building applications which use %{name}.
 
 make DESTDIR=%{buildroot} install
 
+strip --strip-unneeded %{buildroot}/%{_libdir}/*.so
+strip --strip-unneeded %{buildroot}/%{_bindir}/smx*
+
 rm -f %{buildroot}/%{_libdir}/*.la
 rm -f %{buildroot}/%{_libdir}/*.a
 
@@ -90,7 +93,7 @@ rm -rf %{buildroot}
 %{_includedir}/smxext.h
 
 %changelog
-* Tue Mar 17 2009 EA 
+* Tue Mar 17 2009 EA 1.1.4-437 
 - Getting spec to work on SUSE
 * Sun Mar 26 2006 EA 
 - Made spec.in autoconf'ed
