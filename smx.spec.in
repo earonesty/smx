@@ -66,8 +66,8 @@ building applications which use %{name}.
 
 make DESTDIR=%{buildroot} install
 
-strip --strip-unneeded %{buildroot}/%{_libdir}/*.so
-strip --strip-unneeded %{buildroot}/%{_bindir}/smx*
+#strip --strip-unneeded %{buildroot}/%{_libdir}/*.so
+#strip --strip-unneeded %{buildroot}/%{_bindir}/smx*
 
 rm -f %{buildroot}/%{_libdir}/*.la
 rm -f %{buildroot}/%{_libdir}/*.a
@@ -86,7 +86,7 @@ rm -rf %{buildroot}
 %{_libdir}/libsmx.*
 %{_libdir}/libmodsmx.*
 %{_libdir}/libextperl.*
-%{_prefix}/share/man/man3/%*
+%{_prefix}/share/man/man3/%%*
 
 %files devel
 %defattr(-,root,root)
