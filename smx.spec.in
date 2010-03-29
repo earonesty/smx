@@ -66,8 +66,9 @@ building applications which use %{name}.
 
 make DESTDIR=%{buildroot} install
 
-#strip --strip-unneeded %{buildroot}/%{_libdir}/*.so
-#strip --strip-unneeded %{buildroot}/%{_bindir}/smx*
+# without these lines, i get "unstripped binary" in rpmlint
+strip --strip-unneeded %{buildroot}/%{_libdir}/*.so
+strip --strip-unneeded %{buildroot}/%{_bindir}/smx*
 
 rm -f %{buildroot}/%{_libdir}/*.la
 rm -f %{buildroot}/%{_libdir}/*.a
