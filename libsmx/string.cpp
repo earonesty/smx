@@ -770,6 +770,10 @@ void EvalEnumSort(const void *data, qCtx *ctx, qStr *out, qArgAry *args)
 		if (args->Count() > 3)
 			alg = args->GetAt(3);
 
+		bool uniq = false;
+		if (args->Count() > 4)
+			uniq = ParseBool(args->GetAt(4));
+
 		int num = 0;
 		WNAryX *ary = NULL;
 		char *p;
@@ -809,8 +813,14 @@ void EvalEnumSort(const void *data, qCtx *ctx, qStr *out, qArgAry *args)
 		bool ok = true;
 		tmpCtx.MapObj(&ok, (QOBJFUNC) EvalBreak, "break");
 
+		const char *prevw = NULL;
 		int i; for (i = 0; ok && i < num; ++i) {
 			curw = ary[i].v;
+			if (uniq && prevw) {
+				if (0==(alg.IsEmpty()?EvalWNCom(curw,prevw):EvalWNComSimple(curw,prevw))) {
+					continue;
+				}
+			}
 			tmpCtx.Parse(body, out);
 			ary[i].~WNAryX();
 		}
