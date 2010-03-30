@@ -783,14 +783,16 @@ void EvalAbort(const void *data, qCtx *ctx, qStr *out, qArgAry *args)
 }
 
 void EvalDefctx(const void *data, qCtx *ctx, qStr *out, qArgAry *args) {
-	VALID_ARGC("defctx", 2, 3);
+	VALID_ARGC("defctx", 1, 3);
 	if (args->Count() > 1) {
 		CStr name = (*args)[0];
                 if (name.IsEmpty()) {
                         ctx->Throw(out, 121, "defctx: empty variable name");
                         return;
                 }
-		CStr bname = (*args)[1];
+		CStr bname;
+		if (args->Count() > 1) 
+			bname = (*args)[1];
 		CStr body;
 		if (args->Count() > 2)
 			body = args->GetAt(2);
