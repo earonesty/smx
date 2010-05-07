@@ -490,7 +490,12 @@ sub readam {
 }
 
 sub abs_path {
-	my $f = Cwd::abs_path(shift);
+	my $f = shift;
+	if ( -s $f && $f =~ /^[a-z]:/i) {
+		# no need, already abs
+	} else {
+		$f = Cwd::abs_path($f);
+	}
 	$f =~ s/\//\\/g;
 	return $f;
 }
