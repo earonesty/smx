@@ -366,11 +366,15 @@ sub make_cpp {
 	return $obj if $tt >= $dt && !$opt_remake;
 	
 	print "cflags before exec: $cflags\n" if $opt_verbose && $cflags =~ /\`/;
-	$cflags =~ s/-nologo//ge;
-	$cflags =~ s/-Gf//;
-	$cflags =~ s/-Zi//;
 
 	$cflags =~ s/`([^`]+)`/`$1`/ge;
+
+	$cflags =~ s/-nologo//g;
+	$cflags =~ s/-Gf//g;
+	$cflags =~ s/-Zi//g;
+
+	print "cflags after subst: $cflags\n" if $opt_verbose;
+
 	my $dep = $obj;  $dep =~ s/\.[^.]+$/.Plo/;
 	my $fcmd = "$cl_cmd $cflags \"$fil\" -c -MMD -o \"$obj\"";
 	print "$fcmd\n";
