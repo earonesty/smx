@@ -378,7 +378,7 @@ sub make_cpp {
 	my $dep = $obj;  $dep =~ s/\.[^.]+$/.Plo/;
 	my $fcmd = "$cl_cmd $cflags \"$fil\" -c -MMD -o \"$obj\"";
 	print "$fcmd\n";
-	system($fcmd) && die;
+	system($fcmd) && warn "FAILED";
 	return $obj;
 }
 
