@@ -342,7 +342,7 @@ sub make_target {
 			
 			$cmd .= " $make->{$target}->{ldadd} $ld_libs $make->{$target}->{ldflags}";
 			print "$cmd\n";
-			system($cmd) && die;
+			system($cmd) && warn 'FAILED';
 		}
 	}
 }
