@@ -9,8 +9,9 @@ use Data::Dumper;
 
 our $opt_remake;
 our $opt_debug;
+our $opt_verbose;
 
-GetOptions("remake", "debug") || die "USAGE: perl Win32Build.pl [-remake] [-debug] [release|test|clean]";
+GetOptions("remake", "debug", "verbose") || die "USAGE: perl Win32Build.pl [-remake] [-debug] [release|test|clean]";
 
 our $opt_command = shift @ARGV;
 
@@ -331,9 +332,11 @@ sub make_target {
 			if ($make->{$target}->{ldflags} =~ /perl/i) {
 				# perl's extutils rarely outputs what we need for mingw, so clean things up
 				$make->{$target}->{ldflags} =~ s/-libpath:/-L:/;
-				$make->{$target}->{ldflags} =~ s/-nologo//;
+				$make->{$target}->{ldflags} =~ s/-nologo//g;
 				$make->{$target}->{ldflags} =~ s/-nodefaultlib//;
 				$make->{$target}->{ldflags} =~ s/-debug//;
+				$make->{$target}->{ldflags} =~ s/-Gf//;
+				$make->{$target}->{ldflags} =~ s/-Zi//;
 				$make->{$target}->{ldflags} =~ s/-opt:\S+//;
 			}
 			
@@ -362,6 +365,11 @@ sub make_cpp {
 	my $tt = (stat($obj))[9];
 	return $obj if $tt >= $dt && !$opt_remake;
 	
+	print "cflags before exec: $cflags\n" if $opt_verbose && $cflags =~ /\`/;
+	$cflags =~ s/-nologo//ge;
+	$cflags =~ s/-Gf//;
+	$cflags =~ s/-Zi//;
+
 	$cflags =~ s/`([^`]+)`/`$1`/ge;
 	my $dep = $obj;  $dep =~ s/\.[^.]+$/.Plo/;
 	my $fcmd = "$cl_cmd $cflags \"$fil\" -c -MMD -o \"$obj\"";
@@ -581,6 +589,8 @@ sub getpackageversion {
 			$rel = `svnversion`;
 			$rel =~ s/\s+$//s;
 			$rel =~ s/^(?:.*:)?(.*)[MSP]$/$1/;
+			warn "Can't determine release" if !$rel;
+			$rel = 0+grab("release.txt") if !$rel;
 		} else {
 			$rel =~ s/\$(\w+)/\"$PROG{$1}\"/g;
 			$rel =~ s/\bcat\b/type/g;
