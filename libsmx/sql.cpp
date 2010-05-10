@@ -152,7 +152,6 @@ class CDbStmt
 {
 	CDbConn  *myDbConn;
 
-	CDbCol *myCols;			// list of columns
 	char   *myMem;			// allocated for indptr and buffer
 	long    myColN;			// bound count of columns
 	long    myRow;			// current
@@ -180,6 +179,7 @@ class CDbStmt
 	}
 
 public:
+	CDbCol *myCols;			// list of columns
 	CDbHandle *myHSTMT;
 
 	~CDbStmt();
@@ -666,7 +666,7 @@ bool CDbStmt::Bind()
 		nAlloc += (myCols[i].DispSize + 1);
 	}
 
-	SQLLEN rowSetSize = max((long unsigned int) 1, (dbLib->GetMaxBuffer() / (nAlloc + (myColN * sizeof(SQLINTEGER)))));
+	SQLLEN rowSetSize = max((long unsigned int) 1, (dbLib->GetMaxBuffer() / (nAlloc + (myColN * sizeof(SQLLEN)))));
 
 	nResult = SQLSetStmtAttr(*myHSTMT, SQL_ATTR_ROW_ARRAY_SIZE, (void *) rowSetSize,   SQL_IS_INTEGER);
 	nResult = SQLGetStmtAttr(*myHSTMT, SQL_ATTR_ROW_ARRAY_SIZE,   &rowSetSize,   SQL_IS_INTEGER,  NULL);
@@ -677,10 +677,10 @@ bool CDbStmt::Bind()
 	myRow = 0;
 	myBufIndex = 0;
 
-	myMem = (char *) malloc(nAlloc * (myRowsetSize+1) + sizeof(SQLINTEGER) * (myColN+1) * (myRowsetSize+1));
+	myMem = (char *) malloc(nAlloc * (myRowsetSize+1) + sizeof(SQLLEN) * (myColN+1) * (myRowsetSize+1));
 	
 	char *pB = myMem;
-	SQLINTEGER *pI = (SQLINTEGER *) (myMem + nAlloc * (myRowsetSize+1));
+	SQLLEN *pI = (SQLLEN *) (myMem + nAlloc * (myRowsetSize+1));
 	for(i = 0; i < myColN; i++) {
 		myCols[i].SetBuf(pB);
 		myCols[i].SetIndPtr(pI);
@@ -783,9 +783,9 @@ bool CDbStmt::Next()
 			smx_log(SMXLOGLEVEL_DEBUG, "fetch again with same bound memory");
 			nReturn = SQLFetch(*myHSTMT);
 			if (SQL_SUCCEEDED(nReturn)) {
-				myBufIndex = 0;
 				++myRow;
 				myHasData = true;
+				myBufIndex = 0;
 				return true;
 			} else {
 				nReturn = SQLMoreResults(*myHSTMT);
@@ -854,6 +854,8 @@ CDbCol *CDbStmt::Column(int index)
 {
 	if (index < myColN && index >= 0) {
 		return &myCols[index];
+	} else {
+		smx_log(SMXLOGLEVEL_DEBUG, "index %d is >= %d", index, myColN);
 	}
 	return 0;
 }
@@ -967,6 +969,7 @@ void qObjODBC::EvalCol(qCtx *ctx, qStr *out, qArgAry *args)
 	CDbCol *col;
 	if ((col = GetEvalCol(ctx, args))) {
 		int ind = col->GetInd();
+		// smx_log(SMXLOGLEVEL_DEBUG, "ind for %s is %d", (const char *) col->Name, ind);
 		if (myStmt.HasData() && SQL_HAS_DATA(ind)) {
 			col->ConvBuf();
 			col->RTrim();
@@ -987,7 +990,7 @@ void qObjODBC::EvalColumn(qCtx *ctx, qStr *out, qArgAry *args)
 		if (myStmt.HasData() && SQL_HAS_DATA(ind)) {
 			col->ConvBuf();
 			if (ind >= 0) {
-				int n = min((SQLINTEGER)ind, col->DispSize);
+				int n = min((SQLLEN)ind, col->DispSize);
 				out->PutS(col->GetBuf(), n);
 			} else {
 				out->PutS(col->GetBuf());
