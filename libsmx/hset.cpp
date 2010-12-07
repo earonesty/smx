@@ -107,7 +107,7 @@ void qObjHCtx::Counter(qCtx *ctx, qStr *out, qArgAry *args)
 			                        myHash.Commit(trans);
 */
                                                 myHash.Del(var);
-						return;		# null output on delete
+						return;		// null output on delete
                                                 break;
                                         case -1: {
                                                 CStr was = myHash.Get(var);
