@@ -91,7 +91,7 @@ void qObjHCtx::Eval(qCtx *ctx, qStr *out, qArgAry *args)
 void qObjHCtx::Counter(qCtx *ctx, qStr *out, qArgAry *args)
 {
         if (args->Count() >= 1) {
-                int val;
+                int val=1;
                 CStr var = (*args)[0];
                 if (!var.IsEmpty()) {
                         var  = "/counters/" << var;
@@ -103,12 +103,14 @@ void qObjHCtx::Counter(qCtx *ctx, qStr *out, qArgAry *args)
                                         val  = ParseInt((*args)[1]);
                                         switch(val) {
                                         case 0:
+/*
+			                        myHash.Commit(trans);
+*/
                                                 myHash.Del(var);
+						return;		# null output on delete
                                                 break;
                                         case -1: {
                                                 CStr was = myHash.Get(var);
-                                                int val;
-
                                                 if (!was.IsEmpty())
                                                         val = *((int*)was.Data());
                                                 else
