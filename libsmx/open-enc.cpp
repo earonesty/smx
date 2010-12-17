@@ -37,6 +37,11 @@ int EVP_Digest(const char *name, const unsigned char *strin, int cbstr, unsigned
  return md_len;
 }
 
+int DigestByName_string(const char *name, int cbname, const char *strin, int cbstr, char *strout)
+{
+        return EVP_Digest(name, (unsigned char *)strin, cbstr, (unsigned char *)strout);
+}
+
 int SHA256_string(const char *strin, int cbstr, char *strout)
 {
         return EVP_Digest("sha256", (unsigned char *)strin, cbstr, (unsigned char *)strout);
@@ -235,6 +240,14 @@ CStr SHA1_string(CStr strin)
 	int len = SHA1_string(strin, strin.Length(), strout.GetBuffer());
 	strout.Grow(len);
 	return strout;
+}
+
+CStr DigestByName_string(CStr name, CStr strin)
+{
+        CStr strout(EVP_MAX_MD_SIZE);
+        int len = DigestByName_string(name, name.Length(), strin, strin.Length(), strout.GetBuffer());
+        strout.Grow(len);
+        return strout;
 }
 
 CStr SHA256_string(CStr strin)

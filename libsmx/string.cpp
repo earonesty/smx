@@ -33,6 +33,18 @@ using namespace std;
 #if defined(HAVE_OPENSSL_EVP_H) || defined(HAVE_OPENSSL)
 
 // sha hash
+void EvalDigestByName(const void *data, qCtx *ctx, qStr *pStream, qArgAry *args)
+{
+	if (args->Count() > 1) {
+		CStr out = HEX_encode(DigestByName_string((*args)[0], (*args)[1]));
+		if (args->Count() > 2)
+			pStream->PutS(out, max(0,min(ParseInt((*args)[2]), out.Length())));
+		else 
+			pStream->PutS(out);
+	}
+}
+
+// sha hash
 void EvalSha(const void *data, qCtx *ctx, qStr *pStream, qArgAry *args)
 {
 	if (args->Count() > 0) {
@@ -1307,6 +1319,7 @@ void LoadString(qCtx *ctx) {
 	ctx->MapObj(EvalSha,	       "sha");
 	ctx->MapObj(EvalMD5,	       "md5");
 	ctx->MapObj(EvalSha256,	       "sha256");
+	ctx->MapObj(EvalDigestByName,  "digest");
 
 	ctx->MapObj(EvalEncrypt,       "encrypt");
 	ctx->MapObj(EvalDecrypt,       "decrypt");

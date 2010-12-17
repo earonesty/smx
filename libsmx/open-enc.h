@@ -25,6 +25,7 @@ void HEX_string(const char *strin, char *strout, int cbstr);
 int MD5_string(const char *strin, int cbstr, char *strout);
 int SHA256_string(const char *strin, int cbstr, char *strout);
 int SHA1_string(const char *strin, int cbstr, char *strout);
+int DigestByName_string(const char *name, int cbname, const char *strin, int cbstr, char *strout);
 
 #ifdef _STR_H
 	CStr EVP_encrypt(CStr passw, CStr strin, const char *cipher);
@@ -32,6 +33,7 @@ int SHA1_string(const char *strin, int cbstr, char *strout);
 	CStr SHA1_string(CStr strin);
 	CStr MD5_string(CStr strin);
 	CStr SHA256_string(CStr strin);
+	CStr DigestByName_string(CStr name, CStr strin);
 
 	CStr HEX_encode(CStr strin);
 	CStr HEX_decode(CStr strin);
