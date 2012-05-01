@@ -88,7 +88,7 @@ CStr CDBDriverTdb::Get(const char *name, HTRANS txn) {
 	CStr str;
 	TDB_DATA key;
 	TDB_DATA data;
-	key.dptr=(char *)name;
+	key.dptr=(unsigned char *)name;
 	key.dsize=strlen(name);
 
 	int retry = 0;
@@ -114,7 +114,7 @@ CStr CDBDriverTdb::Get(const char *name, HTRANS txn) {
 
 bool CDBDriverTdb::Exists(const char *name) {
         TDB_DATA key;
-        key.dptr=(char *)name;
+        key.dptr=(unsigned char *)name;
         key.dsize=strlen(name);
         return tdb_exists(m_db, key);
 }
@@ -122,7 +122,7 @@ bool CDBDriverTdb::Exists(const char *name) {
 bool CDBDriverTdb::Del(const char *name, HTRANS txn) {
         CStr str;
         TDB_DATA key;
-        key.dptr=(char *)name;
+        key.dptr=(unsigned char *)name;
         key.dsize=strlen(name);
         return tdb_delete(m_db, key) == 0;
 }
@@ -133,9 +133,9 @@ bool CDBDriverTdb::Set(const char *name, const char *val, int vlen, HTRANS txn) 
         CStr str;
         TDB_DATA key;
         TDB_DATA data;
-        key.dptr=(char *)name;
+        key.dptr=(unsigned char *)name;
         key.dsize=strlen(name);
-        data.dptr=(char *)val;
+        data.dptr=(unsigned char *)val;
         data.dsize=vlen;
         if (tdb_store(m_db, key, data, TDB_REPLACE) == 0) {
 		return true;
