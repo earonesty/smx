@@ -646,12 +646,12 @@ void LoadProto(qCtx *ctx) {
 	ctx->MapObj(qm,	"<proto>");
 
 	ctx->MapObj(qm , (QOBJMETH) &qObjProto::EvalSmtpMail, "smtp-mail");
-#ifdef WIN32
-	ctx->MapObj(qm , (QOBJMETH) &qObjProto::EvalQMail,    "qmail");
 	ctx->MapObj(qm , (QOBJMETH) &qObjProto::EvalWhois,    "whois");
 	ctx->MapObj(qm , (QOBJMETH) &qObjProto::EvalRWhois,   "rwhois");
 	ctx->MapObj(qm , (QOBJMETH) &qObjProto::EvalXTCP,     "connect-tcp", "01");
 	ctx->MapObj(qm , (QOBJMETH) &qObjProto::EvalTCPConn,  "tcp");
+#ifdef WIN32
+	ctx->MapObj(qm , (QOBJMETH) &qObjProto::EvalQMail,    "qmail");
 #endif
   
 //	ctx->MapObj(qm , (QOBJMETH) &qm->EvalSSL,      "connect-ssl");
