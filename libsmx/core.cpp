@@ -69,6 +69,11 @@ void EvalErrorHandler(const void *data, qCtx *ctx, qStr *out, qArgAry *args)
 	ctx->SetErrorHandler(args->GetAt(0));
 }
 
+void EvalGetPid(const void *data, qCtx *ctx, qStr *out, qArgAry *args) {
+	pid_t pid = getpid();
+	out->PutN(pid);
+}
+
 void EvalDebugLogLevel(const void *data, qCtx *ctx, qStr *out, qArgAry *args)
 {
         VALID_ARGC("debug-loglevel", 0, 1);
@@ -998,6 +1003,8 @@ void LoadCore(qCtx *ctx) {
 
 	ctx->MapObj(EvalSafeMode,  "safe-mode");
 	ctx->MapObj(EvalSafeUID,  "safe-uid");
+
+	ctx->MapObj(EvalGetPid,  "getpid");
 
 #ifdef WIN32
 	ctx->MapObj(EvalPriorityExpand,  "priority-expand", "01");
