@@ -125,6 +125,7 @@ bool CDBHash::Open()
 
         if (v) {
                 m_v = v;
+		m_triedthispath = 0;
                 return true;
         }
 
