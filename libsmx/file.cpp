@@ -809,14 +809,14 @@ bool _ScanDir(CStr path, int mask, CStr body, qCtx *ctx, qStr *out, DIRSTATE &st
   
   int err = glob(path, GLOB_TILDE, NULL, &gb);
   
-  if (err) {
+  if (err && (err != GLOB_NOMATCH) ) {
     ctx->ThrowF(out, 631, "Error during directory read. %y", GetLastError());
     return false;
   }
   
   char **curp = gb.gl_pathv;
   
-  while (*curp && !st.bquit) {
+  while ((gb.gl_pathc>0) && *curp && !st.bquit) {
     if ( !( (*curp)[0]=='.'&&(*curp)[1]=='\0') ) {
       st.found = *curp;
       st.status = DIR_EMPTY;
