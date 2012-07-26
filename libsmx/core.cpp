@@ -74,6 +74,16 @@ void EvalGetPid(const void *data, qCtx *ctx, qStr *out, qArgAry *args) {
 	out->PutN(pid);
 }
 
+void EvalHiresTime(const void *data, qCtx *ctx, qStr *out, qArgAry *args) {
+	struct timeval tv;
+	char nanosecs[8]; // 8 is 1 for the decimal point, 6 digits, 1 for NULL
+	gettimeofday(&tv, NULL); // should we use clock_gettime() instead?
+	snprintf(nanosecs, sizeof(nanosecs), ".%06d", tv.tv_usec);
+	nanosecs[sizeof(nanosecs) - 1] = 0; // null terminate for safety
+	out->PutN(tv.tv_sec);
+	out->PutS(nanosecs);
+}
+
 void EvalDebugLogLevel(const void *data, qCtx *ctx, qStr *out, qArgAry *args)
 {
         VALID_ARGC("debug-loglevel", 0, 1);
@@ -1005,6 +1015,7 @@ void LoadCore(qCtx *ctx) {
 	ctx->MapObj(EvalSafeUID,  "safe-uid");
 
 	ctx->MapObj(EvalGetPid,  "getpid");
+	ctx->MapObj(EvalHiresTime,  "hirestime");
 
 #ifdef WIN32
 	ctx->MapObj(EvalPriorityExpand,  "priority-expand", "01");
