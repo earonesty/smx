@@ -76,12 +76,12 @@ void EvalGetPid(const void *data, qCtx *ctx, qStr *out, qArgAry *args) {
 
 void EvalHiresTime(const void *data, qCtx *ctx, qStr *out, qArgAry *args) {
 	struct timeval tv;
-	char nanosecs[8]; // 8 is 1 for the decimal point, 6 digits, 1 for NULL
+	char usecs[8]; // 8 is 1 for the decimal point, 6 digits, 1 for NULL
 	gettimeofday(&tv, NULL); // should we use clock_gettime() instead?
-	snprintf(nanosecs, sizeof(nanosecs), ".%06d", tv.tv_usec);
-	nanosecs[sizeof(nanosecs) - 1] = 0; // null terminate for safety
+	snprintf(usecs, sizeof(usecs), ".%06d", tv.tv_usec);
+	usecs[sizeof(usecs) - 1] = 0; // null terminate for safety
 	out->PutN(tv.tv_sec);
-	out->PutS(nanosecs);
+	out->PutS(usecs);
 }
 
 void EvalDebugLogLevel(const void *data, qCtx *ctx, qStr *out, qArgAry *args)
