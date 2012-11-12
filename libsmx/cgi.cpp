@@ -804,9 +804,9 @@ void qObjCGI::EvalExpires(qCtx *ctx, qStr *out, qArgAry *args)
 		time_t t = ParseInt((*args)[0]);
 		time_t now = time(0);
 
-		if (strnicmp((*args)[0],"now", 3))
+		if (strnicmp((*args)[0],"now", 3)==0)
 			t = 0;
-		if (strnicmp((*args)[0],"never", 5)) 
+		if (strnicmp((*args)[0],"never", 5)==0) 
 			t = -1;
 
 		if (t && t != -1) {
