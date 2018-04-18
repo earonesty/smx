@@ -49,6 +49,10 @@ THIS SOFTWARE IS PROVIDED 'AS IS' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDI
 	module MODULE_VAR_EXPORT smx_module;
 #endif
 
+#ifdef AP_DECLARE_MODULE
+AP_DECLARE_MODULE(smx_module);
+#endif
+ 	 
 class qStrApacheOut;
 class qEnvApache;
 class qEnvApacheServer;
@@ -206,11 +210,11 @@ public:
 
 	const char *GetServerName()		{return ap_get_server_name(myReq);}
 	int   GetServerPort()			{return ap_get_server_port(myReq);}
-	const char *GetServerSoftware()	{return ap_get_server_version();}
+	const char *GetServerSoftware()	{return ap_get_server_description();}
 	const char *GetServerProtocol()	{return myReq->protocol;}
 	const char *GetServerAddr();
 
-	const char *GetRemoteAddr()		{return myReq->connection->remote_ip;}
+	const char *GetRemoteAddr()		{return myReq->useragent_ip;}
 #ifdef APACHE2
 	const char *GetRemoteHost()		{return (char *) ap_get_remote_host(myReq->connection, myReq->per_dir_config, REMOTE_NAME, NULL);}
 #else

@@ -40,7 +40,7 @@ Should be able to run
 	make
 	make install
 
-If you did a cvs update, and you get a libtool error, run 
+If you did a git update, and you get a libtool error, run 
 
 	make clean
 
@@ -97,6 +97,13 @@ The environment varialbe SMX_INIT can be used for initialization macros.
 
 smx-fcgi can be used as an auth filter, but only if the http-user macro
 is defined somewhere via SMX_INIT.
+
+
+**** Compiling an RPM distribution
+
+make dist
+cp smx-1.1.*.tar.gz ~/rpmbuild/SOURCES/
+rpmbuild -bb --clean smx.spec
 
 **** LICENSE
 
