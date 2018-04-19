@@ -99,11 +99,9 @@ smx-fcgi can be used as an auth filter, but only if the http-user macro
 is defined somewhere via SMX_INIT.
 
 
-**** Compiling an RPM distribution
+**** See also
 
-make dist
-cp smx-1.1.*.tar.gz ~/rpmbuild/SOURCES/
-rpmbuild -bb --clean smx.spec
+[Release maintenance](Maintain.md)
 
 **** LICENSE
 
